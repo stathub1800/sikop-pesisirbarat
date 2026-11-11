@@ -114,4 +114,12 @@ export const IKON = {
   cetak: 'M7 8V3h10v5M7 17H4v-7h16v7h-3M7 14h10v7H7v-7z',
   wa: 'M4 20l1.3-4A8 8 0 1 1 8 18.7L4 20z',
   info: 'M12 8h.01M11 12h1v5h1m8-5a9 9 0 1 1-18 0 9 9 0 0 1 18 0z',
+  video: 'M5 5h14v14H5V5zm5 4l5 3-5 3V9z',
+  bacaan: 'M6 3h9l4 4v14H6V3zm8 0v5h5M9 13h7M9 17h7',
+  dokumen: 'M6 3h9l4 4v14H6V3zm8 0v5h5M9 15h6',
+  latihan: 'M5 4h14v16H5V4zm4 8l2 2 4-4',
+  kiri: 'M15 6l-6 6 6 6',
+  kanan: 'M9 6l6 6-6 6',
+  menu: 'M4 7h16M4 12h16M4 17h16',
+  bawah: 'M6 9l6 6 6-6',
 } as const;

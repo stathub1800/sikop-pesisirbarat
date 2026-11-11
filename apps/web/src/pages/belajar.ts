@@ -1,7 +1,9 @@
 /**
  * Ruang Belajar: aplikasi satu halaman berbasis hash.
  *   #/                      katalog kursus
- *   #/kursus/:id            ringkasan kursus dan urutan modul
+ *   #/kursus/:id            silabus bab dan pelajaran (atau urutan modul untuk kursus lama)
+ *   #/belajar/:kursus/:id   pemutar pelajaran (video, bacaan, dokumen, latihan)
+ *   #/saya                  kursus saya
  *   #/modul/:id             materi modul, pre-test dan post-test
  *   #/ujian/:id             ujian berjalan (id percobaan dari server)
  *   #/hasil/:id             hasil dan pembahasan
@@ -11,10 +13,27 @@
  * Penilaian, waktu, dan sertifikat sepenuhnya di server; halaman ini hanya menampilkan.
  */
 import qrcode from 'qrcode-generator';
-import { formatAngka, formatTanggal, LABEL_UJIAN, type JenisUjian } from '@sikop/shared';
+import {
+  formatAngka,
+  formatTanggal,
+  LABEL_KATEGORI_PESERTA,
+  LABEL_UJIAN,
+  type JenisUjian,
+  type KategoriPeserta,
+} from '@sikop/shared';
 import '../styles/belajar.css';
 import { keluar, saya, tombolMasuk } from '../lib/akun.ts';
 import { ApiError, get, kirim } from '../lib/api.ts';
+import {
+  halamanKatalog as katalogBaru,
+  halamanPemutar,
+  halamanSaya,
+  tampilKursus,
+  type Konteks,
+  type DataKursus,
+  type Kursus,
+  type Progres,
+} from '../lib/belajar-ruang.ts';
 import { $, h, ikon, IKON, isi } from '../lib/dom.ts';
 import { situs } from '../lib/situs.ts';
 import {
@@ -31,19 +50,6 @@ import { mulaiHalaman } from '../lib/umum.ts';
 
 /* ------------------------------- Tipe ------------------------------- */
 
-interface Kursus {
-  id: string;
-  kode: string;
-  judul: string;
-  subjudul: string;
-  deskripsi: string;
-  kategori: string;
-  estimasi: string;
-  nilai_lulus_akhir: number;
-  durasi_akhir_menit: number;
-  jumlah_soal_akhir: number;
-  jumlah_modul?: number;
-}
 interface Modul {
   id: number;
   kursus_id: string;
@@ -59,26 +65,6 @@ interface Modul {
   kompetensi: { judul: string; uraian: string }[];
   sumber: { judul: string; format: string; url: string; penerbit?: string }[];
   jumlah_soal: Partial<Record<JenisUjian, number>>;
-}
-interface Progres {
-  modul: {
-    id: number;
-    nomor: number;
-    judul: string;
-    nilai_lulus: number;
-    pre: { id: string; nilai: number } | null;
-    post_terbaik: number | null;
-    post_percobaan: number;
-    post_lulus_id: string | null;
-    lulus: boolean;
-  }[];
-  akhir: {
-    boleh_mulai: boolean;
-    percobaan: { id: string; nilai: number; lulus: boolean; selesai_at: string }[];
-    percobaan_24_jam: number;
-    lulus: boolean;
-  };
-  sertifikat: { nomor: string; kode_verifikasi: string; terbit_at: string; status: string } | null;
 }
 interface Ujian {
   id: string;
@@ -114,12 +100,16 @@ async function rute(): Promise<void> {
   hentikanUjian?.();
   hentikanUjian = null;
   const jalur = location.hash.replace(/^#/, '').split('?')[0] ?? '';
-  const [, bagian = '', id = ''] = jalur.split('/');
+  const [, bagian = '', id = '', id2 = ''] = jalur.split('/');
   window.scrollTo(0, 0);
   try {
     switch (bagian) {
       case 'kursus':
         return await halamanKursus(decodeURIComponent(id));
+      case 'belajar':
+        return await halamanPemutar(konteks, decodeURIComponent(id), Number(id2));
+      case 'saya':
+        return await halamanSaya(konteks);
       case 'modul':
         return await halamanModul(Number(id));
       case 'ujian':
@@ -146,59 +136,28 @@ async function rute(): Promise<void> {
 }
 window.addEventListener('hashchange', () => void rute());
 
+/** Tujuan ke halaman pendaftaran peserta sambil mengingat halaman yang hendak dituju. */
+const keAkun = (): string => {
+  const l = lanjutSetelahMasuk();
+  return l === '#/' ? '#/akun' : `#/akun?lanjut=${encodeURIComponent(l)}`;
+};
 const lanjutSetelahMasuk = (): string =>
   new URLSearchParams(location.hash.split('?')[1] ?? '').get('lanjut') ?? '#/';
 const judulHalaman = (t: string): void => {
   document.title = `${t} | Ruang Belajar SIKOP`;
 };
 
+const konteks: Konteks = {
+  app,
+  judul: judulHalaman,
+  statusPeserta,
+  bagianAkhir,
+};
+
 /* ------------------------------ Katalog ------------------------------ */
 
 async function halamanKatalog(): Promise<void> {
-  judulHalaman('Ruang Belajar');
-  isi(app, kerangka(6));
-  const [{ kursus }, s] = await Promise.all([get<{ kursus: Kursus[] }>('/lms/kursus'), saya()]);
-  isi(
-    app,
-    h(
-      'div',
-      { class: 'halaman__judul' },
-      h('h1', null, 'Ruang Belajar'),
-      h(
-        'p',
-        null,
-        'Pembinaan statistik sektoral untuk walidata dan produsen data perangkat daerah.',
-      ),
-    ),
-    s.akun
-      ? null
-      : h(
-          'p',
-          { class: 'pesan' },
-          'Materi dapat dibaca tanpa masuk. Untuk mengerjakan ujian dan memperoleh sertifikat, ',
-          h('a', { href: '#/masuk' }, 'masuk dengan akun Google'),
-          '.',
-        ),
-    kursus.length === 0
-      ? kosong(
-          'Belum ada program belajar',
-          'Program pembinaan akan tampil di sini setelah diterbitkan pengelola.',
-        )
-      : kursus.map((k) =>
-          h(
-            'section',
-            { class: 'panel' },
-            h('h2', null, h('a', { href: `#/kursus/${k.id}` }, k.judul)),
-            h('p', null, k.deskripsi),
-            h(
-              'p',
-              { class: 'isian__bantu' },
-              `${formatAngka(k.jumlah_modul ?? 0)} modul tersedia. Estimasi ${k.estimasi}. Kelulusan ujian akhir minimal ${k.nilai_lulus_akhir}.`,
-            ),
-            h('a', { class: 'tombol tombol--primer', href: `#/kursus/${k.id}` }, 'Buka program'),
-          ),
-        ),
-  );
+  await katalogBaru(konteks, await saya());
 }
 
 /* ------------------------------ Kursus ------------------------------ */
@@ -206,14 +165,14 @@ async function halamanKatalog(): Promise<void> {
 async function halamanKursus(id: string): Promise<void> {
   isi(app, kerangka(8));
   const [data, s] = await Promise.all([
-    get<{ kursus: Kursus; modul: Modul[]; jumlah_soal_akhir_tersedia: number }>(
-      `/lms/kursus/${encodeURIComponent(id)}`,
-    ),
+    get<Omit<DataKursus, 'modul'> & { modul: Modul[] }>(`/lms/kursus/${encodeURIComponent(id)}`),
     saya(),
   ]);
   const progres = s.peserta
     ? await get<Progres>(`/lms/saya/progres/${encodeURIComponent(id)}`)
     : null;
+  // Kursus berbab memakai silabus baru; kursus lama tanpa bab tetap memakai urutan modul.
+  if (data.bab.some((b) => b.pelajaran.length > 0)) return tampilKursus(konteks, s, data, progres);
   const { kursus, modul } = data;
   judulHalaman(kursus.judul);
   const pm = (mid: number): Progres['modul'][number] | undefined =>
@@ -943,7 +902,7 @@ async function halamanMasuk(): Promise<void> {
   judulHalaman('Masuk');
   const s = await saya(true);
   if (s.akun)
-    return void (location.hash = s.peserta || s.akun.peran ? lanjutSetelahMasuk() : '#/akun');
+    return void (location.hash = s.peserta || s.akun.peran ? lanjutSetelahMasuk() : keAkun());
   const wadah = h('div', { class: 'baris-tombol jarak-atas' });
   isi(
     app,
@@ -968,7 +927,7 @@ async function halamanMasuk(): Promise<void> {
   );
   await tombolMasuk(wadah, (akun) => {
     toast(`Selamat datang, ${akun.nama}.`, 'berhasil');
-    location.hash = akun.peran ? lanjutSetelahMasuk() : '#/akun';
+    location.hash = akun.peran ? lanjutSetelahMasuk() : keAkun();
     if (akun.peran && lanjutSetelahMasuk() === '#/') location.href = '/admin/';
   });
 }
@@ -979,10 +938,11 @@ async function halamanAkun(): Promise<void> {
   const r = await get<{
     akun: { email: string; nama: string };
     peserta: {
+      kategori: KategoriPeserta;
       nama: string;
-      nip: string;
+      nip: string | null;
       instansi: string;
-      jabatan: string;
+      jabatan: string | null;
       status: string;
       catatan: string | null;
     } | null;
@@ -995,6 +955,91 @@ async function halamanAkun(): Promise<void> {
     ditolak: ['Ditolak', 'merah'],
     nonaktif: ['Nonaktif', 'merah'],
   };
+  const terkunci = ps?.status === 'terverifikasi';
+  const isian = (
+    id: string,
+    nama: string,
+    label: string,
+    atribut: Record<string, string | number | boolean>,
+    bantu?: string,
+  ): HTMLElement =>
+    h(
+      'div',
+      { class: 'isian' },
+      h('label', { for: id }, label),
+      h('input', { id, name: nama, type: 'text', required: true, ...atribut }),
+      bantu ? h('span', { class: 'isian__bantu' }, bantu) : null,
+    );
+  // Isian menurut kategori. Hanya ASN yang diminta NIP; kategori lain cukup satu keterangan asal.
+  const isianKategori = (k: KategoriPeserta): HTMLElement[] => {
+    const lama = ps?.kategori === k ? ps : null;
+    switch (k) {
+      case 'asn':
+        return [
+          isian(
+            'a-nip',
+            'nip',
+            'NIP',
+            {
+              inputmode: 'numeric',
+              maxlength: 21,
+              placeholder: lama?.nip ? `Tersimpan: ${lama.nip}` : '18 digit',
+              autocomplete: 'off',
+            },
+            lama
+              ? 'Isi ulang NIP lengkap untuk menyimpan perubahan profil.'
+              : 'NIP diperiksa strukturnya dan diverifikasi pengelola.',
+          ),
+          isian('a-instansi', 'instansi', 'Instansi', {
+            value: lama?.instansi ?? '',
+            autocomplete: 'organization',
+          }),
+          isian('a-jabatan', 'jabatan', 'Jabatan', {
+            value: lama?.jabatan ?? '',
+            autocomplete: 'organization-title',
+          }),
+        ];
+      case 'umum':
+        return [
+          isian('a-pekerjaan', 'pekerjaan', 'Pekerjaan', {
+            value: lama?.instansi ?? '',
+            autocomplete: 'organization-title',
+          }),
+        ];
+      case 'pelajar':
+        return [
+          isian('a-sekolah', 'sekolah', 'Sekolah atau kampus', {
+            value: lama?.instansi ?? '',
+            autocomplete: 'organization',
+          }),
+        ];
+      case 'mitra':
+        return [
+          isian(
+            'a-kegiatan',
+            'kegiatan',
+            'Kegiatan statistik yang diikuti',
+            { value: lama?.instansi ?? '' },
+            'Contoh: Sensus Ekonomi 2026 atau Survei Angkatan Kerja Nasional.',
+          ),
+        ];
+    }
+  };
+  let kategori: KategoriPeserta = ps?.kategori ?? 'asn';
+  const wadahIsian = h('div', { class: 'grid-isian' });
+  const gambarIsian = (): void => isi(wadahIsian, isianKategori(kategori));
+  const pilihKategori = h(
+    'select',
+    { id: 'a-kategori', name: 'kategori', disabled: terkunci },
+    (Object.entries(LABEL_KATEGORI_PESERTA) as [KategoriPeserta, string][]).map(([v, t]) =>
+      h('option', { value: v, selected: v === kategori }, t),
+    ),
+  ) as HTMLSelectElement;
+  pilihKategori.addEventListener('change', () => {
+    kategori = pilihKategori.value as KategoriPeserta;
+    gambarIsian();
+  });
+  gambarIsian();
   const form = h(
     'form',
     { novalidate: true },
@@ -1004,7 +1049,20 @@ async function halamanAkun(): Promise<void> {
       h(
         'div',
         { class: 'isian' },
-        h('label', { for: 'a-nama' }, 'Nama lengkap dan gelar'),
+        h('label', { for: 'a-kategori' }, 'Saya mendaftar sebagai'),
+        pilihKategori,
+        terkunci
+          ? h(
+              'span',
+              { class: 'isian__bantu' },
+              'Kategori yang sudah diverifikasi tidak dapat diubah sendiri. Hubungi pengelola bila keliru.',
+            )
+          : null,
+      ),
+      h(
+        'div',
+        { class: 'isian' },
+        h('label', { for: 'a-nama' }, 'Nama lengkap'),
         h('input', {
           id: 'a-nama',
           name: 'nama',
@@ -1014,55 +1072,8 @@ async function halamanAkun(): Promise<void> {
           autocomplete: 'name',
         }),
       ),
-      h(
-        'div',
-        { class: 'isian' },
-        h('label', { for: 'a-nip' }, 'NIP'),
-        h('input', {
-          id: 'a-nip',
-          name: 'nip',
-          type: 'text',
-          inputmode: 'numeric',
-          required: true,
-          maxlength: 21,
-          placeholder: ps ? `Tersimpan: ${ps.nip}` : '18 digit',
-          autocomplete: 'off',
-        }),
-        h(
-          'span',
-          { class: 'isian__bantu' },
-          ps
-            ? 'Isi ulang NIP lengkap untuk menyimpan perubahan profil.'
-            : 'NIP diperiksa strukturnya dan diverifikasi pengelola.',
-        ),
-      ),
-      h(
-        'div',
-        { class: 'isian' },
-        h('label', { for: 'a-instansi' }, 'Instansi'),
-        h('input', {
-          id: 'a-instansi',
-          name: 'instansi',
-          type: 'text',
-          required: true,
-          value: ps?.instansi ?? '',
-          autocomplete: 'organization',
-        }),
-      ),
-      h(
-        'div',
-        { class: 'isian' },
-        h('label', { for: 'a-jabatan' }, 'Jabatan'),
-        h('input', {
-          id: 'a-jabatan',
-          name: 'jabatan',
-          type: 'text',
-          required: true,
-          value: ps?.jabatan ?? '',
-          autocomplete: 'organization-title',
-        }),
-      ),
     ),
+    wadahIsian,
     h(
       'label',
       { class: 'centang' },
@@ -1090,11 +1101,21 @@ async function halamanAkun(): Promise<void> {
     const d = new FormData(form);
     await sibuk(form.querySelector('button[type=submit]') as HTMLButtonElement, async () => {
       try {
+        const nilai = (k: string): string => String(d.get(k) ?? '').trim();
         await kirim('POST', '/lms/saya/profil', {
-          nama: String(d.get('nama')),
-          nip: String(d.get('nip')).replace(/\s/g, ''),
-          instansi: String(d.get('instansi')),
-          jabatan: String(d.get('jabatan')),
+          kategori,
+          nama: nilai('nama'),
+          ...(kategori === 'asn'
+            ? {
+                nip: nilai('nip').replace(/\s/g, ''),
+                instansi: nilai('instansi'),
+                jabatan: nilai('jabatan'),
+              }
+            : kategori === 'umum'
+              ? { pekerjaan: nilai('pekerjaan') }
+              : kategori === 'pelajar'
+                ? { sekolah: nilai('sekolah') }
+                : { kegiatan: nilai('kegiatan') }),
           setuju_privasi: d.get('setuju_privasi') === 'on',
         });
         await saya(true);
@@ -1130,6 +1151,7 @@ async function halamanAkun(): Promise<void> {
       'div',
       { class: 'baris-tombol jarak-atas' },
       h('a', { class: 'tombol', href: '#/' }, 'Ke Ruang Belajar'),
+      ps ? h('a', { class: 'tombol', href: '#/saya' }, 'Kursus saya') : null,
       h(
         'button',
         { class: 'tombol tombol--polos', type: 'button', onclick: () => void keluar() },
@@ -1217,7 +1239,7 @@ async function halamanSertifikat(kode: string): Promise<void> {
         null,
         h('p', null, 'diberikan kepada'),
         h('p', { class: 'sertifikat__nama' }, s.nama_peserta),
-        h('p', null, `NIP ${s.nip_samaran}, ${s.instansi}`),
+        h('p', null, s.nip_samaran ? `NIP ${s.nip_samaran}, ${s.instansi}` : s.instansi),
         h('p', null, 'yang telah menyelesaikan program'),
         h('p', null, h('strong', null, s.judul_kursus)),
         h('p', null, `dengan nilai ujian akhir ${formatAngka(s.nilai, 2)}.`),

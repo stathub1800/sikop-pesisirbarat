@@ -18,6 +18,7 @@ import {
 import { acak, kodeAcak } from '../lib/crypto.ts';
 import { HttpError, tidakDitemukan } from '../lib/http.ts';
 import { bacaPengaturan } from '../lib/pengaturan.ts';
+import { pelajaranWajibBelum } from './pelajaran.ts';
 
 export const JEDA_POST_DETIK = 60;
 
@@ -51,7 +52,7 @@ export interface StatusSertifikat {
 
 const iso = (ms = Date.now()): string => new Date(ms).toISOString();
 
-async function pastikanPeserta(db: D1Database, akunId: string): Promise<{ status: string }> {
+export async function pastikanPeserta(db: D1Database, akunId: string): Promise<{ status: string }> {
   const p = await db
     .prepare('SELECT status FROM peserta WHERE akun_id = ?')
     .bind(akunId)
@@ -230,6 +231,13 @@ async function periksaAturan(
       409,
       'modul_belum_lulus',
       `Selesaikan post-test semua modul terlebih dahulu. Belum lulus: ${belum.results.map((r) => r.judul).join('; ')}.`,
+    );
+  const belumPel = await pelajaranWajibBelum(db, akunId, kursusId);
+  if (belumPel.length)
+    throw new HttpError(
+      409,
+      'pelajaran_belum_selesai',
+      `Selesaikan semua pelajaran wajib terlebih dahulu. Belum selesai: ${belumPel.join('; ')}.`,
     );
   const lulus = await db
     .prepare(
@@ -431,7 +439,7 @@ export async function terbitkanSertifikat(
   const peserta = await db
     .prepare('SELECT nama, nip, instansi, status FROM peserta WHERE akun_id = ?')
     .bind(akunId)
-    .first<{ nama: string; nip: string; instansi: string; status: string }>();
+    .first<{ nama: string; nip: string | null; instansi: string; status: string }>();
   if (!peserta || peserta.status !== 'terverifikasi') return { status: 'menunggu_verifikasi' };
   const p = await bacaPengaturan(db);
   if (p.sertifikat_aktif !== '1' || !p.penandatangan_nama || !p.penandatangan_jabatan)
@@ -463,7 +471,8 @@ export async function terbitkanSertifikat(
           lulus.id,
           tahun,
           peserta.nama,
-          samarkanNip(peserta.nip),
+          // Peserta non-ASN tidak punya NIP; kolom wajib terisi, jadi string kosong dan tidak ditampilkan.
+          peserta.nip ? samarkanNip(peserta.nip) : '',
           peserta.instansi,
           kursus.judul,
           lulus.nilai,

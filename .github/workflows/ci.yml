@@ -84,6 +84,7 @@ jobs:
           npx wrangler d1 migrations apply sikop --local
           npx wrangler d1 execute sikop --local --file=../../build/seed.sql
           npx wrangler d1 execute sikop --local --file=test/fixtures/seed-lms-uji.sql
+          npx wrangler d1 execute sikop --local --file=test/fixtures/seed-lms-contoh.sql
       - name: Jalankan API dan situs
         run: |
           (cd apps/api && npx wrangler dev --local --port 8787 > ../../api.log 2>&1 &)

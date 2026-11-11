@@ -2,8 +2,10 @@ import {
   formatAngka,
   formatTanggal,
   JENIS_UJIAN,
+  LABEL_KATEGORI_PESERTA,
   LABEL_UJIAN,
   STATUS_PESERTA,
+  type KategoriPeserta,
 } from '@sikop/shared';
 import { get, kirim, qs } from '../lib/api.ts';
 import { h, isi } from '../lib/dom.ts';
@@ -585,9 +587,10 @@ export async function layarSoalEdit(k: Konteks): Promise<void> {
 interface Peserta {
   akun_id: string;
   nama: string;
-  nip: string;
+  kategori: KategoriPeserta;
+  nip: string | null;
   instansi: string;
-  jabatan: string;
+  jabatan: string | null;
   status: string;
   catatan: string | null;
   email: string;
@@ -636,7 +639,9 @@ export async function layarPeserta(k: Konteks): Promise<void> {
     } else if (
       !(await konfirmasi(
         `Verifikasi ${ps.nama}?`,
-        `Pastikan NIP ${ps.nip} dan instansi ${ps.instansi} sesuai data kepegawaian. Bila peserta sudah lulus ujian akhir, sertifikat langsung terbit.`,
+        ps.nip
+          ? `Pastikan NIP ${ps.nip} dan instansi ${ps.instansi} sesuai data kepegawaian. Bila peserta sudah lulus ujian akhir, sertifikat langsung terbit.`
+          : `Pastikan data peserta (${LABEL_KATEGORI_PESERTA[ps.kategori]}: ${ps.instansi}) sesuai. Bila peserta sudah lulus ujian akhir, sertifikat langsung terbit.`,
         'Verifikasi',
       ))
     )
@@ -673,8 +678,13 @@ export async function layarPeserta(k: Konteks): Promise<void> {
           isi: (x) =>
             h('span', null, h('strong', null, x.nama), h('br'), h('small', null, x.email)),
         },
-        { judul: 'NIP', isi: (x) => x.nip },
-        { judul: 'Instansi', isi: (x) => `${x.instansi}, ${x.jabatan}`, hp: true },
+        { judul: 'Kategori', isi: (x) => LABEL_KATEGORI_PESERTA[x.kategori] ?? x.kategori },
+        { judul: 'NIP', isi: (x) => x.nip ?? '–' },
+        {
+          judul: 'Asal',
+          isi: (x) => (x.jabatan ? `${x.instansi}, ${x.jabatan}` : x.instansi),
+          hp: true,
+        },
         {
           judul: 'Ujian akhir',
           isi: (x) => (x.nilai_akhir === null ? '–' : formatAngka(x.nilai_akhir, 0)),

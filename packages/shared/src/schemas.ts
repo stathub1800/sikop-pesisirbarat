@@ -3,6 +3,7 @@
  */
 import { z } from 'zod';
 import { isKodeKecamatan } from './kecamatan.ts';
+import { KATEGORI_PESERTA, LEVEL_KURSUS } from './lms.ts';
 import { validasiNip } from './nip.ts';
 
 const teksWajib = (min: number, max: number) => z.string().trim().min(min).max(max);
@@ -71,20 +72,73 @@ export const PermohonanUpdateSchema = z.object({
 
 /* ---------- Peserta LMS (perbaikan T07, S06) ---------- */
 
-export const ProfilPesertaSchema = z.object({
+const NipPesertaSchema = z
+  .string()
+  .trim()
+  .superRefine((v, ctx) => {
+    const r = validasiNip(v);
+    if (!r.valid) ctx.addIssue({ code: 'custom', message: r.pesan ?? 'NIP tidak valid' });
+  });
+const dasarPeserta = {
   nama: teksWajib(3, 120),
-  nip: z
-    .string()
-    .trim()
-    .superRefine((v, ctx) => {
-      const r = validasiNip(v);
-      if (!r.valid) ctx.addIssue({ code: 'custom', message: r.pesan ?? 'NIP tidak valid' });
-    }),
-  instansi: teksWajib(3, 160),
-  jabatan: teksWajib(2, 120),
   setuju_privasi: z.literal(true, { error: 'Persetujuan pemrosesan data pribadi wajib dicentang' }),
-});
+};
+
+/**
+ * Pendaftaran peserta bercabang menurut kategori (ADR-0007). Data minimum: NIP hanya diminta dari ASN.
+ * Permintaan lama tanpa `kategori` diperlakukan sebagai ASN agar klien lama tetap berfungsi.
+ */
+export const ProfilPesertaSchema = z.preprocess(
+  (v) =>
+    v &&
+    typeof v === 'object' &&
+    !Array.isArray(v) &&
+    (v as { kategori?: unknown }).kategori === undefined
+      ? { ...v, kategori: 'asn' }
+      : v,
+  z.discriminatedUnion('kategori', [
+    z.object({
+      kategori: z.literal('asn'),
+      ...dasarPeserta,
+      nip: NipPesertaSchema,
+      instansi: teksWajib(3, 160),
+      jabatan: teksWajib(2, 120),
+    }),
+    z.object({ kategori: z.literal('umum'), ...dasarPeserta, pekerjaan: teksWajib(3, 120) }),
+    z.object({ kategori: z.literal('pelajar'), ...dasarPeserta, sekolah: teksWajib(3, 160) }),
+    z.object({ kategori: z.literal('mitra'), ...dasarPeserta, kegiatan: teksWajib(3, 160) }),
+  ]),
+);
 export type ProfilPesertaInput = z.infer<typeof ProfilPesertaSchema>;
+
+/**
+ * Memetakan isian per kategori ke kolom tabel peserta. Kolom `instansi` menyimpan asal peserta
+ * (instansi, pekerjaan, sekolah/kampus, atau kegiatan BPS); `jabatan` dan `nip` hanya untuk ASN.
+ */
+export function kolomPeserta(p: ProfilPesertaInput): {
+  kategori: ProfilPesertaInput['kategori'];
+  nama: string;
+  nip: string | null;
+  instansi: string;
+  jabatan: string | null;
+} {
+  switch (p.kategori) {
+    case 'asn':
+      return {
+        kategori: 'asn',
+        nama: p.nama,
+        nip: p.nip.replace(/\s/g, ''),
+        instansi: p.instansi,
+        jabatan: p.jabatan,
+      };
+    case 'umum':
+      return { kategori: 'umum', nama: p.nama, nip: null, instansi: p.pekerjaan, jabatan: null };
+    case 'pelajar':
+      return { kategori: 'pelajar', nama: p.nama, nip: null, instansi: p.sekolah, jabatan: null };
+    case 'mitra':
+      return { kategori: 'mitra', nama: p.nama, nip: null, instansi: p.kegiatan, jabatan: null };
+  }
+}
 
 export const STATUS_PESERTA = ['menunggu', 'terverifikasi', 'ditolak', 'nonaktif'] as const;
 export const VerifikasiPesertaSchema = z.object({
@@ -299,6 +353,20 @@ export const KursusInputSchema = z.object({
   nilai_lulus_akhir: z.number().int().min(0).max(100),
   durasi_akhir_menit: z.number().int().min(5).max(240),
   jumlah_soal_akhir: z.number().int().min(5).max(200),
+  /** Metadata katalog (ADR-0007). Bila dihilangkan, nilai yang tersimpan tidak diubah. */
+  level: z.enum(LEVEL_KURSUS).optional(),
+  sasaran: z.array(z.enum(KATEGORI_PESERTA)).max(4).optional(),
+  hasil_belajar: z.array(teksWajib(3, 300)).max(12).optional(),
+  durasi_menit: z.number().int().min(0).max(100_000).optional(),
+  /** Hanya jalur gambar di situs sendiri: CSP img-src tidak mengizinkan domain luar. */
+  gambar_url: z
+    .string()
+    .trim()
+    .regex(
+      /^\/[A-Za-z0-9/_.-]{1,200}\.(svg|png|jpg|jpeg|webp)$/,
+      'Gunakan jalur gambar di situs ini, mis. /belajar/kursus.svg',
+    )
+    .optional(),
   is_published: z.boolean(),
   version: z.number().int().min(0),
 });

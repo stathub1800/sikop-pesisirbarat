@@ -25,7 +25,7 @@ Coursera), dapat dipakai empat kelompok peserta, dengan materi video YouTube, ba
 
 Pecah menjadi pull request kecil sesuai urutan berikut. Setiap butir = satu isu = satu PR.
 
-### 2.1 Skema dan API (wajib ADR-0007 "Struktur kursus bab dan pelajaran")
+### 2.1 Skema dan API (wajib ADR-0007 "Struktur kursus bab dan pelajaran") (SELESAI)
 
 - Migrasi baru `0003_lms_pelajaran.sql` (migrasi lama tidak diubah):
   - `kursus`: tambah `level` (`dasar`/`menengah`/`lanjut`), `sasaran_json` (daftar kategori peserta),
@@ -42,19 +42,19 @@ Pecah menjadi pull request kecil sesuai urutan berikut. Setiap butir = satu isu 
   `POST /lms/saya/progres/:pelajaran` (tandai selesai), `GET /lms/saya/kursus`.
 - Kunci jawaban latihan dan ujian tetap hanya di server (ADR-0004). Uji integrasi wajib membuktikannya.
 
-### 2.2 Katalog `/belajar/`
+### 2.2 Katalog `/belajar/` (SELESAI)
 
 - Kartu kursus: gambar, judul, level, durasi, jumlah pelajaran, sasaran peserta, label bersertifikat.
 - Saringan: sasaran peserta, level, tema; pencarian judul. Saringan tersimpan di URL.
 - Bagian "Lanjutkan belajar" untuk peserta yang sudah masuk.
 
-### 2.3 Halaman kursus `/belajar/#/kursus/:id`
+### 2.3 Halaman kursus `/belajar/#/kursus/:id` (SELESAI)
 
 - Pembuka: judul, ringkasan, level, durasi, sasaran, tombol "Mulai belajar" atau "Lanjutkan".
 - "Yang akan Anda pelajari" (hasil belajar), silabus bab dan pelajaran yang dapat dibuka-tutup dengan ikon
   jenis materi dan durasi, syarat kelulusan dan sertifikat.
 
-### 2.4 Pemutar materi `/belajar/#/belajar/:kursus/:pelajaran`
+### 2.4 Pemutar materi `/belajar/#/belajar/:kursus/:pelajaran` (SELESAI)
 
 - Sidebar kiri: daftar bab dan pelajaran dengan tanda selesai dan persentase progres; di ponsel menjadi laci.
 - Area materi sesuai jenis: video (YouTube `youtube-nocookie.com`, sudah diizinkan CSP `frame-src`),
@@ -63,13 +63,13 @@ Pecah menjadi pull request kecil sesuai urutan berikut. Setiap butir = satu isu 
 - Tombol "Tandai selesai", "Sebelumnya", "Berikutnya"; ujian akhir terbuka setelah semua pelajaran wajib
   selesai; sertifikat seperti alur yang sudah ada.
 
-### 2.5 Pendaftaran dan "Kursus saya"
+### 2.5 Pendaftaran dan "Kursus saya" (SELESAI)
 
 - Formulir pendaftaran bercabang menurut kategori: ASN (NIP 18 digit, instansi, jabatan), umum (pekerjaan),
   pelajar/mahasiswa (sekolah/kampus), mitra BPS (kegiatan). Data minimum, persetujuan privasi tetap.
 - Halaman "Kursus saya": kursus berjalan, selesai, dan sertifikat.
 
-### 2.6 Kursus contoh
+### 2.6 Kursus contoh (SELESAI)
 
 - Satu kursus contoh lengkap (mis. "Membaca Data BPS untuk Perencanaan Daerah") dengan 3 bab, semua jenis
   materi, dan bank soal **sintetis** untuk uji. Bank soal asli tetap di luar repositori.

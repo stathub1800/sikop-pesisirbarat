@@ -24,6 +24,10 @@ export default defineConfig({
             TEST_MIGRATIONS: await readD1Migrations(join(__dirname, 'migrations')),
             TEST_SEED: readFileSync(SEED, 'utf8'),
             TEST_SEED_LMS: readFileSync(join(__dirname, 'test/fixtures/seed-lms-uji.sql'), 'utf8'),
+            TEST_SEED_LMS_CONTOH: readFileSync(
+              join(__dirname, 'test/fixtures/seed-lms-contoh.sql'),
+              'utf8',
+            ),
           },
         },
       };
