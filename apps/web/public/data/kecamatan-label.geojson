@@ -1,0 +1,13 @@
+{"type":"FeatureCollection", "features": [
+{"type":"Feature","geometry":{"type":"Point","coordinates":[103.74827,-4.90267]},"properties":{"kode":"1813010","nama":"Lemong","urutan":1}},
+{"type":"Feature","geometry":{"type":"Point","coordinates":[103.82596,-5.02496]},"properties":{"kode":"1813020","nama":"Pesisir Utara","urutan":2}},
+{"type":"Feature","geometry":{"type":"Point","coordinates":[103.84619,-5.12087]},"properties":{"kode":"1813030","nama":"Pulau Pisang","urutan":3}},
+{"type":"Feature","geometry":{"type":"Point","coordinates":[103.93756,-5.0559]},"properties":{"kode":"1813040","nama":"Karya Penggawa","urutan":4}},
+{"type":"Feature","geometry":{"type":"Point","coordinates":[103.9802,-5.14016]},"properties":{"kode":"1813050","nama":"Way Krui","urutan":5}},
+{"type":"Feature","geometry":{"type":"Point","coordinates":[104.02782,-5.1624]},"properties":{"kode":"1813060","nama":"Pesisir Tengah","urutan":6}},
+{"type":"Feature","geometry":{"type":"Point","coordinates":[103.95392,-5.22679]},"properties":{"kode":"1813070","nama":"Krui Selatan","urutan":7}},
+{"type":"Feature","geometry":{"type":"Point","coordinates":[104.09137,-5.26616]},"properties":{"kode":"1813080","nama":"Pesisir Selatan","urutan":8}},
+{"type":"Feature","geometry":{"type":"Point","coordinates":[104.19674,-5.37175]},"properties":{"kode":"1813090","nama":"Ngambur","urutan":9}},
+{"type":"Feature","geometry":{"type":"Point","coordinates":[104.28698,-5.44329]},"properties":{"kode":"1813100","nama":"Ngaras","urutan":10}},
+{"type":"Feature","geometry":{"type":"Point","coordinates":[104.49607,-5.68799]},"properties":{"kode":"1813110","nama":"Bangkunat","urutan":11}}
+]}

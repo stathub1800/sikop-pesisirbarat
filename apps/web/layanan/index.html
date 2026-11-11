@@ -1,0 +1,146 @@
+<!doctype html>
+<html lang="id">
+  <head>
+    <!--sikop:head-->
+    <title>Layanan Data | SIKOP Pesisir Barat</title>
+    <meta
+      name="description"
+      content="Ajukan permintaan data atau konsultasi statistik ke Pelayanan Statistik Terpadu BPS Kabupaten Pesisir Barat, lalu pantau statusnya dengan nomor tiket."
+    />
+    <script type="module" src="/src/pages/layanan.ts"></script>
+  </head>
+  <body>
+    <!--sikop:header aktif="layanan"-->
+    <main id="isi" class="wadah halaman">
+      <div class="halaman__judul">
+        <h1>Layanan Data</h1>
+        <p>
+          Permohonan Anda diterima petugas Pelayanan Statistik Terpadu (PST) BPS Kabupaten Pesisir
+          Barat dan diberi nomor tiket untuk dipantau.
+        </p>
+      </div>
+      <div class="dua-kolom">
+        <section class="panel" aria-labelledby="j-form">
+          <h2 id="j-form">Ajukan permohonan</h2>
+          <div id="wadah-form">
+            <form id="form-permohonan" novalidate>
+              <div class="grid-isian">
+                <div class="isian">
+                  <label for="p-nama">Nama lengkap</label>
+                  <input
+                    id="p-nama"
+                    name="nama"
+                    type="text"
+                    autocomplete="name"
+                    required
+                    maxlength="120"
+                  />
+                </div>
+                <div class="isian">
+                  <label for="p-email">Email</label>
+                  <input
+                    id="p-email"
+                    name="email"
+                    type="email"
+                    autocomplete="email"
+                    required
+                    maxlength="120"
+                  />
+                  <span class="isian__bantu"
+                    >Dipakai untuk mengecek status dan menerima jawaban.</span
+                  >
+                </div>
+                <div class="isian">
+                  <label for="p-hp">Nomor HP (opsional)</label>
+                  <input
+                    id="p-hp"
+                    name="no_hp"
+                    type="tel"
+                    autocomplete="tel"
+                    inputmode="tel"
+                    maxlength="16"
+                  />
+                </div>
+                <div class="isian">
+                  <label for="p-instansi">Instansi atau kampus (opsional)</label>
+                  <input
+                    id="p-instansi"
+                    name="instansi"
+                    type="text"
+                    autocomplete="organization"
+                    maxlength="160"
+                  />
+                </div>
+              </div>
+              <div class="isian">
+                <label for="p-kategori">Jenis permohonan</label>
+                <select id="p-kategori" name="kategori" required></select>
+              </div>
+              <div class="isian">
+                <label for="p-pesan">Rincian permohonan</label>
+                <textarea
+                  id="p-pesan"
+                  name="pesan"
+                  required
+                  minlength="20"
+                  maxlength="3000"
+                  aria-describedby="p-pesan-bantu"
+                ></textarea>
+                <span class="isian__bantu" id="p-pesan-bantu"
+                  >Sebutkan data yang dibutuhkan, wilayah, tahun, dan keperluannya. Minimal 20
+                  karakter.</span
+                >
+              </div>
+              <div class="sr" aria-hidden="true">
+                <label for="p-situs">Jangan diisi</label>
+                <input id="p-situs" name="situs" type="text" tabindex="-1" autocomplete="off" />
+              </div>
+              <label class="centang">
+                <input type="checkbox" name="setuju_privasi" required />
+                <span
+                  >Saya menyetujui pemrosesan data pribadi di atas untuk menindaklanjuti permohonan
+                  ini sesuai <a href="/privasi/" target="_blank">kebijakan privasi</a> (UU Nomor 27
+                  Tahun 2022).</span
+                >
+              </label>
+              <div id="turnstile" class="turnstile"></div>
+              <div class="baris-tombol jarak-atas">
+                <button class="tombol tombol--primer" type="submit">Kirim permohonan</button>
+              </div>
+            </form>
+          </div>
+        </section>
+        <div>
+          <section class="panel" id="status" aria-labelledby="j-status">
+            <h2 id="j-status">Cek status permohonan</h2>
+            <form id="form-status" novalidate>
+              <div class="isian">
+                <label for="s-tiket">Nomor tiket</label>
+                <input
+                  id="s-tiket"
+                  name="tiket"
+                  type="text"
+                  placeholder="PST-20261109-ABCDE"
+                  required
+                  autocomplete="off"
+                />
+              </div>
+              <div class="isian">
+                <label for="s-email">Email yang dipakai saat mengajukan</label>
+                <input id="s-email" name="email" type="email" required autocomplete="email" />
+              </div>
+              <button class="tombol" type="submit">Cek status</button>
+            </form>
+            <div id="hasil-status" aria-live="polite"></div>
+          </section>
+          <section class="panel" id="kontak-langsung" hidden aria-labelledby="j-kontak">
+            <h2 id="j-kontak">Hubungi PST langsung</h2>
+            <ul class="kontak-pst"></ul>
+            <p class="isian__bantu" data-situs="jam_layanan"></p>
+          </section>
+        </div>
+      </div>
+    </main>
+    <!--sikop:footer-->
+  </body>
+</html>

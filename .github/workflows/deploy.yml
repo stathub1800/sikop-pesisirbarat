@@ -1,0 +1,55 @@
+# Deploy produksi: migrasi D1 → Worker API → situs Pages.
+# Lingkungan "produksi" di GitHub sebaiknya diatur "Required reviewers" agar setiap deploy disetujui
+# orang yang berbeda dari pembuat perubahan (pemisahan tugas, COBIT BAI06 / ISO 27001 A.8.32).
+name: Deploy
+
+on:
+  workflow_run:
+    workflows: [CI]
+    types: [completed]
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  deployments: write
+
+concurrency:
+  group: deploy-produksi
+  cancel-in-progress: false
+
+jobs:
+  deploy:
+    if: ${{ github.event_name == 'workflow_dispatch' || github.event.workflow_run.conclusion == 'success' }}
+    runs-on: ubuntu-latest
+    environment:
+      name: produksi
+      url: https://sikop-pesisirbarat.pages.dev
+    timeout-minutes: 15
+    env:
+      CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+      CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+      - run: npm ci
+      - run: node scripts/cek-konfigurasi.mjs --produksi
+      - name: Migrasi skema D1 (berversi, hanya maju)
+        working-directory: apps/api
+        run: npx wrangler d1 migrations apply sikop --remote
+      - name: Deploy Worker API
+        working-directory: apps/api
+        run: npx wrangler deploy
+      - name: Build dan deploy situs Pages
+        run: |
+          npm run data:build
+          npm run build
+          cd apps/web && npx wrangler pages deploy dist --project-name sikop-pesisirbarat --branch main
+      - name: Uji asap setelah deploy
+        run: |
+          sleep 10
+          curl -fsS https://sikop-pesisirbarat.pages.dev/api/v1/health | grep -q '"sehat"'
+          curl -fsS -o /dev/null https://sikop-pesisirbarat.pages.dev/

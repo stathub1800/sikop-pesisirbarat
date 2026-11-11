@@ -1,0 +1,39 @@
+# Worker API SIKOP. Dokumentasi: docs/runbook.md
+name = "sikop-api"
+main = "src/index.ts"
+compatibility_date = "2026-11-01"
+compatibility_flags = ["nodejs_compat"]
+workers_dev = false   # API hanya diakses lewat Pages (service binding), tidak dibuka di workers.dev
+
+[observability]
+enabled = true
+head_sampling_rate = 1
+
+# Bersihkan sesi kedaluwarsa dan percobaan ujian yang terbengkalai setiap hari 02.17 WIB.
+[triggers]
+crons = ["17 19 * * *"]
+
+[[d1_databases]]
+binding = "DB"
+database_name = "sikop"
+database_id = "7ecc686e-2763-4a8a-9a25-2725e56905fe"   # dari: npx wrangler d1 create sikop
+migrations_dir = "migrations"
+
+# Pembatas laju untuk endpoint tulis publik (permohonan, login, verifikasi).
+[[ratelimits]]
+name = "RL_TULIS"
+namespace_id = "1001"
+simple = { limit = 10, period = 60 }
+
+[vars]
+ENVIRONMENT = "production"
+# Origin situs Pages yang sah (dipisah koma). Dipakai untuk pemeriksaan CSRF.
+ALLOWED_ORIGINS = "https://sikop-pesisirbarat.pages.dev"
+# OAuth Client ID Google (Web). Bukan rahasia.
+GOOGLE_CLIENT_ID = "187138590236-jhe8sieiq5peq4l612t4hf071rrcja5o.apps.googleusercontent.com"
+# Site key Turnstile (bukan rahasia). Kosong berarti widget tidak ditampilkan.
+TURNSTILE_SITE_KEY = "0x4AAAAAAF8KizluTqaqwChJ"
+# Rahasia (atur dengan `wrangler secret put`):
+#   TURNSTILE_SECRET   kunci rahasia Turnstile
+#   IP_SALT            garam acak untuk hash alamat IP di audit log
+#   SUPERADMIN_EMAILS  email superadmin awal, dipisah koma

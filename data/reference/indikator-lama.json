@@ -1,0 +1,74 @@
+{
+  "catatan": "Angka dari situs SIKOP v1 (src/js/sample-data.js) tanpa sumber, tahun, dan cara hitung. Disimpan sebagai DRAF. Cocokkan dengan Kecamatan Dalam Angka / PODES, isi sumber, tahun, dan metode, baru tayangkan.",
+  "indikator": [
+    {
+      "id": "jumlah_penduduk",
+      "nama": "Jumlah Penduduk",
+      "satuan": "jiwa",
+      "kategori": "Kependudukan",
+      "desimal": 0,
+      "arah": "netral",
+      "agregasi": "jumlah",
+      "urutan": 10,
+      "nilai": {
+        "1813010": 13820,
+        "1813020": 8740,
+        "1813030": 1620,
+        "1813040": 16480,
+        "1813050": 9870,
+        "1813060": 21540,
+        "1813070": 11230,
+        "1813080": 27650,
+        "1813090": 22890,
+        "1813100": 10450,
+        "1813110": 31240
+      }
+    },
+    {
+      "id": "jumlah_pekon",
+      "nama": "Jumlah Pekon dan Kelurahan",
+      "satuan": "pekon/kelurahan",
+      "kategori": "Wilayah",
+      "desimal": 0,
+      "arah": "netral",
+      "agregasi": "jumlah",
+      "urutan": 11,
+      "nilai": {
+        "1813010": 13,
+        "1813020": 12,
+        "1813030": 6,
+        "1813040": 12,
+        "1813050": 10,
+        "1813060": 8,
+        "1813070": 10,
+        "1813080": 17,
+        "1813090": 9,
+        "1813100": 9,
+        "1813110": 15
+      }
+    },
+    {
+      "id": "jumlah_pustu_bidan",
+      "nama": "Jumlah Pustu dan Praktik Bidan",
+      "satuan": "unit",
+      "kategori": "Kesehatan",
+      "desimal": 0,
+      "arah": "netral",
+      "agregasi": "jumlah",
+      "urutan": 20,
+      "nilai": {
+        "1813010": 15,
+        "1813020": 12,
+        "1813030": 6,
+        "1813040": 16,
+        "1813050": 11,
+        "1813060": 24,
+        "1813070": 14,
+        "1813080": 22,
+        "1813090": 15,
+        "1813100": 10,
+        "1813110": 18
+      }
+    }
+  ]
+}

@@ -1,0 +1,10 @@
+# Salin menjadi .dev.vars untuk pengembangan lokal (berkas .dev.vars diabaikan git).
+ENVIRONMENT=development
+# Login pengembang tanpa Google. HANYA berlaku bila ENVIRONMENT=development.
+DEV_LOGIN=aktif
+ALLOWED_ORIGINS=http://localhost:5173,http://localhost:8788
+IP_SALT=ganti-dengan-string-acak-panjang
+SUPERADMIN_EMAILS=admin@contoh.go.id
+GOOGLE_CLIENT_ID=
+TURNSTILE_SITE_KEY=
+TURNSTILE_SECRET=

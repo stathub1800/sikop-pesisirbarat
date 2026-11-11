@@ -1,0 +1,206 @@
+<!doctype html>
+<html lang="id">
+  <head>
+    <!--sikop:head-->
+    <title>Peta Tematik | SIKOP Pesisir Barat</title>
+    <meta
+      name="description"
+      content="Satu peta untuk melihat Kabupaten Pesisir Barat secara menyeluruh: pendidikan, kesehatan, ekonomi, infrastruktur, kebencanaan, dan tata kelola di 11 kecamatan. Setiap angka disertai sumber dan cara hitung."
+    />
+    <script type="module" src="/src/pages/peta.ts"></script>
+  </head>
+  <body class="halaman-peta">
+    <!--sikop:header aktif="peta"-->
+    <main id="isi" class="peta-app">
+      <h1 class="sr">Peta Tematik Kabupaten Pesisir Barat</h1>
+
+      <!-- Area peta: semua kontrol melayang di atas peta -->
+      <section class="peta-kanvas" aria-label="Peta">
+        <div
+          id="peta"
+          role="region"
+          aria-label="Peta interaktif kecamatan. Daftar peringkat kecamatan tersedia sebagai alternatif tanpa peta."
+        ></div>
+
+        <div class="peta-atas">
+          <form id="cari-peta" class="cari-peta" role="search">
+            <label for="cari-peta-input" class="sr">Cari kecamatan, sekolah, atau indikator</label>
+            <svg class="cari-peta__ikon" viewBox="0 0 24 24" aria-hidden="true">
+              <circle cx="11" cy="11" r="7" fill="none" stroke="currentColor" stroke-width="2" />
+              <path
+                d="m20 20-3.5-3.5"
+                stroke="currentColor"
+                stroke-width="2"
+                stroke-linecap="round"
+              />
+            </svg>
+            <input
+              id="cari-peta-input"
+              type="search"
+              placeholder="Cari kecamatan, sekolah, atau indikator"
+              autocomplete="off"
+              role="combobox"
+              aria-controls="hasil-cari"
+              aria-expanded="false"
+              aria-autocomplete="list"
+            />
+            <kbd aria-hidden="true">Ctrl K</kbd>
+            <ul id="hasil-cari" class="hasil-cari" role="listbox" hidden></ul>
+          </form>
+          <div id="chip-pilihan" class="chip-pilihan" hidden></div>
+        </div>
+
+        <p id="catatan-peta-dasar" class="catatan-peta-dasar" hidden>
+          Peta dasar tidak dapat dimuat. Batas kecamatan dan data tetap ditampilkan.
+        </p>
+
+        <div class="peta-bawah">
+          <section
+            class="lapis-kartu peringkat"
+            id="panel-peringkat"
+            aria-labelledby="judul-peringkat"
+          >
+            <h2 id="judul-peringkat" class="lapis-kartu__judul">
+              <svg viewBox="0 0 24 24" aria-hidden="true">
+                <path
+                  d="M8 21h8M12 17v4M7 4h10v4a5 5 0 0 1-10 0V4ZM7 6H4a3 3 0 0 0 3 4M17 6h3a3 3 0 0 1-3 4"
+                  fill="none"
+                  stroke="currentColor"
+                  stroke-width="1.8"
+                  stroke-linejoin="round"
+                />
+              </svg>
+              <span id="teks-judul-peringkat">Peringkat kecamatan</span>
+            </h2>
+            <ol id="daftar-peringkat" class="peringkat__daftar"></ol>
+            <button type="button" class="peringkat__semua" id="tombol-semua" aria-expanded="false">
+              Lihat semua (11)
+            </button>
+          </section>
+          <section class="lapis-kartu legenda-kartu" aria-labelledby="judul-legenda">
+            <h2 id="judul-legenda" class="lapis-kartu__judul">Legenda</h2>
+            <div id="legenda"></div>
+          </section>
+          <div class="kontrol-peta" role="toolbar" aria-label="Kontrol peta">
+            <button
+              type="button"
+              id="k-lapisan"
+              aria-expanded="false"
+              aria-controls="popover-lapisan"
+              title="Lapisan peta"
+            >
+              <svg viewBox="0 0 24 24" aria-hidden="true">
+                <path
+                  d="m12 3 9 5-9 5-9-5 9-5Zm-9 9 9 5 9-5M3 16l9 5 9-5"
+                  fill="none"
+                  stroke="currentColor"
+                  stroke-width="1.8"
+                  stroke-linejoin="round"
+                />
+              </svg>
+              <span class="sr">Lapisan peta</span>
+            </button>
+            <button type="button" id="k-penuh" title="Layar penuh">
+              <svg viewBox="0 0 24 24" aria-hidden="true">
+                <path
+                  d="M4 9V4h5M20 9V4h-5M4 15v5h5M20 15v5h-5"
+                  fill="none"
+                  stroke="currentColor"
+                  stroke-width="1.8"
+                  stroke-linecap="round"
+                />
+              </svg>
+              <span class="sr">Layar penuh</span>
+            </button>
+            <button type="button" id="k-awal" title="Kembali ke tampilan kabupaten">
+              <svg viewBox="0 0 24 24" aria-hidden="true">
+                <path
+                  d="M4 11 12 4l8 7v9h-5v-6H9v6H4v-9Z"
+                  fill="none"
+                  stroke="currentColor"
+                  stroke-width="1.8"
+                  stroke-linejoin="round"
+                />
+              </svg>
+              <span class="sr">Kembali ke tampilan kabupaten</span>
+            </button>
+            <button type="button" id="k-besar" title="Perbesar">
+              <svg viewBox="0 0 24 24" aria-hidden="true">
+                <path
+                  d="M12 5v14M5 12h14"
+                  stroke="currentColor"
+                  stroke-width="2"
+                  stroke-linecap="round"
+                />
+              </svg>
+              <span class="sr">Perbesar peta</span>
+            </button>
+            <button type="button" id="k-kecil" title="Perkecil">
+              <svg viewBox="0 0 24 24" aria-hidden="true">
+                <path d="M5 12h14" stroke="currentColor" stroke-width="2" stroke-linecap="round" />
+              </svg>
+              <span class="sr">Perkecil peta</span>
+            </button>
+            <button
+              type="button"
+              id="k-bersih"
+              aria-pressed="false"
+              title="Mode presentasi: sembunyikan panel"
+            >
+              <svg viewBox="0 0 24 24" aria-hidden="true">
+                <path
+                  d="M3 12s3.5-6 9-6 9 6 9 6-3.5 6-9 6-9-6-9-6Z"
+                  fill="none"
+                  stroke="currentColor"
+                  stroke-width="1.8"
+                />
+                <circle
+                  cx="12"
+                  cy="12"
+                  r="2.5"
+                  fill="none"
+                  stroke="currentColor"
+                  stroke-width="1.8"
+                />
+              </svg>
+              <span class="sr">Mode presentasi</span>
+            </button>
+            <div class="popover-lapisan" id="popover-lapisan" hidden>
+              <p class="label-kecil">Lapisan titik</p>
+              <label class="centang"
+                ><input type="checkbox" id="tampil-sekolah" /> Lokasi sekolah</label
+              >
+              <div class="isian">
+                <label for="filter-jenjang">Jenjang</label>
+                <select id="filter-jenjang">
+                  <option value="">Semua jenjang</option>
+                </select>
+              </div>
+              <ul id="legenda-sekolah" class="legenda-titik" hidden></ul>
+              <p class="sumber" id="catatan-titik"></p>
+            </div>
+          </div>
+        </div>
+        <div class="tip-peta" id="tip-peta" role="status" hidden></div>
+      </section>
+
+      <!-- Panel kanan: profil wilayah -> tema -> indikator -->
+      <aside class="panel-profil" aria-label="Profil wilayah dan indikator">
+        <p class="label-bagian">Profil wilayah</p>
+        <section class="kartu-info" id="kartu-info" aria-live="polite"></section>
+        <div class="tab-tema" id="tab-tema" role="group" aria-label="Pilih tema"></div>
+        <div class="gulir-indikator" tabindex="-1">
+          <div class="daftar-indikator" id="daftar-indikator" aria-live="polite"></div>
+          <footer class="panel-kaki">
+            <a href="/api/v1/indikator/ekspor.csv" download>Unduh semua indikator (CSV)</a>
+            <a href="/sekolah/">Daftar sekolah</a>
+            <p class="sumber">
+              Data Podes disajikan sebagai agregat kecamatan; angka per desa tidak ditayangkan.
+              <span id="sumber-batas"></span>
+            </p>
+          </footer>
+        </div>
+      </aside>
+    </main>
+  </body>
+</html>

@@ -1,0 +1,33 @@
+<!doctype html>
+<html lang="id">
+  <head>
+    <!--sikop:head-->
+    <title>Panel Admin | SIKOP</title>
+    <meta name="robots" content="noindex, nofollow" />
+    <script type="module" src="/src/admin/main.ts"></script>
+  </head>
+  <body class="admin">
+    <a class="lompat" href="#isi">Lewati ke isi utama</a>
+    <header class="admin__kepala">
+      <a class="merek" href="/" aria-label="Ke situs publik">
+        <svg class="merek__tanda" viewBox="0 0 64 64" aria-hidden="true">
+          <rect width="64" height="64" rx="14" fill="currentColor" />
+          <path
+            d="M14 10c10 6 6 14 14 20s4 14 12 18 8 6 10 6"
+            fill="none"
+            stroke="#fff"
+            stroke-width="5"
+            stroke-linecap="round"
+          />
+          <circle cx="31" cy="31" r="5" fill="#FEBD26" />
+        </svg>
+        <span class="merek__teks"><strong>SIKOP</strong><span>Panel admin</span></span>
+      </a>
+      <div id="admin-akun" class="admin__akun"></div>
+    </header>
+    <div class="admin__tubuh">
+      <nav id="admin-nav" class="admin__nav" aria-label="Menu admin"></nav>
+      <main id="isi" class="admin__isi" tabindex="-1"></main>
+    </div>
+  </body>
+</html>

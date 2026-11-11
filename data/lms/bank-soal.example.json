@@ -1,0 +1,73 @@
+{
+  "_catatan": "Contoh format. Salin menjadi bank-soal.json (diabaikan git), isi, lalu jalankan: npm run data:lms",
+  "kursus": [
+    {
+      "id": "pss-2026",
+      "kode": "PSS-2026",
+      "judul": "Pembinaan Statistik Sektoral 2026",
+      "subjudul": "Standar Penyelenggaraan Statistik Sektoral",
+      "deskripsi": "Program pembinaan statistik sektoral bagi walidata dan produsen data.",
+      "kategori": "Tata Kelola SDI",
+      "estimasi": "4 jam pelajaran",
+      "nilai_lulus_akhir": 80,
+      "durasi_akhir_menit": 45,
+      "jumlah_soal_akhir": 30,
+      "is_published": true,
+      "urutan": 1
+    }
+  ],
+  "modul": [
+    {
+      "id": 1,
+      "kursus_id": "pss-2026",
+      "nomor": 1,
+      "kode": "PSS-MOD-01",
+      "judul": "Prinsip Satu Data Indonesia",
+      "subjudul": "",
+      "deskripsi": "Kerangka regulasi Perpres 39/2019 dan peran pembina data.",
+      "kategori": "Tata Kelola & Regulasi",
+      "estimasi": "45 menit",
+      "nilai_lulus": 75,
+      "ringkasan": "",
+      "video": [
+        {
+          "judul": "Bagian 1",
+          "url": "https://www.youtube-nocookie.com/embed/ID_VIDEO",
+          "durasi": "14:20"
+        }
+      ],
+      "kompetensi": [
+        {
+          "judul": "4 Prinsip SDI",
+          "uraian": "Standar data, metadata, interoperabilitas, kode referensi."
+        }
+      ],
+      "sumber": [
+        {
+          "judul": "Perpres 39/2019",
+          "format": "PDF",
+          "url": "https://peraturan.bpk.go.id/",
+          "penerbit": "JDIH BPK"
+        }
+      ],
+      "is_published": true
+    }
+  ],
+  "soal": [
+    {
+      "id": 101,
+      "kursus_id": "pss-2026",
+      "modul_id": 1,
+      "jenis": "pre",
+      "urutan": 1,
+      "pertanyaan": "Contoh pertanyaan?",
+      "opsi": [
+        { "id": "A", "text": "Opsi A" },
+        { "id": "B", "text": "Opsi B" }
+      ],
+      "kunci": "A",
+      "pembahasan": "Penjelasan jawaban.",
+      "is_active": true
+    }
+  ]
+}

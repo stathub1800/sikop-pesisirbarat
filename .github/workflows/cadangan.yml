@@ -1,0 +1,40 @@
+# Cadangan harian D1 (RPO 24 jam). Arsip disimpan sebagai artefak privat 35 hari.
+# Uji pemulihan dilakukan triwulanan sesuai docs/runbook.md.
+name: Cadangan
+
+on:
+  schedule:
+    - cron: '7 18 * * *' # 01.07 WIB
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  ekspor:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    env:
+      CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+      CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+      - run: npm ci
+      - name: Ekspor D1
+        working-directory: apps/api
+        run: |
+          TANGGAL=$(TZ=Asia/Jakarta date +%Y%m%d)
+          npx wrangler d1 export sikop --remote --output="../../sikop-d1-$TANGGAL.sql"
+          gzip -9 "../../sikop-d1-$TANGGAL.sql"
+          sha256sum "../../sikop-d1-$TANGGAL.sql.gz" > "../../sikop-d1-$TANGGAL.sha256"
+      - uses: actions/upload-artifact@v4
+        with:
+          name: cadangan-d1-${{ github.run_id }}
+          path: |
+            sikop-d1-*.sql.gz
+            sikop-d1-*.sha256
+          retention-days: 35

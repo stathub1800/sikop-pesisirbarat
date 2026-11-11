@@ -1,0 +1,46 @@
+{
+  "name": "sikop",
+  "version": "2.1.0",
+  "private": true,
+  "description": "SIKOP BPS Kabupaten Pesisir Barat: portal data kewilayahan, data sekolah, dan ruang belajar pembinaan statistik sektoral.",
+  "type": "module",
+  "workspaces": [
+    "packages/*",
+    "apps/*"
+  ],
+  "engines": {
+    "node": ">=22.18"
+  },
+  "scripts": {
+    "pasang": "node scripts/pasang.mjs",
+    "data:build": "node scripts/build-data.mjs",
+    "data:lms": "node scripts/build-lms-seed.mjs",
+    "data:podes": "node scripts/build-podes.mjs",
+    "db:migrate:local": "npm run db:migrate:local -w apps/api",
+    "db:seed:local": "npm run db:seed:local -w apps/api",
+    "dev:api": "npm run dev -w apps/api",
+    "dev:web": "npm run dev -w apps/web",
+    "build": "npm run build -w apps/web",
+    "typecheck": "npm run typecheck --workspaces --if-present",
+    "pagar": "node scripts/cek-pagar.mjs",
+    "lint": "eslint . && prettier --check .",
+    "format": "prettier --write .",
+    "test": "npm run test --workspaces --if-present",
+    "test:e2e": "npm run test:e2e -w apps/web",
+    "check": "npm run pagar && npm run lint && npm run typecheck && npm run test && npm run build"
+  },
+  "devDependencies": {
+    "@eslint/js": "^10.0.1",
+    "eslint": "^10.14.0",
+    "globals": "^17.14.0",
+    "mapshaper": "^0.7.101",
+    "prettier": "^3.6.2",
+    "typescript": "5.9.3",
+    "typescript-eslint": "^8.72.1"
+  },
+  "overrides": {
+    "vitest": "4.1.12",
+    "@vitest/runner": "4.1.12",
+    "@vitest/snapshot": "4.1.12"
+  }
+}

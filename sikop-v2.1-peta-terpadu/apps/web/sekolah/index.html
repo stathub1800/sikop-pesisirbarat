@@ -1,0 +1,72 @@
+<!doctype html>
+<html lang="id">
+  <head>
+    <!--sikop:head-->
+    <title>Data Sekolah | SIKOP Pesisir Barat</title>
+    <meta
+      name="description"
+      content="Cari dan unduh data satuan pendidikan di Kabupaten Pesisir Barat: peserta didik, guru, rombongan belajar, dan akreditasi per kecamatan."
+    />
+    <script type="module" src="/src/pages/sekolah.ts"></script>
+  </head>
+  <body>
+    <!--sikop:header aktif="peta"-->
+    <main id="isi" class="wadah halaman">
+      <div class="halaman__judul">
+        <h1>Data Sekolah</h1>
+        <p>Satuan pendidikan formal dan nonformal di 11 kecamatan Kabupaten Pesisir Barat.</p>
+      </div>
+      <form id="filter" class="filter" role="search" aria-label="Saring data sekolah">
+        <div class="isian filter__cari">
+          <label for="f-q">Nama sekolah atau NPSN</label>
+          <input id="f-q" name="q" type="search" autocomplete="off" />
+        </div>
+        <div class="isian">
+          <label for="f-kec">Kecamatan</label>
+          <select id="f-kec" name="kec">
+            <option value="">Semua kecamatan</option>
+          </select>
+        </div>
+        <div class="isian">
+          <label for="f-jenjang">Jenjang</label>
+          <select id="f-jenjang" name="jenjang">
+            <option value="">Semua jenjang</option>
+          </select>
+        </div>
+        <div class="isian">
+          <label for="f-status">Status</label>
+          <select id="f-status" name="status">
+            <option value="">Semua status</option>
+            <option>Negeri</option>
+            <option>Swasta</option>
+          </select>
+        </div>
+        <div class="isian">
+          <label for="f-akr">Akreditasi</label>
+          <select id="f-akr" name="akreditasi">
+            <option value="">Semua</option>
+            <option>A</option>
+            <option>B</option>
+            <option>C</option>
+            <option value="Belum">Belum terakreditasi</option>
+          </select>
+        </div>
+      </form>
+      <div class="hasil-kepala">
+        <p id="ringkas-hasil" aria-live="polite"></p>
+        <div class="baris-tombol">
+          <button type="button" class="tombol tombol--polos tombol--kecil" id="atur-ulang">
+            Hapus saringan
+          </button>
+          <a class="tombol tombol--kecil" id="unduh-csv" href="/api/v1/sekolah/ekspor.csv" download
+            >Unduh CSV</a
+          >
+        </div>
+      </div>
+      <div id="tabel-sekolah"></div>
+      <nav class="paginasi" id="paginasi" aria-label="Halaman hasil"></nav>
+      <p class="sumber" id="sumber-sekolah"></p>
+    </main>
+    <!--sikop:footer-->
+  </body>
+</html>

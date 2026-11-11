@@ -1,0 +1,16 @@
+# Pemilik modul. Ganti dengan akun GitHub tim pengelola.
+*                         @pengelola-sikop
+/apps/api/                @pengelola-sikop
+/apps/api/migrations/     @pengelola-sikop
+/packages/shared/         @pengelola-sikop
+/data/                    @pengelola-sikop
+/.github/workflows/       @pengelola-sikop
+
+# Aturan proyek: perubahan wajib disetujui pemilik proyek.
+/AGENTS.md                @pengelola-sikop
+/CLAUDE.md                @pengelola-sikop
+/GEMINI.md                @pengelola-sikop
+/docs/adr/                @pengelola-sikop
+/scripts/cek-pagar.mjs    @pengelola-sikop
+/scripts/cek-konfigurasi.mjs @pengelola-sikop
+/apps/web/src/styles/tokens.css @pengelola-sikop

@@ -1,0 +1,10 @@
+node_modules
+dist
+.wrangler
+coverage
+build
+package-lock.json
+data/raw
+apps/web/public/data
+playwright-report
+test-results

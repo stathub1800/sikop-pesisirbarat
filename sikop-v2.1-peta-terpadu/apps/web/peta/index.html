@@ -1,0 +1,134 @@
+<!doctype html>
+<html lang="id">
+  <head>
+    <!--sikop:head-->
+    <title>Peta Tematik | SIKOP Pesisir Barat</title>
+    <meta
+      name="description"
+      content="Satu peta untuk melihat Kabupaten Pesisir Barat secara menyeluruh: pendidikan, kesehatan, ekonomi, konektivitas, mitigasi bencana, dan tata kelola desa di 11 kecamatan. Setiap angka disertai sumber dan cara hitung."
+    />
+    <script type="module" src="/src/pages/peta.ts"></script>
+  </head>
+  <body class="halaman-peta">
+    <!--sikop:header aktif="peta"-->
+    <main id="isi" class="peta-app">
+      <aside class="peta-panel" id="panel-lapisan" aria-label="Lapisan data">
+        <div class="peta-panel__kepala">
+          <div>
+            <h1>Peta Tematik</h1>
+            <p class="peta-panel__sub" id="sub-sumber">Semua data dalam satu peta</p>
+          </div>
+          <button
+            class="tombol tombol--kecil tombol--polos"
+            type="button"
+            id="tombol-ciut"
+            aria-expanded="true"
+            aria-controls="isi-panel"
+          >
+            Ciutkan
+          </button>
+        </div>
+        <div id="isi-panel" class="peta-panel__isi">
+          <div class="cari-indikator">
+            <label for="cari-indikator" class="sr">Cari indikator</label>
+            <input
+              id="cari-indikator"
+              type="search"
+              placeholder="Cari indikator, mis. internet, SMA, bank"
+              autocomplete="off"
+            />
+            <kbd aria-hidden="true">Ctrl K</kbd>
+          </div>
+          <div
+            class="chip-tema"
+            id="pilih-tema"
+            role="group"
+            aria-label="Saring menurut tema"
+          ></div>
+          <div
+            id="daftar-kartu"
+            class="kartu-daftar"
+            role="group"
+            aria-label="Indikator. Pilih satu untuk mewarnai peta."
+          ></div>
+
+          <section class="lapisan" aria-labelledby="judul-lapisan">
+            <h2 id="judul-lapisan">Lapisan titik</h2>
+            <label class="centang"
+              ><input type="checkbox" id="tampil-sekolah" /> Lokasi sekolah</label
+            >
+            <div class="isian">
+              <label for="filter-jenjang">Jenjang</label>
+              <select id="filter-jenjang">
+                <option value="">Semua jenjang</option>
+              </select>
+            </div>
+            <ul id="legenda-sekolah" class="legenda legenda--titik" hidden></ul>
+            <p class="sumber" id="catatan-titik"></p>
+            <p class="sumber"><a href="/sekolah/">Buka daftar lengkap sekolah</a></p>
+          </section>
+        </div>
+      </aside>
+
+      <div class="peta-kanvas">
+        <p id="catatan-peta-dasar" class="catatan-peta-dasar" hidden>
+          Peta dasar tidak dapat dimuat. Batas kecamatan dan data tetap ditampilkan.
+        </p>
+        <div
+          id="peta"
+          role="region"
+          aria-label="Peta interaktif kecamatan. Gunakan urutan kecamatan di panel profil untuk akses tanpa peta."
+        ></div>
+        <form id="cari-peta" class="cari-peta" role="search">
+          <label for="cari-peta-input" class="sr">Cari kecamatan atau sekolah</label>
+          <input
+            id="cari-peta-input"
+            type="search"
+            placeholder="Cari kecamatan atau sekolah"
+            autocomplete="off"
+            aria-controls="hasil-cari"
+            aria-expanded="false"
+          />
+          <ul id="hasil-cari" class="hasil-cari" role="listbox" hidden></ul>
+        </form>
+        <section
+          class="kartu-aktif"
+          id="info-indikator"
+          aria-live="polite"
+          aria-label="Indikator aktif"
+        >
+          <p class="label-kecil" id="tema-aktif">Memuat indikator</p>
+        </section>
+      </div>
+
+      <aside class="profil-panel" aria-label="Profil wilayah">
+        <section id="detail-kecamatan" class="profil-wilayah" aria-live="polite"></section>
+        <section aria-labelledby="judul-urut">
+          <h2 id="judul-urut">Urutan kecamatan</h2>
+          <p class="sumber" id="ket-urut"></p>
+          <ol class="urut" id="tabel-peringkat"></ol>
+        </section>
+        <section aria-labelledby="judul-unduh">
+          <h2 id="judul-unduh">Unduh data terbuka</h2>
+          <ul class="unduhan">
+            <li>
+              <a href="/api/v1/indikator/ekspor.csv" download
+                >Semua indikator per kecamatan (CSV)</a
+              >
+            </li>
+            <li><a href="/api/v1/sekolah/ekspor.csv" download>Data sekolah (CSV)</a></li>
+            <li>
+              <a href="/data/kecamatan.geojson" download="batas-kecamatan-pesisir-barat.geojson"
+                >Batas kecamatan (GeoJSON)</a
+              >
+            </li>
+          </ul>
+          <p class="sumber">
+            Data Podes disajikan sebagai agregat kecamatan; angka per desa tidak ditayangkan.
+          </p>
+          <p class="sumber" id="sumber-batas"></p>
+        </section>
+      </aside>
+    </main>
+  </body>
+</html>

@@ -1,0 +1,57 @@
+/* Peta pesisir SVG (lib/peta-pesisir.ts). */
+.peta-pesisir {
+  width: 100%;
+  height: auto;
+  display: block;
+  filter: drop-shadow(0 6px 14px rgb(11 58 87 / 0.18));
+}
+.peta-pesisir__wil {
+  stroke: var(--permukaan);
+  stroke-width: 2.5;
+  stroke-linejoin: round;
+  transition: fill var(--durasi) var(--lentur);
+  cursor: pointer;
+}
+.peta-pesisir__wil.k0 {
+  fill: var(--peta-kosong);
+}
+.peta-pesisir__wil.k1 {
+  fill: var(--peta-1);
+}
+.peta-pesisir__wil.k2 {
+  fill: var(--peta-2);
+}
+.peta-pesisir__wil.k3 {
+  fill: var(--peta-3);
+}
+.peta-pesisir__wil.k4 {
+  fill: var(--peta-4);
+}
+.peta-pesisir__wil.k5 {
+  fill: var(--peta-5);
+}
+.peta-pesisir__wil.aktif,
+.peta-pesisir a:focus .peta-pesisir__wil,
+.peta-pesisir__wil.disorot {
+  fill: var(--sorot);
+}
+.peta-pesisir a:focus,
+.peta-pesisir__wil[role='button']:focus {
+  outline: none;
+}
+.peta-pesisir__wil[role='button']:focus-visible,
+.peta-pesisir__wil.terpilih {
+  stroke: var(--teks);
+  stroke-width: 4;
+}
+.peta-pesisir a:focus .peta-pesisir__wil {
+  stroke: var(--teks);
+  stroke-width: 4;
+}
+
+.peta-pesisir__laut {
+  fill: var(--teks-2);
+  font-style: italic;
+  font-size: 30px;
+  letter-spacing: 0.04em;
+}

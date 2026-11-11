@@ -1,0 +1,131 @@
+/*
+ * Design tokens SIKOP. Satu-satunya tempat nilai warna, ukuran, dan durasi ditulis.
+ * Palet turunan identitas BPS/SE2026: biru laut untuk data dan interaksi, merah marun hanya
+ * sebagai garis identitas, kuning untuk sorotan peta. Kontras teks memenuhi WCAG 2.2 AA.
+ */
+@import '@fontsource-variable/plus-jakarta-sans/index.css';
+
+:root {
+  color-scheme: light;
+
+  /* Warna dasar */
+  --laut-900: #0b3a57;
+  --laut-700: #145c87; /* primer, teks/tautan: 7,0:1 terhadap putih */
+  --laut-500: #2892c6; /* data */
+  --laut-300: #8cc3e0;
+  --laut-100: #e3f1f8;
+  --marun: #9a0501;
+  --kuning: #febd26;
+  --kuning-lembut: #fff4d6;
+  --hijau: #3f7d1f; /* 5,2:1 */
+  --hijau-lembut: #e9f4e1;
+  --oranye: #a8461c; /* 5,6:1 */
+  --oranye-lembut: #fbebe2;
+  --merah: #c0161d; /* 5,9:1 */
+  --merah-lembut: #fde7e7;
+
+  /* Skala netral 9 tingkat (sedikit kebiruan, selaras laut) */
+  --n-0: #ffffff;
+  --n-50: #f6f9fb;
+  --n-100: #edf2f6;
+  --n-200: #dbe3ea;
+  --n-300: #c2cdd7;
+  --n-400: #8e9cab;
+  --n-500: #66778a; /* teks sekunder: 4,6:1 */
+  --n-700: #3b4856;
+  --n-900: #231f20;
+
+  /* Peran */
+  --latar: var(--n-50);
+  --permukaan: var(--n-0);
+  --permukaan-2: var(--n-100);
+  --garis: var(--n-200);
+  --garis-kuat: var(--n-300);
+  --teks: var(--n-900);
+  --teks-2: var(--n-500);
+  --primer: var(--laut-700);
+  --primer-teks: #ffffff;
+  --primer-lembut: var(--laut-100);
+  --fokus: #1a73b0;
+  --sorot: var(--kuning);
+
+  /* Skala warna peta (sekuensial, 5 kelas) */
+  --peta-1: #e3f1f8;
+  --peta-2: #a9d3ea;
+  --peta-3: #5eaed8;
+  --peta-4: #2892c6;
+  --peta-5: #145c87;
+  --peta-kosong: #e8ecef;
+  --peta-latar: #e7eff4;
+
+  /* Tipografi: skala modular 12/14/16/20/24/32/40/56 */
+  --huruf: 'Plus Jakarta Sans Variable', 'Plus Jakarta Sans', system-ui, sans-serif;
+  --t-xs: 0.75rem;
+  --t-sm: 0.875rem;
+  --t-md: 1rem;
+  --t-lg: 1.25rem;
+  --t-xl: 1.5rem;
+  --t-2xl: 2rem;
+  --t-3xl: 2.5rem;
+  --t-4xl: clamp(2.25rem, 1.4rem + 3.2vw, 3.5rem);
+
+  /* Spasi kelipatan 4 */
+  --s-1: 4px;
+  --s-2: 8px;
+  --s-3: 12px;
+  --s-4: 16px;
+  --s-5: 24px;
+  --s-6: 32px;
+  --s-7: 48px;
+  --s-8: 64px;
+  --s-9: 96px;
+
+  --r-sm: 6px;
+  --r-md: 10px;
+  --r-lg: 16px;
+  --bayang-1: 0 1px 2px rgb(11 58 87 / 0.06), 0 1px 1px rgb(11 58 87 / 0.04);
+  --bayang-2: 0 8px 24px rgb(11 58 87 / 0.1), 0 2px 6px rgb(11 58 87 / 0.06);
+  --durasi: 180ms;
+  --lentur: cubic-bezier(0.2, 0.7, 0.2, 1);
+  --lebar: 1200px;
+  --tinggi-kepala: 64px;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root:not([data-tema='terang']) {
+    color-scheme: dark;
+    --latar: #0e1820;
+    --permukaan: #142230;
+    --permukaan-2: #1b2c3b;
+    --garis: #263b4d;
+    --garis-kuat: #36516a;
+    --teks: #e8eef3;
+    --teks-2: #a3b3c2;
+    --primer: #7cc0e6;
+    --primer-teks: #0b1d29;
+    --primer-lembut: #17354b;
+    --fokus: #9fd3f2;
+    --hijau: #8fcf6a;
+    --hijau-lembut: #1d3318;
+    --oranye: #f1a17b;
+    --oranye-lembut: #3a2418;
+    --merah: #ff8c8c;
+    --merah-lembut: #3d1a1c;
+    --kuning-lembut: #3a3013;
+    --peta-1: #1d3a4f;
+    --peta-2: #255a7a;
+    --peta-3: #2f7fac;
+    --peta-4: #58aedb;
+    --peta-5: #a4d6f2;
+    --peta-kosong: #22313d;
+    --peta-latar: #0f1b24;
+    --bayang-1: 0 1px 2px rgb(0 0 0 / 0.4);
+    --bayang-2: 0 8px 24px rgb(0 0 0 / 0.5);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  :root {
+    --durasi: 0ms;
+  }
+}

@@ -1,0 +1,16 @@
+# Pemilik modul. Ganti dengan akun GitHub tim pengelola.
+*                         @supoyomuhammad
+/apps/api/                @supoyomuhammad
+/apps/api/migrations/     @supoyomuhammad
+/packages/shared/         @supoyomuhammad
+/data/                    @supoyomuhammad
+/.github/workflows/       @supoyomuhammad
+
+# Aturan proyek: perubahan wajib disetujui pemilik proyek.
+/AGENTS.md                @supoyomuhammad
+/CLAUDE.md                @supoyomuhammad
+/GEMINI.md                @supoyomuhammad
+/docs/adr/                @supoyomuhammad
+/scripts/cek-pagar.mjs    @supoyomuhammad
+/scripts/cek-konfigurasi.mjs @supoyomuhammad
+/apps/web/src/styles/tokens.css @supoyomuhammad

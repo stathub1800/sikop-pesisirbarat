@@ -1,0 +1,45 @@
+<!doctype html>
+<html lang="id">
+  <head>
+    <!--sikop:head-->
+    <title>Cek Keaslian Sertifikat | SIKOP Pesisir Barat</title>
+    <meta
+      name="description"
+      content="Periksa keaslian sertifikat Ruang Belajar SIKOP BPS Kabupaten Pesisir Barat dengan kode verifikasi atau kode QR."
+    />
+    <script type="module" src="/src/pages/sertifikat.ts"></script>
+  </head>
+  <body>
+    <!--sikop:header aktif=""-->
+    <main id="isi" class="wadah halaman">
+      <div class="halaman__judul">
+        <h1>Cek keaslian sertifikat</h1>
+        <p>
+          Masukkan kode verifikasi 10 karakter yang tercetak di sertifikat, atau pindai kode QR-nya.
+        </p>
+      </div>
+      <div class="dua-kolom">
+        <section class="panel">
+          <form id="form-verifikasi" novalidate>
+            <div class="isian">
+              <label for="v-kode">Kode verifikasi</label>
+              <input
+                id="v-kode"
+                name="kode"
+                type="text"
+                required
+                maxlength="10"
+                autocomplete="off"
+                autocapitalize="characters"
+                spellcheck="false"
+              />
+            </div>
+            <button class="tombol tombol--primer" type="submit">Periksa</button>
+          </form>
+          <div id="hasil-verifikasi" aria-live="polite"></div>
+        </section>
+      </div>
+    </main>
+    <!--sikop:footer-->
+  </body>
+</html>

@@ -1,0 +1,76 @@
+# Pipeline data (komputasi berat di GitHub Actions, bukan di Worker):
+# validasi data sekolah, koreksi koordinat bertanda, uji titik-dalam-wilayah, penyederhanaan batas,
+# rekonsiliasi, lalu impor ke D1. Dipicu saat berkas sumber berubah atau dijalankan manual.
+name: Data
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'data/raw/**'
+      - 'data/reference/**'
+      - 'scripts/build-data.mjs'
+      - 'packages/shared/src/**'
+  workflow_dispatch:
+    inputs:
+      impor:
+        description: 'Impor hasil ke D1 produksi'
+        type: boolean
+        default: false
+
+permissions:
+  contents: read
+
+jobs:
+  bangun:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+      - run: npm ci
+      - name: Validasi, uji wilayah, rekonsiliasi
+        run: npm run data:build
+      - name: Ringkasan ke halaman run
+        run: cat build/laporan-mutu-data.md >> "$GITHUB_STEP_SUMMARY"
+      - uses: actions/upload-artifact@v4
+        with:
+          name: hasil-pipeline-data
+          path: |
+            build/laporan-mutu-data.md
+            build/temuan-data.csv
+            build/seed.sql
+            apps/web/public/data/kecamatan.geojson
+          retention-days: 90
+
+  impor:
+    needs: bangun
+    if: ${{ github.event_name == 'workflow_dispatch' && inputs.impor }}
+    runs-on: ubuntu-latest
+    environment: produksi
+    timeout-minutes: 10
+    env:
+      CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+      CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+      - run: npm ci
+      - run: npm run data:build
+      - name: Cadangkan D1 sebelum impor
+        working-directory: apps/api
+        run: npx wrangler d1 export sikop --remote --output=../../build/cadangan-sebelum-impor.sql
+      - uses: actions/upload-artifact@v4
+        with:
+          name: cadangan-sebelum-impor
+          path: build/cadangan-sebelum-impor.sql
+          retention-days: 30
+      - name: Impor (upsert idempoten, tidak menimpa pengaturan admin)
+        working-directory: apps/api
+        run: npx wrangler d1 execute sikop --remote --file=../../build/seed.sql

@@ -1,0 +1,296 @@
+/* ---------- Kursus & modul ---------- */
+.modul-daftar {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  counter-reset: modul;
+  border-top: 1px solid var(--garis);
+}
+.modul-daftar > li {
+  counter-increment: modul;
+  display: grid;
+  grid-template-columns: 48px 1fr auto;
+  gap: var(--s-4);
+  align-items: center;
+  padding: var(--s-4) 0;
+  border-bottom: 1px solid var(--garis);
+}
+.modul-daftar > li::before {
+  content: counter(modul);
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  display: grid;
+  place-items: center;
+  font-weight: 700;
+  background: var(--primer-lembut);
+  color: var(--primer);
+}
+.modul-daftar > li.lulus::before {
+  content: '✓';
+  background: var(--hijau-lembut);
+  color: var(--hijau);
+}
+.modul-daftar h3 {
+  margin: 0;
+  font-size: var(--t-md);
+}
+.modul-daftar p {
+  margin: 2px 0 0;
+  font-size: var(--t-sm);
+  color: var(--teks-2);
+}
+@media (max-width: 560px) {
+  .modul-daftar > li {
+    grid-template-columns: 40px 1fr;
+  }
+  .modul-daftar > li > :last-child {
+    grid-column: 2;
+  }
+}
+.video {
+  aspect-ratio: 16 / 9;
+  width: 100%;
+  border: 0;
+  border-radius: var(--r-md);
+  background: var(--n-900);
+}
+.kompetensi {
+  display: grid;
+  gap: var(--s-4);
+  grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+  padding: 0;
+  list-style: none;
+}
+.kompetensi h3 {
+  font-size: var(--t-md);
+  margin-bottom: var(--s-1);
+}
+.kompetensi p {
+  font-size: var(--t-sm);
+  color: var(--teks-2);
+  margin: 0;
+}
+.langkah-uji {
+  display: grid;
+  gap: var(--s-3);
+}
+.langkah-uji > div {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: var(--s-3);
+  flex-wrap: wrap;
+  padding: var(--s-3) 0;
+  border-bottom: 1px solid var(--garis);
+}
+
+/* ---------- Ujian ---------- */
+.ujian {
+  display: grid;
+  gap: var(--s-5);
+}
+@media (min-width: 960px) {
+  .ujian {
+    grid-template-columns: minmax(0, 1fr) 280px;
+    align-items: start;
+  }
+}
+.ujian__kepala {
+  position: sticky;
+  top: calc(var(--tinggi-kepala) + 3px);
+  z-index: 5;
+  background: var(--latar);
+  padding: var(--s-3) 0;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: var(--s-3);
+  flex-wrap: wrap;
+  border-bottom: 1px solid var(--garis);
+}
+.timer {
+  font-variant-numeric: tabular-nums;
+  font-weight: 700;
+  font-size: var(--t-lg);
+  padding: var(--s-1) var(--s-3);
+  border-radius: var(--r-sm);
+  background: var(--primer-lembut);
+  color: var(--primer);
+}
+.timer.kritis {
+  background: var(--merah-lembut);
+  color: var(--merah);
+}
+.soal__teks {
+  font-size: var(--t-lg);
+  font-weight: 500;
+  line-height: 1.5;
+  max-width: 70ch;
+}
+.opsi {
+  list-style: none;
+  padding: 0;
+  margin: var(--s-4) 0 0;
+  display: grid;
+  gap: var(--s-2);
+}
+.opsi label {
+  display: grid;
+  grid-template-columns: 32px 1fr;
+  gap: var(--s-3);
+  align-items: start;
+  padding: var(--s-3) var(--s-4);
+  border: 1px solid var(--garis-kuat);
+  border-radius: var(--r-md);
+  cursor: pointer;
+  background: var(--permukaan);
+  transition: border-color var(--durasi) var(--lentur);
+}
+.opsi label:hover {
+  border-color: var(--primer);
+}
+.opsi input {
+  position: absolute;
+  opacity: 0;
+}
+.opsi b {
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  display: grid;
+  place-items: center;
+  border: 1px solid var(--garis-kuat);
+  font-size: var(--t-sm);
+}
+.opsi input:checked + label {
+  border-color: var(--primer);
+  box-shadow: inset 0 0 0 1px var(--primer);
+  background: var(--primer-lembut);
+}
+.opsi input:checked + label b {
+  background: var(--primer);
+  color: var(--primer-teks);
+  border-color: var(--primer);
+}
+.opsi input:focus-visible + label {
+  outline: 3px solid var(--fokus);
+  outline-offset: 2px;
+}
+.navigator {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(40px, 1fr));
+  gap: 6px;
+}
+.navigator button {
+  height: 40px;
+  border-radius: var(--r-sm);
+  border: 1px solid var(--garis-kuat);
+  background: var(--permukaan);
+  font: inherit;
+  font-size: var(--t-sm);
+  cursor: pointer;
+  color: var(--teks);
+}
+.navigator button.terjawab {
+  background: var(--primer);
+  color: var(--primer-teks);
+  border-color: var(--primer);
+}
+.navigator button[aria-current='true'] {
+  outline: 3px solid var(--sorot);
+  outline-offset: 1px;
+}
+.simpan-status {
+  font-size: var(--t-xs);
+  color: var(--teks-2);
+}
+
+/* ---------- Pembahasan ---------- */
+.pembahasan li {
+  margin-bottom: var(--s-5);
+}
+.pembahasan .benar {
+  color: var(--hijau);
+  font-weight: 600;
+}
+.pembahasan .salah {
+  color: var(--merah);
+  font-weight: 600;
+}
+
+/* ---------- Sertifikat (A4 lanskap) ---------- */
+.sertifikat {
+  aspect-ratio: 297 / 210;
+  max-width: 1000px;
+  margin: 0 auto;
+  background: #fff;
+  color: #231f20;
+  border: 10px solid #145c87;
+  outline: 2px solid #9a0501;
+  outline-offset: -18px;
+  padding: 5% 7%;
+  display: grid;
+  grid-template-rows: auto 1fr auto;
+  text-align: center;
+  font-size: clamp(9px, 1.4vw, 15px);
+}
+.sertifikat h1 {
+  font-size: 2.6em;
+  letter-spacing: 0.02em;
+  margin: 0.3em 0 0.1em;
+}
+.sertifikat__nama {
+  font-size: 2.3em;
+  font-weight: 800;
+  margin: 0.4em 0 0.1em;
+  color: #145c87;
+}
+.sertifikat p {
+  margin: 0.3em auto;
+  max-width: 60ch;
+}
+.sertifikat__kaki {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  align-items: end;
+  text-align: left;
+  gap: 2em;
+}
+.sertifikat__ttd {
+  text-align: center;
+}
+.sertifikat__ttd .garis {
+  border-top: 1px solid #231f20;
+  margin-top: 4em;
+  padding-top: 0.3em;
+  font-weight: 700;
+}
+.sertifikat__qr {
+  display: flex;
+  gap: 1em;
+  align-items: center;
+  font-size: 0.85em;
+}
+.sertifikat__qr svg {
+  width: 7em;
+  height: 7em;
+}
+@media print {
+  @page {
+    size: A4 landscape;
+    margin: 0;
+  }
+  .halaman {
+    padding: 0;
+  }
+  .tanpa-cetak {
+    display: none !important;
+  }
+  .sertifikat {
+    width: 297mm;
+    height: 210mm;
+    max-width: none;
+    font-size: 13px;
+  }
+}

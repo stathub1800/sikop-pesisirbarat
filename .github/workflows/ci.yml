@@ -1,0 +1,116 @@
+# Integrasi berkelanjutan: setiap push dan pull request wajib hijau sebelum digabung ke main.
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: ci-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  mutu:
+    name: Lint, tipe, uji unit dan integrasi, build
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0 # perlu riwayat main untuk memeriksa migrasi lama tidak diubah
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+      - run: npm ci
+      - name: Pagar AGENTS.md (aturan mutlak, menu, gaya, migrasi)
+        run: node scripts/cek-pagar.mjs
+        env:
+          PAGAR_BASE: ${{ github.event_name == 'pull_request' && format('origin/{0}', github.base_ref) || '' }}
+      - name: Pemeriksaan konfigurasi keamanan
+        run: node scripts/cek-konfigurasi.mjs
+      - name: Pipeline data (validasi + rekonsiliasi)
+        run: npm run data:build
+      - run: npx prettier --check .
+      - run: npx eslint .
+      - run: npm run typecheck
+      - name: Uji domain (cakupan minimal 80%)
+        run: npm test -w packages/shared
+      - name: Uji integrasi Worker + D1
+        run: npm test -w apps/api
+      - run: npm run build
+      - name: Simpan laporan mutu data
+        uses: actions/upload-artifact@v4
+        with:
+          name: laporan-mutu-data
+          path: build/laporan-mutu-data.md
+          retention-days: 30
+
+  e2e:
+    name: Uji ujung-ke-ujung (browser)
+    runs-on: ubuntu-latest
+    needs: mutu
+    timeout-minutes: 25
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+      - run: npm ci
+      - run: npm run data:build
+      - run: npx playwright install --with-deps chromium
+        working-directory: apps/web
+      - name: Siapkan D1 lokal (bank soal SINTETIS, bukan soal asli)
+        working-directory: apps/api
+        run: |
+          cp .dev.vars.example .dev.vars
+          npx wrangler d1 migrations apply sikop --local
+          npx wrangler d1 execute sikop --local --file=../../build/seed.sql
+          npx wrangler d1 execute sikop --local --file=test/fixtures/seed-lms-uji.sql
+      - name: Jalankan API dan situs
+        run: |
+          (cd apps/api && npx wrangler dev --local --port 8787 > ../../api.log 2>&1 &)
+          (cd apps/web && npx vite --port 5173 > ../../web.log 2>&1 &)
+          for i in $(seq 1 60); do
+            curl -fsS http://localhost:8787/api/v1/health > /dev/null 2>&1 && curl -fsS http://localhost:5173/ > /dev/null 2>&1 && exit 0
+            sleep 1
+          done
+          echo "Server tidak siap dalam 60 detik"; cat api.log web.log; exit 1
+      - name: Playwright
+        working-directory: apps/web
+        env:
+          SIKOP_KURSUS: uji
+        run: npx playwright test
+      - uses: actions/upload-artifact@v4
+        if: failure()
+        with:
+          name: playwright-report
+          path: |
+            apps/web/playwright-report
+            api.log
+            web.log
+          retention-days: 7
+
+  keamanan:
+    name: Pemindaian rahasia dan dependensi
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - uses: gitleaks/gitleaks-action@v2
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+      - run: npm ci
+      - name: Audit dependensi produksi
+        run: npm audit --omit=dev --audit-level=high

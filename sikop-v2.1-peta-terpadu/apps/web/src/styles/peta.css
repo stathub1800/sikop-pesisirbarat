@@ -1,0 +1,548 @@
+/*
+ * Peta Tematik: satu pintu data visual. Tiga kolom: panel lapisan | peta | profil wilayah.
+ * Pola mengikuti dasbor SIGER Desa (BPS Provinsi Lampung): kartu indikator = tombol pewarnaan peta.
+ */
+.halaman-peta {
+  height: 100dvh;
+  overflow: hidden;
+}
+.peta-app {
+  display: grid;
+  grid-template-columns: 340px minmax(0, 1fr) 380px;
+  height: calc(100dvh - var(--tinggi-kepala) - 4px);
+  background: var(--latar);
+}
+.peta-app.panel-ciut {
+  grid-template-columns: auto minmax(0, 1fr) 380px;
+}
+.peta-panel,
+.profil-panel {
+  overflow-y: auto;
+  padding: var(--s-4);
+  background: var(--permukaan);
+  font-size: var(--t-sm);
+  display: grid;
+  gap: var(--s-4);
+  align-content: start;
+}
+.peta-panel {
+  border-right: 1px solid var(--garis);
+}
+.profil-panel {
+  border-left: 1px solid var(--garis);
+}
+.peta-panel h2,
+.profil-panel h2 {
+  font-size: var(--t-md);
+  margin: 0 0 var(--s-2);
+}
+.peta-panel__kepala {
+  display: flex;
+  justify-content: space-between;
+  align-items: start;
+  gap: var(--s-3);
+}
+.peta-panel h1 {
+  font-size: var(--t-xl);
+  margin: 0;
+}
+.peta-panel__sub {
+  margin: 2px 0 0;
+  color: var(--teks-2);
+  font-size: var(--t-xs);
+}
+.peta-panel__isi {
+  display: grid;
+  gap: var(--s-3);
+}
+.peta-kanvas {
+  position: relative;
+  min-width: 0;
+}
+#peta {
+  position: absolute;
+  inset: 0;
+  background: var(--laut-100);
+}
+.label-kecil {
+  margin: 0;
+  font-size: var(--t-xs);
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  color: var(--teks-2);
+}
+
+/* ---------- Pencarian indikator dan chip tema ---------- */
+.cari-indikator {
+  position: relative;
+}
+.cari-indikator input {
+  width: 100%;
+  padding: 10px 64px 10px 12px;
+  border: 1px solid var(--garis-kuat);
+  border-radius: var(--r-md);
+  background: var(--permukaan);
+  color: var(--teks);
+  font: inherit;
+}
+.cari-indikator kbd {
+  position: absolute;
+  right: 8px;
+  top: 50%;
+  transform: translateY(-50%);
+  font: 600 var(--t-xs) / 1 var(--huruf);
+  color: var(--teks-2);
+  border: 1px solid var(--garis);
+  border-radius: var(--r-sm);
+  padding: 4px 6px;
+  background: var(--permukaan-2);
+}
+.chip-tema {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+.chip {
+  font: 500 var(--t-xs) / 1.2 var(--huruf);
+  padding: 6px 10px;
+  border-radius: 999px;
+  border: 1px solid var(--garis-kuat);
+  background: var(--permukaan);
+  color: var(--teks);
+  cursor: pointer;
+}
+.chip[aria-pressed='true'] {
+  background: var(--primer);
+  border-color: var(--primer);
+  color: var(--primer-teks);
+}
+
+/* ---------- Kartu indikator ---------- */
+.kartu-daftar {
+  display: grid;
+  gap: var(--s-2);
+}
+.kartu-daftar__tema {
+  margin: var(--s-2) 0 0;
+  font-size: var(--t-xs);
+  font-weight: 700;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  color: var(--primer);
+}
+.kartu-ind {
+  display: grid;
+  gap: 6px;
+  width: 100%;
+  text-align: left;
+  padding: var(--s-3);
+  border: 1px solid var(--garis);
+  border-radius: var(--r-md);
+  background: var(--permukaan);
+  color: var(--teks);
+  font: inherit;
+  cursor: pointer;
+  transition:
+    border-color var(--durasi) var(--lentur),
+    box-shadow var(--durasi) var(--lentur);
+}
+.kartu-ind:hover {
+  border-color: var(--garis-kuat);
+  box-shadow: var(--bayang-1);
+}
+.kartu-ind[aria-pressed='true'] {
+  border-color: var(--primer);
+  background: var(--primer-lembut);
+  box-shadow:
+    inset 4px 0 0 var(--primer),
+    var(--bayang-1);
+}
+.kartu-ind__atas {
+  display: flex;
+  justify-content: space-between;
+  gap: var(--s-2);
+  align-items: start;
+}
+.kartu-ind__nama {
+  font-weight: 600;
+}
+.kartu-ind__sumber {
+  flex-shrink: 0;
+  font-size: 11px;
+  padding: 2px 6px;
+  border-radius: 999px;
+  background: var(--permukaan-2);
+  color: var(--teks-2);
+  white-space: nowrap;
+}
+.kartu-ind__angka {
+  display: flex;
+  align-items: baseline;
+  flex-wrap: wrap;
+  gap: var(--s-2);
+  color: var(--teks-2);
+  font-size: var(--t-xs);
+}
+.kartu-ind__angka strong {
+  font-size: var(--t-lg);
+  color: var(--teks);
+}
+.bar {
+  position: relative;
+  display: block;
+  height: 6px;
+  border-radius: 999px;
+  background: var(--permukaan-2);
+  overflow: hidden;
+}
+.bar > span {
+  display: block;
+  height: 100%;
+  border-radius: inherit;
+  background: var(--laut-500);
+}
+.bar--urut {
+  height: 10px;
+  overflow: visible;
+}
+.bar__kab {
+  position: absolute;
+  top: -3px;
+  bottom: -3px;
+  width: 2px;
+  border-radius: 1px;
+  background: var(--teks);
+}
+
+/* ---------- Kartu indikator aktif di atas peta ---------- */
+.kartu-aktif {
+  position: absolute;
+  left: var(--s-3);
+  bottom: var(--s-6);
+  z-index: 2;
+  width: min(360px, calc(100% - 24px));
+  max-height: calc(100% - 96px);
+  overflow: auto;
+  background: var(--permukaan);
+  border-radius: var(--r-md);
+  box-shadow: var(--bayang-2);
+  padding: var(--s-3) var(--s-4);
+  font-size: var(--t-sm);
+}
+.kartu-aktif__judul {
+  font-size: var(--t-lg);
+  margin: 2px 0 4px;
+}
+.kartu-aktif__nilai {
+  margin: 0;
+  color: var(--teks-2);
+}
+.kartu-aktif__nilai strong {
+  font-size: var(--t-xl);
+  color: var(--teks);
+}
+.kartu-aktif details {
+  margin-top: var(--s-2);
+}
+.kartu-aktif summary {
+  cursor: pointer;
+  color: var(--primer);
+  font-weight: 600;
+}
+.kartu-aktif details p {
+  margin: var(--s-2) 0 0;
+}
+
+/* ---------- Profil wilayah lintas tema ---------- */
+.profil-wilayah {
+  display: grid;
+  gap: var(--s-2);
+}
+.profil-wilayah h2 {
+  font-size: var(--t-xl);
+  margin: 0;
+}
+.profil-wilayah .sumber {
+  margin: 0;
+}
+.profil-tema {
+  border: 1px solid var(--garis);
+  border-radius: var(--r-md);
+  background: var(--permukaan);
+}
+.profil-tema summary {
+  cursor: pointer;
+  padding: var(--s-2) var(--s-3);
+  font-weight: 600;
+  display: flex;
+  justify-content: space-between;
+  gap: var(--s-2);
+}
+.profil-tema[open] summary {
+  border-bottom: 1px solid var(--garis);
+}
+.profil-tema__jumlah {
+  font-weight: 400;
+  font-size: var(--t-xs);
+  color: var(--teks-2);
+}
+.profil-tabel {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: var(--t-xs);
+}
+.profil-tabel th,
+.profil-tabel td {
+  padding: 6px var(--s-3);
+  border-bottom: 1px solid var(--garis);
+  text-align: left;
+  vertical-align: top;
+}
+.profil-tabel tr:last-child th,
+.profil-tabel tr:last-child td {
+  border-bottom: 0;
+}
+.profil-tabel thead th {
+  color: var(--teks-2);
+  font-weight: 600;
+}
+.profil-tabel small {
+  display: block;
+  color: var(--teks-2);
+  font-weight: 400;
+}
+.profil-tabel .kanan {
+  text-align: right;
+  white-space: nowrap;
+}
+.profil-tabel tr.aktif th,
+.profil-tabel tr.aktif td {
+  background: var(--kuning-lembut);
+}
+.tautan-polos {
+  all: unset;
+  cursor: pointer;
+  color: var(--primer);
+  font-weight: 500;
+}
+.tautan-polos:hover {
+  text-decoration: underline;
+}
+.tautan-polos:focus-visible {
+  outline: 2px solid var(--fokus);
+  outline-offset: 2px;
+}
+
+/* ---------- Urutan kecamatan ---------- */
+.urut {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: grid;
+  gap: 2px;
+}
+.urut__baris {
+  display: grid;
+  grid-template-columns: minmax(0, 7.5rem) minmax(0, 1fr) minmax(4.5rem, auto);
+  gap: var(--s-2);
+  align-items: center;
+  width: 100%;
+  padding: 6px 8px;
+  border: 0;
+  border-radius: var(--r-sm);
+  background: transparent;
+  color: var(--teks);
+  font: inherit;
+  font-size: var(--t-xs);
+  text-align: left;
+  cursor: pointer;
+}
+.urut__baris:hover {
+  background: var(--permukaan-2);
+}
+.urut__baris[aria-pressed='true'] {
+  background: var(--kuning-lembut);
+  font-weight: 600;
+}
+.urut__nilai {
+  text-align: right;
+  white-space: nowrap;
+}
+
+/* ---------- Layar sedang dan kecil ---------- */
+@media (max-width: 1180px) {
+  .halaman-peta {
+    height: auto;
+    overflow: auto;
+  }
+  .peta-app,
+  .peta-app.panel-ciut {
+    grid-template-columns: 320px minmax(0, 1fr);
+    height: auto;
+  }
+  .peta-panel {
+    position: sticky;
+    top: 0;
+    max-height: calc(100dvh - var(--tinggi-kepala));
+    grid-row: span 2;
+  }
+  .peta-kanvas {
+    height: calc(100dvh - var(--tinggi-kepala) - 4px);
+    min-height: 480px;
+  }
+  .profil-panel {
+    border-left: 0;
+    border-top: 1px solid var(--garis);
+    overflow: visible;
+  }
+}
+@media (max-width: 860px) {
+  .peta-app,
+  .peta-app.panel-ciut {
+    grid-template-columns: minmax(0, 1fr);
+  }
+  .peta-kanvas {
+    order: -1;
+    height: 62vh;
+    min-height: 360px;
+  }
+  .peta-panel {
+    position: static;
+    max-height: none;
+    border-right: 0;
+    grid-row: auto;
+  }
+  .kartu-daftar {
+    max-height: 60vh;
+    overflow: auto;
+  }
+  .cari-indikator kbd {
+    display: none;
+  }
+  /* Di ponsel kartu indikator aktif berada di bawah peta agar peta tidak tertutup. */
+  .peta-kanvas {
+    height: auto;
+    min-height: 0;
+    display: grid;
+  }
+  #peta {
+    position: relative;
+    inset: auto;
+    height: 52vh;
+    min-height: 320px;
+  }
+  .kartu-aktif {
+    position: static;
+    width: auto;
+    max-height: none;
+    border-radius: 0;
+    box-shadow: none;
+    border-bottom: 1px solid var(--garis);
+  }
+}
+
+.legenda__satuan {
+  margin-top: var(--s-2);
+  text-transform: none;
+  letter-spacing: 0;
+}
+.legenda {
+  list-style: none;
+  padding: 0;
+  margin: var(--s-2) 0 0;
+  display: grid;
+  gap: 4px;
+}
+.legenda li {
+  display: flex;
+  align-items: center;
+  gap: var(--s-2);
+}
+.legenda i {
+  width: 22px;
+  height: 14px;
+  border-radius: 3px;
+  border: 1px solid rgb(0 0 0 / 0.08);
+  flex-shrink: 0;
+}
+.legenda--titik i {
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+  border: 2px solid #fff;
+  box-shadow: 0 0 0 1px rgb(0 0 0 / 0.2);
+}
+
+.unduhan {
+  padding-left: var(--s-4);
+  margin: 0;
+  display: grid;
+  gap: var(--s-1);
+}
+
+.cari-peta {
+  position: absolute;
+  top: var(--s-3);
+  left: var(--s-3);
+  width: min(360px, calc(100% - 64px));
+  z-index: 2;
+}
+.cari-peta input {
+  box-shadow: var(--bayang-2);
+  border-color: transparent;
+}
+.hasil-cari {
+  list-style: none;
+  margin: 4px 0 0;
+  padding: var(--s-1);
+  background: var(--permukaan);
+  border-radius: var(--r-md);
+  box-shadow: var(--bayang-2);
+  max-height: 50vh;
+  overflow-y: auto;
+}
+.hasil-cari li {
+  padding: var(--s-2) var(--s-3);
+  border-radius: var(--r-sm);
+  cursor: pointer;
+}
+.hasil-cari li[aria-selected='true'],
+.hasil-cari li:hover {
+  background: var(--primer-lembut);
+}
+.hasil-cari small {
+  display: block;
+  color: var(--teks-2);
+}
+
+/* Popup MapLibre selaras tema */
+.maplibregl-popup-content {
+  font-family: var(--huruf);
+  border-radius: var(--r-md);
+  padding: var(--s-3) var(--s-4);
+  background: var(--permukaan);
+  color: var(--teks);
+  box-shadow: var(--bayang-2);
+}
+.maplibregl-popup-content strong {
+  display: block;
+  margin-bottom: 2px;
+}
+.maplibregl-popup-close-button {
+  width: 32px;
+  height: 32px;
+  font-size: 20px;
+}
+.catatan-peta-dasar {
+  position: absolute;
+  top: 72px;
+  left: var(--s-3);
+  z-index: 2;
+  margin: 0;
+  max-width: 320px;
+  background: var(--permukaan);
+  border-radius: var(--r-sm);
+  padding: var(--s-2) var(--s-3);
+  font-size: var(--t-xs);
+  box-shadow: var(--bayang-1);
+}

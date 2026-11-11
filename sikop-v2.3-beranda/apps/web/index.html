@@ -1,0 +1,182 @@
+<!doctype html>
+<html lang="id">
+  <head>
+    <!--sikop:head-->
+    <title>SIKOP BPS Kabupaten Pesisir Barat</title>
+    <meta
+      name="description"
+      content="Pintu masuk data Kabupaten Pesisir Barat: Peta Tematik lintas tema untuk 11 kecamatan, Ruang Belajar statistik, dan layanan permohonan data BPS."
+    />
+    <script type="module" src="/src/pages/beranda.ts"></script>
+  </head>
+  <body>
+    <!--sikop:header aktif="beranda"-->
+    <main id="isi" class="beranda">
+      <!-- 1. Pembuka: apa SIKOP, dua pintu utama, dan isi data saat ini -->
+      <section class="pembuka" aria-labelledby="judul-beranda">
+        <div class="wadah pembuka__dalam">
+          <div class="pembuka__teks">
+            <p class="pembuka__eyebrow">SIKOP · BPS Kabupaten Pesisir Barat</p>
+            <h1 id="judul-beranda">Data Pesisir Barat dalam satu peta.</h1>
+            <p class="pembuka__lead">
+              Pendidikan, kesehatan, ekonomi, infrastruktur, kebencanaan, dan tata kelola untuk 11
+              kecamatan, lengkap dengan sumber dan cara hitung setiap angka.
+            </p>
+            <div class="pembuka__aksi">
+              <a class="tombol tombol--primer tombol--besar" href="/peta/">
+                <svg viewBox="0 0 24 24" aria-hidden="true">
+                  <path
+                    d="m9 4-6 2.5v13L9 17l6 2.5 6-2.5V4l-6 2.5L9 4Zm0 0v13m6-10.5v13"
+                    fill="none"
+                    stroke="currentColor"
+                    stroke-width="1.8"
+                    stroke-linejoin="round"
+                  />
+                </svg>
+                Buka Peta Tematik
+              </a>
+              <a class="tombol tombol--besar" href="/belajar/">
+                <svg viewBox="0 0 24 24" aria-hidden="true">
+                  <path
+                    d="M4 5.5A1.5 1.5 0 0 1 5.5 4H11v15H5.5A1.5 1.5 0 0 0 4 20.5v-15Zm16 0A1.5 1.5 0 0 0 18.5 4H13v15h5.5a1.5 1.5 0 0 1 1.5 1.5v-15Z"
+                    fill="none"
+                    stroke="currentColor"
+                    stroke-width="1.8"
+                    stroke-linejoin="round"
+                  />
+                </svg>
+                Masuk Ruang Belajar
+              </a>
+            </div>
+          </div>
+
+          <aside class="isi-data" aria-labelledby="judul-isi-data">
+            <h2 id="judul-isi-data" class="isi-data__judul">Isi SIKOP saat ini</h2>
+            <dl class="isi-data__angka" id="isi-data" aria-busy="true">
+              <div>
+                <dt>kecamatan</dt>
+                <dd>11</dd>
+              </div>
+              <div>
+                <dt>desa dan kelurahan</dt>
+                <dd>–</dd>
+              </div>
+              <div>
+                <dt>indikator</dt>
+                <dd>–</dd>
+              </div>
+              <div>
+                <dt>tema</dt>
+                <dd>–</dd>
+              </div>
+            </dl>
+            <p class="isi-data__kaki" id="isi-data-kaki"></p>
+          </aside>
+        </div>
+      </section>
+
+      <!-- 2. Sorotan lintas tema: satu indikator kunci per tema, dipilih untuk mewarnai peta -->
+      <section class="wadah bagian" aria-labelledby="judul-sorotan">
+        <header class="bagian__kepala">
+          <div>
+            <h2 id="judul-sorotan">Sorotan lintas tema</h2>
+            <p>Satu indikator kunci untuk setiap tema. Pilih kartu untuk melihat sebarannya.</p>
+          </div>
+          <a class="tautan-panah" href="/peta/">Semua indikator</a>
+        </header>
+        <div class="sorotan">
+          <div class="sorotan__kartu" id="kartu-sorotan" role="group" aria-label="Pilih sorotan">
+            <!-- diisi beranda.ts -->
+          </div>
+          <figure class="sorotan__peta" aria-live="polite">
+            <figcaption class="sorotan__judul">
+              <span class="sorotan__tema" id="sorotan-tema"></span>
+              <strong id="sorotan-nama">Memuat sorotan…</strong>
+            </figcaption>
+            <div class="sorotan__isi">
+              <div id="peta-beranda" class="sorotan__svg" aria-busy="true"></div>
+              <ol id="daftar-kecamatan" class="daftar-kec" aria-label="Peringkat kecamatan"></ol>
+            </div>
+            <div class="sorotan__kaki">
+              <p class="sumber" id="sumber-peta"></p>
+              <a class="tombol tombol--kecil" id="buka-sorotan" href="/peta/"
+                >Buka di Peta Tematik</a
+              >
+            </div>
+          </figure>
+        </div>
+      </section>
+
+      <!-- 3. Kecamatan yang perlu perhatian -->
+      <section class="wadah bagian" aria-labelledby="judul-perhatian">
+        <header class="bagian__kepala">
+          <div>
+            <h2 id="judul-perhatian">Kecamatan yang perlu perhatian</h2>
+            <p>Kecamatan yang paling sering berada di tiga terbawah dari seluruh indikator.</p>
+          </div>
+        </header>
+        <ol class="perhatian" id="perhatian" aria-busy="true"></ol>
+        <p class="sumber" id="catatan-perhatian">
+          Cara hitung: untuk setiap indikator yang punya arah baik (makin tinggi atau makin rendah
+          makin baik), tiga kecamatan dengan nilai terburuk diberi tanda. Ini penanda awal untuk
+          ditelusuri, bukan indeks komposit atau penilaian kinerja.
+        </p>
+      </section>
+
+      <!-- 4. Ruang Belajar dan Layanan Data -->
+      <section class="wadah bagian bagian--dua" aria-label="Ruang Belajar dan Layanan Data">
+        <div class="pintu pintu--belajar">
+          <header class="bagian__kepala">
+            <div>
+              <h2 id="judul-belajar">Ruang Belajar</h2>
+              <p>Kursus statistik bertahap, gratis, dengan sertifikat.</p>
+            </div>
+            <a class="tautan-panah" href="/belajar/">Lihat katalog</a>
+          </header>
+          <ul class="kursus-ringkas" id="kursus-terbaru" aria-busy="true"></ul>
+        </div>
+        <div class="pintu pintu--layanan">
+          <header class="bagian__kepala">
+            <div>
+              <h2 id="judul-layanan">Layanan Data</h2>
+              <p>Pelayanan Statistik Terpadu BPS Kabupaten Pesisir Barat.</p>
+            </div>
+          </header>
+          <ul class="layanan-ringkas">
+            <li>
+              <a href="/layanan/">
+                <strong>Ajukan permohonan data</strong>
+                <span>Isi formulir dan simpan nomor tiket Anda.</span>
+              </a>
+            </li>
+            <li>
+              <a href="/layanan/#status">
+                <strong>Lacak tiket</strong>
+                <span>Pantau jawaban permohonan dengan nomor tiket.</span>
+              </a>
+            </li>
+            <li>
+              <a href="/sertifikat/">
+                <strong>Verifikasi sertifikat</strong>
+                <span>Periksa keaslian sertifikat Ruang Belajar.</span>
+              </a>
+            </li>
+            <li>
+              <a href="/sekolah/">
+                <strong>Direktori sekolah</strong>
+                <span>Cari sekolah atau NPSN, lalu unduh CSV.</span>
+              </a>
+            </li>
+          </ul>
+        </div>
+      </section>
+
+      <!-- 5. Sumber data -->
+      <section class="wadah bagian bagian--sumber" aria-labelledby="judul-sumber">
+        <h2 id="judul-sumber" class="bagian__label">Sumber data</h2>
+        <ul class="pita-sumber" id="pita-sumber"></ul>
+      </section>
+    </main>
+    <!--sikop:footer-->
+  </body>
+</html>

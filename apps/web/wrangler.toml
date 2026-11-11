@@ -1,0 +1,9 @@
+# Proyek Cloudflare Pages untuk situs SIKOP (frontend pengunjung + panel admin).
+name = "sikop-pesisirbarat"
+pages_build_output_dir = "dist"
+compatibility_date = "2026-11-01"
+
+# Meneruskan /api/* ke Worker sikop-api (lihat functions/api/[[path]].ts).
+[[services]]
+binding = "API"
+service = "sikop-api"

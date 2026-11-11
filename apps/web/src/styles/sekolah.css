@@ -1,0 +1,67 @@
+.filter {
+  display: grid;
+  gap: 0 var(--s-3);
+  grid-template-columns: repeat(auto-fit, minmax(170px, 1fr));
+  background: var(--permukaan);
+  border: 1px solid var(--garis);
+  border-radius: var(--r-lg);
+  padding: var(--s-4) var(--s-4) 0;
+}
+.filter__cari {
+  grid-column: span 2;
+}
+@media (max-width: 420px) {
+  .filter__cari {
+    grid-column: auto;
+  }
+}
+.hasil-kepala {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: var(--s-3);
+  margin: var(--s-5) 0 var(--s-3);
+}
+.hasil-kepala p {
+  margin: 0;
+  color: var(--teks-2);
+}
+.nama-sekolah a {
+  font-weight: 600;
+}
+.nama-sekolah small {
+  display: block;
+  color: var(--teks-2);
+}
+
+/* Profil sekolah */
+.profil-kepala {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--s-2);
+  margin-bottom: var(--s-5);
+}
+.kondisi-kelas {
+  display: grid;
+  gap: var(--s-2);
+}
+.kondisi-kelas ul {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--s-2) var(--s-4);
+  font-size: var(--t-sm);
+}
+.kondisi-kelas i {
+  display: inline-block;
+  width: 10px;
+  height: 10px;
+  border-radius: 2px;
+  margin-right: 6px;
+}
+.peta-kecil {
+  max-width: 260px;
+}
