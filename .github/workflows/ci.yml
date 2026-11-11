@@ -63,8 +63,20 @@ jobs:
           cache: npm
       - run: npm ci
       - run: npm run data:build
-      - run: npx playwright install --with-deps chromium
+      - name: Siapkan browser (Chrome bawaan runner; Chromium diunduh hanya bila tidak ada)
         working-directory: apps/web
+        run: |
+          if command -v google-chrome > /dev/null; then
+            echo "CHROME_PATH=$(command -v google-chrome)" >> "$GITHUB_ENV"
+            google-chrome --version
+            exit 0
+          fi
+          # Cadangan: unduhan apt dari mirror Ubuntu kadang gagal sesaat, jadi dicoba sampai 3 kali.
+          for i in 1 2 3; do
+            npx playwright install --with-deps chromium && exit 0
+            echo "Percobaan $i gagal, menunggu 20 detik..."; sleep 20
+          done
+          exit 1
       - name: Siapkan D1 lokal (bank soal SINTETIS, bukan soal asli)
         working-directory: apps/api
         run: |

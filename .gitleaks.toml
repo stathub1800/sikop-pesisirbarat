@@ -1,0 +1,17 @@
+# Konfigurasi pemindaian rahasia (gitleaks). Aturan bawaan tetap berlaku;
+# hanya nilai yang MEMANG PUBLIK di wrangler.toml yang dikecualikan:
+# kunci situs Turnstile dan Google Client ID dikirim ke browser setiap pengunjung,
+# sedangkan ID akun dan ID basis data bukan kredensial.
+# Kunci RAHASIA (TURNSTILE_SECRET, IP_SALT, token API) tidak pernah ditulis ke berkas.
+[extend]
+useDefault = true
+
+[allowlist]
+description = "Nilai publik di wrangler.toml"
+regexTarget = "line"
+regexes = [
+  '''^\s*TURNSTILE_SITE_KEY\s*=''',
+  '''^\s*GOOGLE_CLIENT_ID\s*=''',
+  '''^\s*database_id\s*=''',
+  '''^\s*account_id\s*=''',
+]

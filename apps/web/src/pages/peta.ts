@@ -8,12 +8,15 @@
  *                     kecamatan tersebut dibandingkan kabupaten beserta peringkatnya.
  * Status (tema, indikator, kecamatan) tersimpan di URL agar tampilan dapat dibagikan.
  */
-import maplibregl, {
-  type ExpressionSpecification,
-  type GeoJSONSource,
-  type Map as PetaGL,
-  type StyleSpecification,
+import * as maplibregl from 'maplibre-gl';
+import type {
+  ExpressionSpecification,
+  GeoJSONSource,
+  Map as PetaGL,
+  StyleSpecification,
 } from 'maplibre-gl';
+// MapLibre 6 memuat worker sebagai berkas terpisah; Vite menyalinnya ke /assets dengan nama ber-hash.
+import urlWorkerPeta from 'maplibre-gl/dist/maplibre-gl-worker.mjs?url';
 import type { Feature, FeatureCollection, Point, Polygon, MultiPolygon } from 'geojson';
 import 'maplibre-gl/dist/maplibre-gl.css';
 import {
@@ -50,6 +53,7 @@ import { mulaiHalaman } from '../lib/umum.ts';
 type FiturKec = Feature<Polygon | MultiPolygon, { kode: string; nama: string }>;
 
 mulaiHalaman();
+maplibregl.setWorkerUrl(urlWorkerPeta);
 
 /* ------------------------------ Konstanta tampilan ------------------------------ */
 

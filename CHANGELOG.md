@@ -4,7 +4,15 @@ Format mengikuti [Keep a Changelog](https://keepachangelog.com/id-ID/1.1.0/) dan
 
 ## [Belum dirilis]
 
+### Keamanan
+
+- MapLibre GL dinaikkan ke 6.17 untuk menutup CVE-2026-85061 (XSS lewat atribusi peta). Worker MapLibre
+  kini dimuat sebagai berkas terpisah dari `/assets`.
+
 ### Diubah
+
+- CI memakai Chrome bawaan runner untuk uji browser, sehingga tidak bergantung pada mirror apt Ubuntu.
+- Pemasang mencoba ulang galat jaringan ke Cloudflare dan menampilkan langkah perbaikannya.
 
 - **Beranda menjadi pintu masuk ringkas**: dua pintu utama (Peta Tematik dan Ruang Belajar), kartu "Isi
   SIKOP saat ini", sorotan lintas tema (satu indikator kunci per tema yang mewarnai peta dan peringkat
