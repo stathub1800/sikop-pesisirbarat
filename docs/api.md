@@ -53,15 +53,16 @@ masih ada pelajaran wajib yang belum selesai (ADR-0007).
 
 ## Admin (berbasis peran)
 
-| Jalur                                                                                                     | Peran                                           |
-| --------------------------------------------------------------------------------------------------------- | ----------------------------------------------- |
-| `GET /admin/dasbor`                                                                                       | semua peran admin (isi disaring per peran)      |
-| `/admin/sekolah`, `/admin/sekolah/:npsn` (PUT, optimistic lock), `/admin/sekolah/impor`                   | editor_data                                     |
-| `/admin/indikator`, `/admin/indikator/:id`                                                                | editor_data                                     |
-| `/admin/pengaturan`                                                                                       | editor_data (situs), pengelola_lms (sertifikat) |
-| `/admin/permohonan`, `/admin/permohonan/:tiket`                                                           | petugas_pst                                     |
-| `/admin/lms/kursus`, `/admin/lms/modul`, `/admin/lms/soal`, `/admin/lms/peserta`, `/admin/lms/sertifikat` | pengelola_lms                                   |
-| `/admin/pengguna`, `/admin/audit`                                                                         | superadmin                                      |
+| Jalur                                                                                                                                                                 | Peran                                           |
+| --------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ----------------------------------------------- |
+| `GET /admin/dasbor`                                                                                                                                                   | semua peran admin (isi disaring per peran)      |
+| `/admin/sekolah`, `/admin/sekolah/:npsn` (PUT, optimistic lock), `/admin/sekolah/impor`                                                                               | editor_data                                     |
+| `/admin/indikator`, `/admin/indikator/:id`                                                                                                                            | editor_data                                     |
+| `/admin/pengaturan`                                                                                                                                                   | editor_data (situs), pengelola_lms (sertifikat) |
+| `/admin/permohonan`, `/admin/permohonan/:tiket`                                                                                                                       | petugas_pst                                     |
+| `/admin/lms/kursus`, `/admin/lms/modul`, `/admin/lms/soal`, `/admin/lms/peserta`, `/admin/lms/sertifikat`                                                             | pengelola_lms                                   |
+| `/admin/lms/kursus/:id/struktur`, `/bab`, `/pelajaran`, `/soal-latihan`, `/kursus/:id/{bab/urutan,kesiapan,riwayat}`, `/pelajaran/:id/pratinjau` (penyusun, ADR-0008) | pengelola_lms                                   |
+| `/admin/pengguna`, `/admin/audit`                                                                                                                                     | superadmin                                      |
 
 Superadmin selalu memiliki akses ke semua jalur. Setiap perubahan admin tercatat di `audit_log` dalam batch
 atomik yang sama dengan perubahannya.

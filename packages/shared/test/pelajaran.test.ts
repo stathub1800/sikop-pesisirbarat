@@ -142,3 +142,75 @@ describe('formatDurasiMenit', () => {
     expect(formatDurasiMenit(94)).toBe('1 jam 34 menit');
   });
 });
+
+import {
+  BabInputSchema,
+  normalkanIsiVideo,
+  PelajaranInputSchema,
+  SoalLatihanInputSchema,
+  UrutanInputSchema,
+} from '../src/lms.ts';
+
+describe('skema penyusun kursus', () => {
+  it('bab: bawaan draf tanpa modul', () => {
+    const b = BabInputSchema.parse({ judul: 'Pengantar' });
+    expect(b.is_published).toBe(false);
+    expect(b.modul_id).toBeNull();
+    expect(BabInputSchema.safeParse({ judul: 'ab' }).success).toBe(false);
+  });
+
+  it('video: tautan watch dinormalkan ke embed nocookie', () => {
+    const p = PelajaranInputSchema.parse({
+      judul: 'Video pembuka',
+      jenis: 'video',
+      isi: { url: 'https://www.youtube.com/watch?v=tUXqJ1xyqIk' },
+    });
+    expect(p.isi.url).toBe('https://www.youtube-nocookie.com/embed/tUXqJ1xyqIk');
+    expect(p.is_published).toBe(false);
+    expect(normalkanIsiVideo(null)).toBeNull();
+    expect(
+      PelajaranInputSchema.safeParse({
+        judul: 'Video buruk',
+        jenis: 'video',
+        isi: { url: 'https://evil.example/embed/abc' },
+      }).success,
+    ).toBe(false);
+  });
+
+  it('pelajaran: isi diperiksa menurut jenis', () => {
+    expect(
+      PelajaranInputSchema.safeParse({
+        judul: 'Dokumen',
+        jenis: 'pdf',
+        isi: { url: 'http://x.id/a.pdf' },
+      }).success,
+    ).toBe(false);
+    const ok = PelajaranInputSchema.parse({
+      judul: 'Bacaan',
+      jenis: 'bacaan',
+      isi: { markdown: '# Halo' },
+      wajib: false,
+    });
+    expect(ok.wajib).toBe(false);
+    const l = PelajaranInputSchema.parse({ judul: 'Latihan 1', jenis: 'latihan', isi: {} });
+    expect(l.isi.nilai_lulus).toBe(60);
+  });
+
+  it('urutan menolak duplikat dan kosong', () => {
+    expect(UrutanInputSchema.safeParse({ ids: [3, 1, 2] }).success).toBe(true);
+    expect(UrutanInputSchema.safeParse({ ids: [1, 1] }).success).toBe(false);
+    expect(UrutanInputSchema.safeParse({ ids: [] }).success).toBe(false);
+  });
+
+  it('soal latihan: kunci harus salah satu opsi', () => {
+    const dasar = {
+      pertanyaan: 'Apa itu sensus?',
+      opsi: [
+        { id: 'A', text: 'Pencacahan lengkap' },
+        { id: 'B', text: 'Sampel' },
+      ],
+    };
+    expect(SoalLatihanInputSchema.safeParse({ ...dasar, kunci: 'A' }).success).toBe(true);
+    expect(SoalLatihanInputSchema.safeParse({ ...dasar, kunci: 'C' }).success).toBe(false);
+  });
+});

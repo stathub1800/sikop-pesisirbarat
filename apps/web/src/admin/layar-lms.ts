@@ -116,7 +116,21 @@ export async function layarKursus(k: Konteks): Promise<void> {
       });
       const modul = r.modul.filter((m) => m.kursus_id === ku.id);
       return [
-        h('section', { class: 'panel' }, h('h2', null, ku.judul), form),
+        h(
+          'section',
+          { class: 'panel' },
+          h(
+            'div',
+            { class: 'panel__kepala' },
+            h('h2', null, ku.judul),
+            h(
+              'a',
+              { class: 'tombol tombol--kecil', href: `#/penyusun/${ku.id}` },
+              'Susun bab dan pelajaran',
+            ),
+          ),
+          form,
+        ),
         h(
           'section',
           { class: 'panel' },

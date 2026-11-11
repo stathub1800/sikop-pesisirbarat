@@ -10,7 +10,7 @@ import { acak } from '../lib/crypto.ts';
 import { HttpError } from '../lib/http.ts';
 
 /** Potongan SQL: bab yang boleh tampil (modul terkait terbit, atau bab tanpa modul). */
-export const BAB_TAMPIL = '(b.modul_id IS NULL OR m.is_published = 1)';
+export const BAB_TAMPIL = '(b.is_published = 1 AND (b.modul_id IS NULL OR m.is_published = 1))';
 
 export interface RingkasPelajaran {
   id: number;
@@ -29,18 +29,22 @@ export interface RingkasBab {
 }
 
 /** Silabus tanpa isi: bab dan pelajaran terurut. */
-export async function silabusKursus(db: D1Database, kursusId: string): Promise<RingkasBab[]> {
+export async function silabusKursus(
+  db: D1Database,
+  kursusId: string,
+  termasukDraf = false,
+): Promise<RingkasBab[]> {
   const { results } = await db
     .prepare(
       `SELECT b.id AS bab_id, b.modul_id, b.urutan AS bab_urutan, b.judul AS bab_judul,
               p.id, p.urutan, p.judul, p.jenis, p.durasi_menit, p.wajib
          FROM bab b
          LEFT JOIN modul m ON m.id = b.modul_id
-         LEFT JOIN pelajaran p ON p.bab_id = b.id
-        WHERE b.kursus_id = ? AND ${BAB_TAMPIL}
+         LEFT JOIN pelajaran p ON p.bab_id = b.id AND (?2 = 1 OR p.is_published = 1)
+        WHERE b.kursus_id = ?1 AND (?2 = 1 OR ${BAB_TAMPIL})
         ORDER BY b.urutan, p.urutan`,
     )
-    .bind(kursusId)
+    .bind(kursusId, termasukDraf ? 1 : 0)
     .all<{
       bab_id: number;
       modul_id: number | null;
@@ -93,8 +97,15 @@ export interface PelajaranUtuh {
   modul_id: number | null;
 }
 
-/** Pelajaran yang boleh dibaca: kursus terbit dan bab tampil. Null bila tidak ada. */
-export async function ambilPelajaran(db: D1Database, id: number): Promise<PelajaranUtuh | null> {
+/**
+ * Pelajaran yang boleh dibaca: kursus, bab, dan pelajaran terbit. Null bila tidak ada.
+ * `termasukDraf` hanya untuk pratinjau admin: melewati semua status terbit.
+ */
+export async function ambilPelajaran(
+  db: D1Database,
+  id: number,
+  termasukDraf = false,
+): Promise<PelajaranUtuh | null> {
   if (!Number.isSafeInteger(id) || id < 1) return null;
   return db
     .prepare(
@@ -102,11 +113,11 @@ export async function ambilPelajaran(db: D1Database, id: number): Promise<Pelaja
               b.judul AS bab_judul, b.modul_id
          FROM pelajaran p
          JOIN bab b ON b.id = p.bab_id
-         JOIN kursus k ON k.id = b.kursus_id AND k.is_published = 1
+         JOIN kursus k ON k.id = b.kursus_id AND (k.is_published = 1 OR ?2 = 1)
          LEFT JOIN modul m ON m.id = b.modul_id
-        WHERE p.id = ? AND ${BAB_TAMPIL}`,
+        WHERE p.id = ?1 AND (?2 = 1 OR (p.is_published = 1 AND ${BAB_TAMPIL}))`,
     )
-    .bind(id)
+    .bind(id, termasukDraf ? 1 : 0)
     .first<PelajaranUtuh>();
 }
 
@@ -161,7 +172,7 @@ export async function pelajaranWajibBelum(
     .prepare(
       `SELECT p.judul FROM pelajaran p
          JOIN bab b ON b.id = p.bab_id LEFT JOIN modul m ON m.id = b.modul_id
-        WHERE b.kursus_id = ? AND p.wajib = 1 AND ${BAB_TAMPIL}
+        WHERE b.kursus_id = ? AND p.wajib = 1 AND p.is_published = 1 AND ${BAB_TAMPIL}
           AND NOT EXISTS (SELECT 1 FROM progres_pelajaran r WHERE r.akun_id = ? AND r.pelajaran_id = p.id)
         ORDER BY b.urutan, p.urutan LIMIT 5`,
     )

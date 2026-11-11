@@ -223,6 +223,21 @@ assert.deepEqual(
   'pemetaan skrip seed harus sama dengan migrasi',
 );
 
+/* ---- Terapkan 0004: data lama tetap terbit, kolom penyusun tersedia ---- */
+db.exec(mig('0004_penyusun_kursus.sql'));
+const nBab = satu('SELECT COUNT(*) AS n FROM bab').n;
+const nPel = satu('SELECT COUNT(*) AS n FROM pelajaran').n;
+assert.ok(nBab > 0 && nPel > 0, 'data bab dan pelajaran hasil 0003 harus ada');
+assert.equal(satu('SELECT COUNT(*) AS n FROM bab WHERE is_published = 1 AND version = 1').n, nBab);
+assert.equal(
+  satu(
+    "SELECT COUNT(*) AS n FROM pelajaran WHERE is_published = 1 AND version = 1 AND updated_by = 'pipeline'",
+  ).n,
+  nPel,
+);
+assert.throws(() => db.exec('UPDATE bab SET is_published = 2'), /CHECK/);
+
+console.log('Migrasi 0004 lolos: bab dan pelajaran lama tetap terbit, kolom penyusun tersedia.');
 console.log(
   'Migrasi 0003 lolos: pemetaan modul ke bab/pelajaran, peserta lama ke kategori asn, aturan NIP baru.',
 );

@@ -22,6 +22,15 @@ Format mengikuti [Keep a Changelog](https://keepachangelog.com/id-ID/1.1.0/) dan
   contoh sintetis "Membaca Data BPS untuk Perencanaan Daerah" (`npm run data:lms:contoh`). Ujian akhir kini
   juga menunggu pelajaran wajib selesai. Uji migrasi `npm run uji:migrasi` dan E2E desktop serta ponsel.
 
+- **Penyusun kursus Fase 3 (admin)**: menu "Penyusun kursus" untuk membuat, mengubah, mengurutkan (tombol
+  naik/turun), menerbitkan, dan menghapus bab serta pelajaran; penyunting per jenis (video YouTube yang
+  dinormalkan, bacaan Markdown dengan pratinjau langsung, tautan dokumen, pengelola soal latihan);
+  pratinjau sebagai peserta dengan tampilan yang sama; status draf/terbit per bab dan pelajaran; panel
+  kesiapan terbit; riwayat perubahan per kursus. ADR-0008, migrasi aditif `0004_penyusun_kursus.sql`
+  (`is_published`, `version`, `updated_at`, `updated_by`), penguncian optimistik agar suntingan tidak saling
+  menimpa, dan E2E `penyusun-kursus.spec.ts`. Berkas PDF belum dapat diunggah (hanya tautan), dan urutan
+  memakai tombol, bukan seret-lepas (lihat ADR-0008).
+
 ### Diubah
 
 - Sertifikat peserta non-ASN terbit tanpa NIP. Pratinjau PDF belum ada (CSP `frame-src`); dokumen dibuka di tab baru.

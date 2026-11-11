@@ -738,3 +738,57 @@
   margin: 0 0 var(--s-1);
   font-size: var(--t-md);
 }
+
+/* Penyusun kursus (admin) */
+.susun-sempit {
+  max-width: 760px;
+}
+.susun-daftar,
+.susun-soal {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: grid;
+  gap: var(--s-2);
+}
+.susun-pelajaran,
+.susun-soal > li {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--s-3);
+  padding: var(--s-2) 0;
+  border-bottom: 1px solid var(--garis);
+}
+.susun-pelajaran__nama {
+  flex: 1 1 14rem;
+  min-width: 0;
+}
+.susun-aksi {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--s-1);
+}
+.susun-dua {
+  display: grid;
+  gap: var(--s-4);
+  grid-template-columns: 1fr;
+}
+@media (min-width: 900px) {
+  .susun-dua {
+    grid-template-columns: 1fr 1fr;
+  }
+}
+.susun-pratinjau {
+  border: 1px solid var(--garis);
+  border-radius: var(--r-sm);
+  padding: var(--s-3);
+  min-height: 8rem;
+}
+.kesiapan {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: grid;
+  gap: var(--s-2);
+}
