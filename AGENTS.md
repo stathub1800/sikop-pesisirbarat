@@ -92,8 +92,13 @@ data/raw      CSV agregat kecamatan yang boleh publik. data/private: tidak perna
 
 ## F. Cara kerja asisten AI di repositori ini
 
-- Mulai setiap tugas dengan membaca berkas ini, ADR terkait, dan kode di sekitar perubahan. Ikuti pola yang
-  sudah ada; jangan menulis ulang modul yang tidak diminta.
+- Mulai setiap tugas dengan membaca berkas ini, `docs/rencana-kerja.md`, ADR terkait, dan kode di sekitar
+  perubahan. Ikuti pola yang sudah ada; jangan menulis ulang modul yang tidak diminta.
+- Hanya kerjakan butir yang ada di `docs/rencana-kerja.md` atau isu GitHub dari pemilik proyek.
+- **Tulis rencana dulu** (berkas yang diubah, uji, risiko terhadap bagian A dan E), lalu tunggu persetujuan
+  sebelum mengubah berkas. Prompt bakunya ada di `docs/prompt/`.
+- Bila sesi akan berakhir sebelum tugas selesai, tulis `CATATAN-SERAH-TERIMA.md` di cabang (lihat
+  `docs/prompt/2-lanjutkan-sesi.md`). Berkas itu wajib dihapus sebelum pull request digabung.
 - Kerjakan perubahan kecil dan terfokus. Satu pull request untuk satu tujuan.
 - Jangan menonaktifkan uji, aturan lint, atau pemeriksaan CI agar lolos. Perbaiki penyebabnya.
 - Laporkan dengan jujur: apa yang diubah, apa yang diuji, apa yang belum.

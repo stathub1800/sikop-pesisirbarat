@@ -135,6 +135,16 @@ if (base) {
   }
 }
 
+/* F. Catatan serah terima tidak boleh ikut digabung ke main. */
+if (base) {
+  try {
+    readFileSync('CATATAN-SERAH-TERIMA.md');
+    galat.push('[F] CATATAN-SERAH-TERIMA.md masih ada. Hapus sebelum pull request digabung.');
+  } catch {
+    /* tidak ada: benar */
+  }
+}
+
 if (galat.length) {
   console.error(`Pagar AGENTS.md GAGAL (${galat.length}):\n- ${galat.join('\n- ')}`);
   process.exit(1);

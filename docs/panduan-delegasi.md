@@ -41,25 +41,13 @@ mesin di lapis 2, dan keputusan yang tidak bisa diperiksa mesin dijaga manusia d
 Untuk alat obrolan, perbarui instruksi Project atau Gem setiap kali `AGENTS.md` berubah. Hasil dari alat
 obrolan tetap wajib melalui cabang, `npm run check`, dan pull request.
 
-## 3. Kartu tugas (prompt pembuka)
+## 3. Kartu tugas dan prompt baku
 
-Pemilik proyek menulis tugas sebagai isu GitHub dengan format berikut. Staf menempelkannya sebagai pesan
-pertama ke asisten AI.
-
-```
-Tugas SIKOP: <judul singkat>
-
-Konteks: Baca AGENTS.md dan ADR <nomor> sebelum mulai. Ikuti pola kode yang sudah ada.
-Tujuan: <hasil yang terlihat pengguna, satu atau dua kalimat>
-Lingkup: hanya <folder atau berkas>. Jangan mengubah yang lain.
-Kriteria selesai:
-- <perilaku 1 yang dapat diuji>
-- <perilaku 2>
-- Uji ditambahkan; npm run check dan npm run test:e2e hijau.
-- CHANGELOG.md bagian "Belum dirilis" diperbarui.
-Di luar lingkup: <yang sengaja tidak dikerjakan>
-Bila ada keraguan atau pertentangan dengan AGENTS.md: berhenti dan tanyakan, jangan memutuskan sendiri.
-```
+- Pemilik proyek membuat isu GitHub dengan templat **Kartu tugas** (`.github/ISSUE_TEMPLATE/tugas.md`).
+  Ambil butirnya dari `docs/rencana-kerja.md`, satu butir satu isu.
+- Staf memulai sesi AI dengan `docs/prompt/1-mulai-tugas.md` (teks sama untuk Claude dan Gemini).
+- Bila sesi terputus atau pindah tangan: `docs/prompt/2-lanjutkan-sesi.md`.
+- Pemilik proyek memeriksa hasil dengan Claude memakai `docs/prompt/3-periksa-pr.md`.
 
 ## 4. Alur kerja staf
 

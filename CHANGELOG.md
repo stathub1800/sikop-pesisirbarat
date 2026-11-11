@@ -9,6 +9,11 @@ Format mengikuti [Keep a Changelog](https://keepachangelog.com/id-ID/1.1.0/) dan
 - MapLibre GL dinaikkan ke 6.17 untuk menutup CVE-2026-85061 (XSS lewat atribusi peta). Worker MapLibre
   kini dimuat sebagai berkas terpisah dari `/assets`.
 
+### Ditambahkan
+
+- `docs/rencana-kerja.md` (peta jalan resmi Fase 2 dan 3), prompt baku di `docs/prompt/` untuk memulai
+  tugas, melanjutkan sesi, dan memeriksa pull request, serta templat isu "Kartu tugas".
+
 ### Diubah
 
 - CI memakai Chrome bawaan runner untuk uji browser, sehingga tidak bergantung pada mirror apt Ubuntu.
