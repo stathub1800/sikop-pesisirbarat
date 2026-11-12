@@ -14,6 +14,7 @@ body {
   font-family: var(--huruf);
   font-size: var(--t-md);
   line-height: 1.55;
+  word-spacing: 0.04em;
   color: var(--teks);
   background: var(--latar);
   font-feature-settings: 'ss01';
@@ -228,9 +229,32 @@ table,
   text-decoration: none;
   white-space: nowrap;
 }
+.tombol-tema {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  min-height: 44px;
+  padding: 0 var(--s-3);
+  border: 1px solid var(--garis);
+  border-radius: 999px;
+  background: none;
+  color: var(--teks);
+  font: 500 var(--t-xs) / 1 var(--huruf);
+  cursor: pointer;
+}
+.tombol-tema:hover {
+  background: var(--permukaan-2);
+}
+.tombol-tema svg {
+  width: 18px;
+  height: 18px;
+}
 @media (max-width: 960px) {
   .kepala__menu {
     display: block;
+  }
+  .tombol-tema {
+    justify-content: center;
   }
   .nav {
     display: none;
@@ -312,11 +336,18 @@ table,
   border-top: 1px solid rgb(255 255 255 / 0.12);
   color: #a9c3d6;
 }
+.hanya-cetak {
+  display: none;
+}
 @media print {
   .kepala,
   .kaki,
-  .lompat {
+  .lompat,
+  .tanpa-cetak {
     display: none !important;
+  }
+  .hanya-cetak {
+    display: block;
   }
   body {
     background: #fff;

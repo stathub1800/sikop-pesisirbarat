@@ -215,10 +215,15 @@ export async function halamanKatalog(ctx: Konteks, s: Saya): Promise<void> {
       daftar,
       hasil.length
         ? hasil.map(kartuKursus)
-        : kosong(
-            'Tidak ada kursus yang cocok',
-            'Ubah atau kosongkan saringan untuk melihat semua kursus.',
-          ),
+        : kursus.length === 0
+          ? kosong(
+              'Sedang dalam tahap pengembangan',
+              'Kursus akan diterbitkan bertahap setelah materi, latihan, dan ujiannya selesai diuji. Silakan kembali lagi nanti.',
+            )
+          : kosong(
+              'Tidak ada kursus yang cocok',
+              'Ubah atau kosongkan saringan untuk melihat semua kursus.',
+            ),
     );
   };
   const pilih = (
@@ -268,6 +273,16 @@ export async function halamanKatalog(ctx: Konteks, s: Saya): Promise<void> {
         'p',
         null,
         'Pembinaan statistik sektoral untuk walidata, produsen data, pelajar, dan masyarakat umum.',
+      ),
+    ),
+    h(
+      'div',
+      { class: 'pesan pesan--tahap', role: 'note' },
+      h('p', null, h('span', { class: 'label-tahap' }, 'Tahap pengembangan')),
+      h(
+        'p',
+        null,
+        'Ruang Belajar sedang dikembangkan. Katalog, materi, dan sertifikat dapat berubah sebelum peluncuran resmi.',
       ),
     ),
     s.akun

@@ -5,6 +5,7 @@ export * from './geo.ts';
 export * from './indikator.ts';
 export * from './kecamatan.ts';
 export * from './lms.ts';
+export * from './narasi.ts';
 export * from './nip.ts';
 export * from './podes.ts';
 export * from './schemas.ts';

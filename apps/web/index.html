@@ -16,7 +16,7 @@
       <section class="pembuka" aria-labelledby="judul-beranda">
         <div class="wadah pembuka__dalam">
           <div class="pembuka__teks">
-            <p class="pembuka__eyebrow">SIKOP · BPS Kabupaten Pesisir Barat</p>
+            <p class="pembuka__eyebrow">Sistem Informasi Kewilayahan dan Pembinaan Statistik</p>
             <h1 id="judul-beranda">Data Pesisir Barat dalam satu peta.</h1>
             <p class="pembuka__lead">
               Pendidikan, kesehatan, ekonomi, infrastruktur, kebencanaan, dan tata kelola untuk 11
@@ -35,7 +35,7 @@
                 </svg>
                 Buka Peta Tematik
               </a>
-              <a class="tombol tombol--besar" href="/belajar/">
+              <a class="tombol tombol--besar" href="/belajar/" id="aksi-kedua">
                 <svg viewBox="0 0 24 24" aria-hidden="true">
                   <path
                     d="M4 5.5A1.5 1.5 0 0 1 5.5 4H11v15H5.5A1.5 1.5 0 0 0 4 20.5v-15Zm16 0A1.5 1.5 0 0 0 18.5 4H13v15h5.5a1.5 1.5 0 0 1 1.5 1.5v-15Z"
@@ -45,7 +45,8 @@
                     stroke-linejoin="round"
                   />
                 </svg>
-                Masuk Ruang Belajar
+                Ruang Belajar
+                <span class="label-tahap">Tahap pengembangan</span>
               </a>
             </div>
           </div>
@@ -92,10 +93,19 @@
             <figcaption class="sorotan__judul">
               <span class="sorotan__tema" id="sorotan-tema"></span>
               <strong id="sorotan-nama">Memuat sorotan…</strong>
+              <span class="sorotan__narasi" id="sorotan-narasi"></span>
             </figcaption>
             <div class="sorotan__isi">
               <div id="peta-beranda" class="sorotan__svg" aria-busy="true"></div>
               <ol id="daftar-kecamatan" class="daftar-kec" aria-label="Peringkat kecamatan"></ol>
+            </div>
+            <div class="legenda-mini" id="legenda-beranda" hidden>
+              <span class="legenda-mini__ujung" id="legenda-rendah"></span>
+              <span class="legenda-mini__bar" aria-hidden="true">
+                <span class="k1"></span><span class="k2"></span><span class="k3"></span
+                ><span class="k4"></span><span class="k5"></span>
+              </span>
+              <span class="legenda-mini__ujung" id="legenda-tinggi"></span>
             </div>
             <div class="sorotan__kaki">
               <p class="sumber" id="sumber-peta"></p>
@@ -112,7 +122,10 @@
         <header class="bagian__kepala">
           <div>
             <h2 id="judul-perhatian">Kecamatan yang perlu perhatian</h2>
-            <p>Kecamatan yang paling sering berada di tiga terbawah dari seluruh indikator.</p>
+            <p>
+              Kecamatan yang paling sering berada di tiga terbawah pada indikator berarah, yaitu
+              indikator yang jelas mana yang lebih baik (makin tinggi atau makin rendah makin baik).
+            </p>
           </div>
         </header>
         <ol class="perhatian" id="perhatian" aria-busy="true"></ol>
@@ -128,8 +141,10 @@
         <div class="pintu pintu--belajar">
           <header class="bagian__kepala">
             <div>
-              <h2 id="judul-belajar">Ruang Belajar</h2>
-              <p>Kursus statistik bertahap, gratis, dengan sertifikat.</p>
+              <h2 id="judul-belajar">
+                Ruang Belajar <span class="label-tahap">Tahap pengembangan</span>
+              </h2>
+              <p>Kursus statistik bertahap, gratis, dengan sertifikat. Sedang dikembangkan.</p>
             </div>
             <a class="tautan-panah" href="/belajar/">Lihat katalog</a>
           </header>

@@ -43,4 +43,8 @@ export async function terapkanSitus(): Promise<void> {
     if (a.href.startsWith('http')) a.target = '_blank';
     li.hidden = false;
   }
+  // Selama kontak PST belum diisi admin, tampilkan keterangan tahap pengembangan alih-alih kosong.
+  const adaKontakPst = Boolean(p.pst_email || p.pst_whatsapp);
+  for (const el of document.querySelectorAll<HTMLElement>('[data-kontak-kosong]'))
+    el.hidden = adaKontakPst;
 }

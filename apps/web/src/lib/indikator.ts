@@ -2,7 +2,7 @@
  * Tipe dan pembantu indikator yang dipakai bersama oleh Beranda dan Peta Tematik,
  * agar angka, satuan, ikon tema, dan pembanding kabupaten tampil sama di kedua halaman.
  */
-import { formatAngka, sumberSingkat } from '@sikop/shared';
+import { formatAngka, narasiIndikator, sumberSingkat, unitPenyebutRingkas } from '@sikop/shared';
 import { h } from './dom.ts';
 
 export interface Rincian {
@@ -19,6 +19,8 @@ export interface Indikator {
   metode: string;
   desimal: number;
   arah: 'naik_baik' | 'turun_baik' | 'netral';
+  /** "jumlah" bila nilai kecamatan dapat dijumlahkan menjadi nilai kabupaten. */
+  agregasi?: string;
   jenis: string;
   nilai: Record<string, number | null>;
   kabupaten: number | null;
@@ -90,10 +92,43 @@ export const labelSumber = (i: Indikator): string => {
 };
 export function rinci(i: Indikator, r: Rincian | null | undefined): string {
   if (!r || r.penyebut === null) return '';
-  const unit = i.unitPenyebut ?? 'desa';
+  const unit = unitPenyebutRingkas(i.id, i.unitPenyebut ?? 'desa');
   return persen(i)
     ? `${formatAngka(r.pembilang)} dari ${formatAngka(r.penyebut)} ${unit}`
     : `median dari ${formatAngka(r.penyebut)} ${unit}`;
+}
+
+/**
+ * Kalimat penjelasan angka untuk satu wilayah, mis. "Di Kecamatan Ngambur, 9 dari 9 desa/kelurahan
+ * (100%) memiliki sedikitnya satu SD atau MI ...". kode kosong = kabupaten.
+ */
+export function narasi(i: Indikator, wilayah: string, kode = ''): string | null {
+  const r = kode ? i.rincian?.[kode] : i.rincianKabupaten;
+  return narasiIndikator(i.id, {
+    wilayah,
+    nilai: kode ? (i.nilai[kode] ?? null) : i.kabupaten,
+    satuan: i.satuan,
+    desimal: i.desimal,
+    pembilang: r?.pembilang ?? null,
+    penyebut: r?.penyebut ?? null,
+  });
+}
+
+/** Indikator berupa jumlah (unit, orang): angka kecamatan selalu bagian dari total kabupaten. */
+export const jenisJumlah = (i: Indikator): boolean =>
+  i.agregasi ? i.agregasi === 'jumlah' : i.satuan === 'unit' || i.satuan === 'orang';
+
+/** Untuk indikator jumlah: rata-rata per kecamatan dan porsi kecamatan terhadap kabupaten. */
+export function konteksJumlah(
+  i: Indikator,
+  v: number | null,
+  jumlahKecamatan: number,
+): { rataRata: number; porsi: number | null } | null {
+  if (!jenisJumlah(i) || i.kabupaten === null || jumlahKecamatan < 1) return null;
+  return {
+    rataRata: i.kabupaten / jumlahKecamatan,
+    porsi: v === null || i.kabupaten === 0 ? null : (100 * v) / i.kabupaten,
+  };
 }
 
 /* ------------------------------ Peringkat ------------------------------ */
@@ -118,16 +153,105 @@ export function peringkat(i: Indikator, kecamatan: Kecamatan[], kode: string): n
   const u = urutKecamatan(i, kecamatan).filter((x) => x.v !== null);
   return 1 + u.filter((x) => (i.arah === 'turun_baik' ? x.v! < v : x.v! > v)).length;
 }
-export function banding(i: Indikator, v: number | null): { teks: string; kelas: string } | null {
+/** Banyaknya kecamatan (termasuk kecamatan ini) yang nilainya sama persis. */
+export function jumlahSeri(i: Indikator, kecamatan: Kecamatan[], kode: string): number {
+  const v = i.nilai[kode];
+  if (v === null || v === undefined) return 0;
+  return kecamatan.filter((k) => i.nilai[k.kode] === v).length;
+}
+/** Teks peringkat, mis. "Peringkat 1 dari 11 (sama dengan 4 kecamatan lain)". */
+export function teksPeringkat(i: Indikator, kecamatan: Kecamatan[], kode: string): string | null {
+  const p = peringkat(i, kecamatan, kode);
+  if (p === null) return null;
+  const seri = jumlahSeri(i, kecamatan, kode);
+  return `Peringkat ${p} dari ${kecamatan.length}${seri > 1 ? ` (sama dengan ${seri - 1} kecamatan lain)` : ''}`;
+}
+
+/**
+ * Pembanding angka kecamatan. Untuk persentase dan rasio dibandingkan dengan angka kabupaten.
+ * Untuk indikator jumlah (unit, orang) dibandingkan dengan rata-rata per kecamatan, karena angka
+ * kecamatan selalu lebih kecil dari total kabupaten.
+ */
+export function banding(
+  i: Indikator,
+  v: number | null,
+  jumlahKecamatan = 11,
+): { teks: string; kelas: string } | null {
   if (v === null || i.kabupaten === null) return null;
-  const selisih = v - i.kabupaten;
-  if (Math.abs(selisih) < 10 ** -i.desimal / 2)
-    return { teks: 'Setara kabupaten', kelas: 'netral' };
+  const jumlah = konteksJumlah(i, v, jumlahKecamatan);
+  const acuan = jumlah ? jumlah.rataRata : i.kabupaten;
+  const nama = jumlah ? 'rata-rata kecamatan' : 'kabupaten';
+  const selisih = v - acuan;
+  if (Math.abs(selisih) < 10 ** -i.desimal / 2) return { teks: `Setara ${nama}`, kelas: 'netral' };
   const atas = selisih > 0;
   const baik = i.arah === 'netral' ? null : (i.arah === 'naik_baik') === atas;
   return {
-    teks: `${atas ? 'Di atas' : 'Di bawah'} kabupaten`,
+    teks: `${atas ? 'Di atas' : 'Di bawah'} ${nama}`,
     kelas: baik === null ? 'netral' : baik ? 'baik' : 'buruk',
+  };
+}
+
+/**
+ * Selisih bertanda terhadap kabupaten: positif = lebih baik. Persentase dalam poin persen / 100,
+ * selain itu relatif terhadap kabupaten, agar indikator dengan skala berbeda dapat dibandingkan.
+ */
+function keunggulanRelatif(i: Indikator, v: number): number | null {
+  if (i.kabupaten === null || i.arah === 'netral') return null;
+  const s = persen(i)
+    ? (v - i.kabupaten) / 100
+    : (v - i.kabupaten) / Math.max(1e-9, Math.abs(i.kabupaten));
+  return i.arah === 'naik_baik' ? s : -s;
+}
+
+const indikatorBerarah = (indikator: Indikator[]): Indikator[] =>
+  indikator.filter(
+    (i) => i.arah !== 'netral' && Object.values(i.nilai).filter((v) => v !== null).length >= 6,
+  );
+
+export interface ButirRingkasan {
+  indikator: Indikator;
+  nilai: number;
+  peringkat: number;
+  seri: number;
+}
+
+/**
+ * Ringkasan pimpinan untuk satu kecamatan: hingga tiga keunggulan (tiga teratas dan lebih baik dari
+ * kabupaten) dan tiga tantangan (tiga terbawah dan lebih buruk dari kabupaten), diurutkan dari
+ * selisih terbesar terhadap kabupaten. Penanda awal untuk ditelusuri, bukan penilaian kinerja.
+ */
+export function ringkasanKecamatan(
+  indikator: Indikator[],
+  kecamatan: Kecamatan[],
+  kode: string,
+  ambil = 3,
+): { keunggulan: ButirRingkasan[]; tantangan: ButirRingkasan[] } {
+  const keunggulan: (ButirRingkasan & { g: number })[] = [];
+  const tantangan: (ButirRingkasan & { g: number })[] = [];
+  for (const i of indikatorBerarah(indikator)) {
+    const v = i.nilai[kode];
+    if (v === null || v === undefined) continue;
+    const p = peringkat(i, kecamatan, kode);
+    const g = keunggulanRelatif(i, v);
+    if (p === null || g === null) continue;
+    const n = Object.values(i.nilai).filter((x) => x !== null).length;
+    const seri = jumlahSeri(i, kecamatan, kode);
+    const butir = { indikator: i, nilai: v, peringkat: p, seri, g };
+    if (p <= 3 && g > 0) keunggulan.push(butir);
+    else if (p > n - 3 && g < 0) tantangan.push(butir);
+  }
+  // Keunggulan yang dimiliki banyak kecamatan sekaligus (nilai sama) kurang khas, jadi diletakkan belakang.
+  keunggulan.sort((a, b) => a.seri - b.seri || b.g - a.g);
+  tantangan.sort((a, b) => a.g - b.g);
+  const bersih = (b: ButirRingkasan): ButirRingkasan => ({
+    indikator: b.indikator,
+    nilai: b.nilai,
+    peringkat: b.peringkat,
+    seri: b.seri,
+  });
+  return {
+    keunggulan: keunggulan.slice(0, ambil).map(bersih),
+    tantangan: tantangan.slice(0, ambil).map(bersih),
   };
 }
 
@@ -140,9 +264,7 @@ export function perluPerhatian(
   kecamatan: Kecamatan[],
   ambil = 3,
 ): { kode: string; nama: string; jumlah: number; dari: number; contoh: Indikator[] }[] {
-  const berarah = indikator.filter(
-    (i) => i.arah !== 'netral' && Object.values(i.nilai).filter((v) => v !== null).length >= 6,
-  );
+  const berarah = indikatorBerarah(indikator);
   const hitung = new Map<string, Indikator[]>();
   for (const i of berarah) {
     const ada = urutKecamatan(i, kecamatan).filter((x) => x.v !== null);
@@ -152,12 +274,17 @@ export function perluPerhatian(
       if (p !== null && p > n - 3) hitung.set(x.kode, [...(hitung.get(x.kode) ?? []), i]);
     }
   }
+  // Contoh diurutkan dari yang paling jauh di bawah kabupaten, agar selisih kecil tidak ditonjolkan.
+  const parah = (i: Indikator, kode: string): number =>
+    keunggulanRelatif(i, i.nilai[kode] ?? 0) ?? 0;
   return kecamatan
     .map((k) => ({
       ...k,
       jumlah: hitung.get(k.kode)?.length ?? 0,
       dari: berarah.length,
-      contoh: hitung.get(k.kode) ?? [],
+      contoh: [...(hitung.get(k.kode) ?? [])]
+        .filter((i) => parah(i, k.kode) < 0)
+        .sort((a, b) => parah(a, k.kode) - parah(b, k.kode)),
     }))
     .sort((a, b) => b.jumlah - a.jumlah || a.nama.localeCompare(b.nama, 'id'))
     .slice(0, ambil);

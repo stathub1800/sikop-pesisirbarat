@@ -2,7 +2,14 @@
  * Menyusun daftar indikator yang tayang: indikator turunan data sekolah (dihitung saat diminta)
  * dan indikator manual (diisi admin, hanya yang lengkap sumbernya).
  */
-import { hitungIndikator, INDIKATOR_SEKOLAH, KECAMATAN, type SekolahRingkas } from '@sikop/shared';
+import {
+  hitungIndikator,
+  INDIKATOR_PD_GURU,
+  INDIKATOR_SEKOLAH,
+  KECAMATAN,
+  TAYANG_PD_GURU,
+  type SekolahRingkas,
+} from '@sikop/shared';
 import type { Pengaturan } from '../lib/pengaturan.ts';
 
 export interface IndikatorTayang {
@@ -15,6 +22,8 @@ export interface IndikatorTayang {
   metode: string;
   desimal: number;
   arah: string;
+  /** "jumlah" (dapat dijumlahkan antarkecamatan), "rasio", atau "tidak_ada". */
+  agregasi: string;
   jenis: 'otomatis' | 'manual';
   nilai: Record<string, number | null>;
   kabupaten: number | null;
@@ -51,7 +60,11 @@ export async function daftarIndikator(
   const rows = (sekolah?.results ?? []) as unknown as SekolahRingkas[];
   const tahunData = (p.tanggal_data_sekolah ?? '').slice(0, 4);
   const diperbarui = (terakhir?.results?.[0] as { t: string | null } | undefined)?.t ?? null;
-  const otomatis: IndikatorTayang[] = INDIKATOR_SEKOLAH.map((ind) => {
+  // Indikator yang bergantung pada peserta didik/guru disembunyikan dari publik selama datanya belum
+  // lengkap (TAYANG_PD_GURU). Admin (termasukDraf) tetap menerimanya.
+  const otomatis: IndikatorTayang[] = INDIKATOR_SEKOLAH.filter(
+    (ind) => termasukDraf || TAYANG_PD_GURU || !INDIKATOR_PD_GURU.includes(ind.id),
+  ).map((ind) => {
     const h = hitungIndikator(ind, rows, KODE);
     return {
       id: ind.id,
@@ -63,6 +76,7 @@ export async function daftarIndikator(
       metode: ind.metode,
       desimal: ind.desimal,
       arah: ind.arah,
+      agregasi: ind.agregasi,
       jenis: 'otomatis',
       nilai: h.perKecamatan,
       kabupaten: h.kabupaten,
@@ -121,6 +135,7 @@ export async function daftarIndikator(
       metode: m.metode ?? '',
       desimal: m.desimal,
       arah: m.arah,
+      agregasi: m.agregasi,
       jenis: 'manual',
       nilai: v,
       kabupaten: kab ?? null,

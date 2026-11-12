@@ -47,6 +47,21 @@
   --tb-latar: transparent;
   padding-inline: var(--s-3);
 }
+/* Penanda fitur yang masih dikembangkan, mis. Ruang Belajar. */
+.label-tahap {
+  display: inline-block;
+  padding: 2px 8px;
+  border-radius: 999px;
+  background: var(--kuning-lembut);
+  color: var(--teks);
+  border: 1px solid var(--sorot);
+  font-size: var(--t-xs);
+  font-weight: 600;
+  letter-spacing: 0;
+  line-height: 1.4;
+  vertical-align: middle;
+  white-space: nowrap;
+}
 .tombol--kecil {
   min-height: 36px;
   padding: 0 var(--s-3);
@@ -348,6 +363,10 @@ th[aria-sort='descending'] button.urut::after {
 }
 .pesan p:last-child {
   margin: 0;
+}
+.pesan--tahap {
+  border-left: 4px solid var(--sorot);
+  background: var(--kuning-lembut);
 }
 .pesan--peringatan {
   border-color: var(--oranye);

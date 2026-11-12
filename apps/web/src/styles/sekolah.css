@@ -65,3 +65,222 @@
 .peta-kecil {
   max-width: 260px;
 }
+
+/* Profil kecamatan: ringkasan pimpinan dan kalimat penjelasan per indikator */
+.ringkasan {
+  margin-top: var(--s-6);
+}
+.ringkasan__grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: var(--s-4);
+}
+.ringkasan__kolom {
+  padding: var(--s-4);
+  border-radius: var(--r-md);
+  border: 1px solid var(--garis);
+  border-top-width: 4px;
+}
+.ringkasan__kolom--baik {
+  border-top-color: var(--hijau);
+}
+.ringkasan__kolom--buruk {
+  border-top-color: var(--oranye);
+}
+.ringkasan__kolom h3 {
+  font-size: var(--t-md);
+}
+.ringkasan__kolom ol {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: grid;
+  gap: var(--s-3);
+}
+.ringkasan__kolom a {
+  display: grid;
+  grid-template-columns: 32px minmax(0, 1fr);
+  gap: var(--s-3);
+  color: inherit;
+  text-decoration: none;
+}
+.ringkasan__kolom a:hover strong {
+  text-decoration: underline;
+}
+.ringkasan__ikon {
+  display: grid;
+  place-items: center;
+  width: 32px;
+  height: 32px;
+  border-radius: var(--r-sm);
+  background: var(--primer-lembut);
+  color: var(--primer);
+}
+.ringkasan__ikon svg {
+  width: 18px;
+  height: 18px;
+}
+.ringkasan__isi {
+  display: grid;
+  gap: 2px;
+  font-size: var(--t-sm);
+}
+.ringkasan__isi span {
+  color: var(--teks-2);
+}
+.narasi-baris {
+  display: block;
+  margin-top: 2px;
+  font-size: var(--t-xs);
+  font-weight: 400;
+  line-height: 1.5;
+  color: var(--teks-2);
+}
+.remah + .halaman__judul {
+  margin-top: var(--s-3);
+}
+
+/* Data sekolah: rekap per jenjang di atas tabel */
+.rekap-jenjang {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+  gap: var(--s-2);
+  margin: var(--s-4) 0 0;
+  padding: 0;
+  list-style: none;
+}
+.rekap-jenjang button {
+  display: grid;
+  gap: 2px;
+  width: 100%;
+  min-height: 44px;
+  padding: var(--s-2) var(--s-3);
+  border: 1px solid var(--garis);
+  border-radius: var(--r-md);
+  background: var(--permukaan);
+  color: var(--teks);
+  text-align: left;
+  font: inherit;
+  cursor: pointer;
+}
+.rekap-jenjang button:hover {
+  border-color: var(--primer);
+}
+.rekap-jenjang button[aria-pressed='true'] {
+  border-color: var(--primer);
+  background: var(--primer-lembut);
+}
+.rekap-jenjang strong {
+  font-size: var(--t-lg);
+  font-variant-numeric: tabular-nums;
+}
+.rekap-jenjang span {
+  font-size: var(--t-xs);
+  color: var(--teks-2);
+}
+
+/* Tabel dinamis */
+.pilih-mode {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--s-2);
+  margin-bottom: var(--s-4);
+}
+.pilih-mode .tombol[aria-pressed='true'] {
+  background: var(--primer);
+  border-color: var(--primer);
+  color: var(--primer-teks);
+}
+.tata-tabel {
+  display: grid;
+  gap: var(--s-4);
+  align-items: start;
+}
+@media (min-width: 960px) {
+  .tata-tabel {
+    grid-template-columns: 320px minmax(0, 1fr);
+  }
+}
+.tata-tabel > .panel + .panel {
+  margin-top: 0;
+}
+.daftar-centang {
+  display: grid;
+  gap: var(--s-2);
+  max-height: 46vh;
+  overflow-y: auto;
+  padding: var(--s-2);
+  border: 1px solid var(--garis);
+  border-radius: var(--r-md);
+}
+.daftar-centang .centang {
+  min-height: 44px;
+  align-items: center;
+}
+.daftar-centang small {
+  display: block;
+  color: var(--teks-2);
+  font-size: var(--t-xs);
+}
+.opsi-tabel {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0 var(--s-4);
+  align-items: end;
+}
+.opsi-tabel .centang {
+  margin-bottom: var(--s-4);
+}
+.tabel-dinamis th small.kepala-satuan,
+.tabel-dinamis th .kepala-satuan {
+  display: block;
+  font-weight: 400;
+  font-size: var(--t-xs);
+  color: var(--teks-2);
+}
+.tabel-dinamis thead th {
+  white-space: normal;
+  min-width: 110px;
+  vertical-align: bottom;
+}
+.tabel-dinamis tbody th {
+  font-weight: 500;
+}
+.tebal {
+  font-weight: 700;
+}
+.tabel-aksi {
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: var(--s-3);
+}
+.tabel-aksi p {
+  margin: 0;
+}
+.catatan-indikator {
+  margin-top: var(--s-4);
+  font-size: var(--t-sm);
+}
+.catatan-indikator summary {
+  cursor: pointer;
+  font-weight: 600;
+  min-height: 44px;
+  display: flex;
+  align-items: center;
+}
+
+@media print {
+  .profil-kecamatan .panel {
+    break-inside: avoid-page;
+    box-shadow: none;
+  }
+  .tabel-profil tr {
+    break-inside: avoid;
+  }
+  .tabel-wadah {
+    overflow: visible !important;
+  }
+  .sembunyi-hp {
+    display: table-cell !important;
+  }
+}

@@ -18,15 +18,10 @@ interface Baris {
   status: string;
   akreditasi: string | null;
   kode_kec: string;
-  pd: number;
-  guru: number;
-  rombel: number;
 }
 interface Hasil {
   items: Baris[];
   total: number;
-  jumlah_pd: number;
-  jumlah_guru: number;
   halaman: number;
   ukuran: number;
 }
@@ -77,6 +72,7 @@ async function muatData(dorong = true): Promise<void> {
   const wadah = $('#tabel-sekolah');
   wadah.setAttribute('aria-busy', 'true');
   if (!wadah.firstChild) isi(wadah, kerangka(8));
+  void gambarRekap(f);
   try {
     const r = await get<Hasil>(`/sekolah${query}`);
     tampil(r);
@@ -90,14 +86,58 @@ async function muatData(dorong = true): Promise<void> {
   }
 }
 
+/**
+ * Rekap banyaknya sekolah per jenjang mengikuti saringan selain jenjang. Kartu dapat diklik untuk
+ * menyaring jenjang, sehingga pengunjung langsung melihat komposisi tanpa menggulir halaman demi halaman.
+ */
+async function gambarRekap(f: Record<string, string>): Promise<void> {
+  const wadah = $('#rekap-jenjang');
+  const { jenjang: dipilih, ...tanpaJenjang } = f;
+  let sel: { baris: string; n: number }[];
+  try {
+    sel = (
+      await get<{ sel: { baris: string; n: number }[] }>(
+        `/sekolah/rekap${qs({ ...tanpaJenjang, baris: 'jenjang' })}`,
+      )
+    ).sel;
+  } catch {
+    isi(wadah);
+    return;
+  }
+  const n = (j: string): number => sel.find((x) => x.baris === j)?.n ?? 0;
+  const pilihJenjang = (j: string): void => {
+    ($('#f-jenjang') as HTMLSelectElement).value = dipilih === j ? '' : j;
+    halaman = 1;
+    void muatData();
+  };
+  isi(
+    wadah,
+    JENJANG.filter((j) => n(j) > 0).map((j) =>
+      h(
+        'li',
+        null,
+        h(
+          'button',
+          {
+            type: 'button',
+            'aria-pressed': String(dipilih === j),
+            title: dipilih === j ? `Hapus saringan ${j}` : `Tampilkan hanya ${j}`,
+            onclick: () => pilihJenjang(j),
+          },
+          h('strong', null, formatAngka(n(j))),
+          h('span', null, j),
+        ),
+      ),
+    ),
+  );
+}
+
 const KOLOM: { id: string; label: string; urut?: string; kanan?: boolean; hp?: boolean }[] = [
   { id: 'nama', label: 'Sekolah', urut: 'nama' },
   { id: 'kec', label: 'Kecamatan', urut: 'kecamatan', hp: true },
-  { id: 'jenjang', label: 'Jenjang', urut: 'jenjang', hp: true },
+  { id: 'jenjang', label: 'Jenjang', urut: 'jenjang' },
   { id: 'status', label: 'Status', hp: true },
   { id: 'akreditasi', label: 'Akreditasi', hp: true },
-  { id: 'pd', label: 'Peserta didik', urut: 'pd', kanan: true },
-  { id: 'guru', label: 'Guru', urut: 'guru', kanan: true },
 ];
 
 function tampil(r: Hasil): void {
@@ -106,7 +146,7 @@ function tampil(r: Hasil): void {
   $('#ringkas-hasil').textContent =
     r.total === 0
       ? 'Tidak ada sekolah yang cocok.'
-      : `Menampilkan ${formatAngka(awal)} sampai ${formatAngka(akhir)} dari ${formatAngka(r.total)} sekolah, dengan ${formatAngka(r.jumlah_pd)} peserta didik dan ${formatAngka(r.jumlah_guru)} guru.`;
+      : `Menampilkan ${formatAngka(awal)} sampai ${formatAngka(akhir)} dari ${formatAngka(r.total)} sekolah.`;
   if (r.total === 0) {
     isi(
       $('#tabel-sekolah'),
@@ -153,11 +193,13 @@ function tampil(r: Hasil): void {
         h('small', null, `NPSN ${s.npsn}`),
       ),
       h('td', { class: 'sembunyi-hp' }, namaKec[s.kode_kec] ?? s.kode_kec),
-      h('td', { class: 'sembunyi-hp' }, s.jenjang),
+      h('td', null, s.jenjang),
       h('td', { class: 'sembunyi-hp' }, s.status),
-      h('td', { class: 'sembunyi-hp' }, s.akreditasi ?? 'Belum'),
-      h('td', { class: 'kanan angka' }, formatAngka(s.pd)),
-      h('td', { class: 'kanan angka' }, formatAngka(s.guru)),
+      h(
+        'td',
+        { class: 'sembunyi-hp' },
+        s.akreditasi && s.akreditasi !== 'Tidak Terakreditasi' ? s.akreditasi : 'Belum',
+      ),
     ),
   );
   isi(
@@ -209,7 +251,7 @@ function ubahUrut(kolom: string): void {
   urut =
     urut.kolom === kolom
       ? { kolom, arah: urut.arah === 'naik' ? 'turun' : 'naik' }
-      : { kolom, arah: kolom === 'pd' || kolom === 'guru' ? 'turun' : 'naik' };
+      : { kolom, arah: 'naik' };
   halaman = 1;
   void muatData();
 }
