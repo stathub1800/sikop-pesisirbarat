@@ -153,8 +153,8 @@ test('menu utama: Peta Tematik dan Ruang Belajar; alamat lama Potret Desa dialih
   await page.goto('/');
   if (isMobile) await page.locator('.kepala__menu').click();
   const nav = page.locator('#nav-utama');
-  await expect(nav.getByRole('link', { name: 'Peta Tematik' })).toBeVisible();
-  await expect(nav.getByRole('link', { name: 'Ruang Belajar' })).toBeVisible();
+  await expect(nav.getByRole('link', { name: 'Peta Tematik', exact: true })).toBeVisible();
+  await expect(nav.getByRole('link', { name: 'Ruang Belajar', exact: true })).toBeVisible();
   await expect(nav.getByRole('link', { name: 'Data Sekolah' })).toHaveCount(0);
   await page.goto('/podes/');
   await expect(page).toHaveURL(/\/peta\/(\?|$)/);
