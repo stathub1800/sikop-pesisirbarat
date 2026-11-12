@@ -8,6 +8,21 @@ import { isInBbox, isKodeKecamatan, kecamatanByNama } from './kecamatan.ts';
 export const JENJANG = ['PAUD', 'SD/MI', 'SMP/MTs', 'SMA/SMK/MA', 'SLB', 'Nonformal'] as const;
 export type Jenjang = (typeof JENJANG)[number];
 
+/**
+ * Jumlah peserta didik, guru, dan rombongan belajar per sekolah belum lengkap di sumber
+ * (contoh: madrasah tercatat 0 karena datanya ada di EMIS Kemenag, bukan Dapodik).
+ * Selama false, angka tersebut dan indikator turunannya tidak ditayangkan di situs, API publik,
+ * maupun CSV unduhan. Admin tetap dapat melihat dan memperbaikinya. Ubah ke true setelah data lengkap.
+ */
+export const TAYANG_PD_GURU = false;
+/** Indikator turunan yang bergantung pada peserta didik, guru, atau rombel. */
+export const INDIKATOR_PD_GURU: readonly string[] = [
+  'jumlah_peserta_didik',
+  'jumlah_guru',
+  'rasio_murid_guru',
+  'rasio_murid_rombel',
+];
+
 const BENTUK_KE_JENJANG: Readonly<Record<string, Jenjang>> = {
   TK: 'PAUD',
   KB: 'PAUD',

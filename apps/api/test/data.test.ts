@@ -17,11 +17,16 @@ interface Ind {
 }
 
 describe('T03: satu sumber angka, rekonsiliasi dengan berkas sumber', () => {
-  it('ringkasan beranda cocok dengan data sumber', async () => {
-    const r = await klien().json<{ sekolah: number; pd: number; guru: number; kecamatan: number }>(
-      '/ringkasan',
-    );
-    expect(r.body).toMatchObject({ kecamatan: 11, sekolah: 364, pd: 34651, guru: 2983 });
+  it('ringkasan beranda cocok dengan data sumber; peserta didik dan guru tidak tayang', async () => {
+    const r = await klien().json<{
+      sekolah: number;
+      pd?: number;
+      guru?: number;
+      kecamatan: number;
+    }>('/ringkasan');
+    expect(r.body).toMatchObject({ kecamatan: 11, sekolah: 364 });
+    expect(r.body.pd).toBeUndefined();
+    expect(r.body.guru).toBeUndefined();
   });
 
   it('indikator: agregat kabupaten = jumlah kecamatan, rasio dari total; setiap indikator bersumber', async () => {
@@ -33,8 +38,15 @@ describe('T03: satu sumber angka, rekonsiliasi dengan berkas sumber', () => {
       jumlah.kabupaten,
     );
     expect(jumlah.kabupaten).toBe(364);
-    expect(by.jumlah_peserta_didik!.kabupaten).toBe(34651);
-    expect(by.rasio_murid_guru!.kabupaten).toBeCloseTo(34651 / 2983, 6);
+    expect((jumlah as Ind & { agregasi: string }).agregasi).toBe('jumlah');
+    // Peserta didik dan guru belum lengkap di sumber (madrasah): indikator turunannya tidak tayang.
+    for (const id of [
+      'jumlah_peserta_didik',
+      'jumlah_guru',
+      'rasio_murid_guru',
+      'rasio_murid_rombel',
+    ])
+      expect(by[id], id).toBeUndefined();
     expect(jumlah.nilai['1813100']).toBeGreaterThan(0); // Ngaras kini punya data (T01)
     for (const i of body.indikator) {
       expect(i.sumber, i.id).not.toBe('');
@@ -162,7 +174,39 @@ describe('Data sekolah publik', () => {
     expect(r.body.sekolah.kecamatan).toBe('Ngambur');
     expect(r.body.sekolah).not.toHaveProperty('koordinat_catatan');
     expect(r.body.sekolah).not.toHaveProperty('updated_by');
+    // Peserta didik, guru, dan rombel belum lengkap di sumber: tidak dikirim ke publik.
+    for (const k of ['pd', 'pd_l', 'pd_p', 'guru', 'guru_l', 'guru_p', 'rombel'])
+      expect(r.body.sekolah, k).not.toHaveProperty(k);
     expect((await klien().req('/sekolah/ZZZZZZZZ')).status).toBe(404);
+  });
+
+  it('daftar sekolah tidak memuat peserta didik dan guru; urut pd diabaikan', async () => {
+    const r = await klien().json<{ items: Record<string, unknown>[]; jumlah_pd?: number }>(
+      '/sekolah?urut=pd&arah=turun&ukuran=3',
+    );
+    expect(r.status).toBe(200);
+    expect(r.body.jumlah_pd).toBeUndefined();
+    for (const s of r.body.items) {
+      expect(s).not.toHaveProperty('pd');
+      expect(s).not.toHaveProperty('guru');
+    }
+  });
+
+  it('tabulasi silang sekolah: jumlah sel = total sekolah, variabel di luar daftar ditolak', async () => {
+    type Rekap = { sel: { baris: string; kolom: string; n: number }[] };
+    const r = await klien().json<Rekap>('/sekolah/rekap?baris=jenjang&kolom=status');
+    expect(r.status).toBe(200);
+    expect(r.body.sel.reduce((a, x) => a + x.n, 0)).toBe(364);
+    expect(new Set(r.body.sel.map((x) => x.kolom))).toEqual(new Set(['Negeri', 'Swasta']));
+    const satu = await klien().json<Rekap>('/sekolah/rekap?baris=akreditasi&kec=1813030');
+    expect(satu.body.sel.reduce((a, x) => a + x.n, 0)).toBe(5);
+    expect(satu.body.sel.every((x) => ['A', 'B', 'C', 'Belum'].includes(x.baris))).toBe(true);
+    expect((await klien().req('/sekolah/rekap?baris=pd')).status).toBe(400);
+    expect((await klien().req('/sekolah/rekap?baris=status&kolom=status')).status).toBe(400);
+    expect(
+      (await klien().req(`/sekolah/rekap?baris=${encodeURIComponent('nama; DROP TABLE sekolah')}`))
+        .status,
+    ).toBe(400);
   });
 
   it('ekspor CSV lengkap dengan BOM dan jumlah baris yang benar', async () => {
@@ -177,6 +221,7 @@ describe('Data sekolah publik', () => {
     ).first<{ n: number }>())!;
     expect(baris).toHaveLength(n + 1);
     expect(baris[0]).toMatch(/^npsn,nama/);
+    expect(baris[0]).not.toMatch(/(^|,)(pd|guru|rombel)(,|$)/);
   });
 });
 

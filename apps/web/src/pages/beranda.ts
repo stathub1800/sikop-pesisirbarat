@@ -17,8 +17,11 @@ import {
   fmt,
   fmtRingkas,
   ikon,
+  jumlahSeri,
   LABEL_TAB,
   labelSumber,
+  narasi,
+  peringkat,
   perluPerhatian,
   rinci,
   TEMA_PROFIL,
@@ -165,14 +168,20 @@ async function gambarPetaSorotan(i: Indikator): Promise<void> {
   const maks = Math.max(1e-9, ...ada);
   isi(
     daftar,
-    baris.map((b, n) =>
+    baris.map((b) =>
       h(
         'li',
         { 'data-kode': b.kode },
         h(
           'a',
           { href: tautanPeta(i, b.kode) },
-          h('span', { class: 'daftar-kec__no' }, b.v === null ? '–' : String(n + 1)),
+          h(
+            'span',
+            { class: 'daftar-kec__no' },
+            b.v === null
+              ? '–'
+              : `${peringkat(i, keadaan.kecamatan, b.kode)}${jumlahSeri(i, keadaan.kecamatan, b.kode) > 1 ? '=' : ''}`,
+          ),
           h('span', { class: 'daftar-kec__nama' }, b.nama),
           h('span', { class: 'angka' }, fmtRingkas(i, b.v)),
           h(
@@ -199,14 +208,18 @@ async function aktifkan(id: string, dariKlik = false): Promise<void> {
     b.setAttribute('aria-pressed', String(b.dataset.id === id));
   $('#sorotan-tema').replaceChildren(ikon(i.kategori), LABEL_TAB[i.kategori] ?? i.kategori);
   $('#sorotan-nama').textContent = i.nama;
+  $('#sorotan-narasi').textContent = narasi(i, 'Kabupaten Pesisir Barat') ?? '';
   const arah =
     i.arah === 'naik_baik'
       ? 'Urutan dari nilai tertinggi.'
       : i.arah === 'turun_baik'
         ? 'Urutan dari nilai terendah (makin rendah makin baik).'
         : 'Urutan dari nilai tertinggi.';
+  const adaSeri = keadaan.kecamatan.some(
+    (k) => i.nilai[k.kode] !== null && jumlahSeri(i, keadaan.kecamatan, k.kode) > 1,
+  );
   $('#sumber-peta').textContent =
-    `Kabupaten ${fmt(i, i.kabupaten)}. ${arah} Warna makin gelap berarti nilai makin tinggi. Sumber: ${labelSumber(i)}.`;
+    `Kabupaten ${fmt(i, i.kabupaten)}. ${arah}${adaSeri ? ' Tanda "=" berarti beberapa kecamatan bernilai sama.' : ''} Warna makin gelap berarti nilai makin tinggi. Sumber: ${labelSumber(i)}.`;
   ($('#buka-sorotan') as HTMLAnchorElement).href = tautanPeta(i);
   await gambarPetaSorotan(i);
   // Pada layar sempit peta berada di bawah kartu: bawa ke peta agar perubahan terlihat.
@@ -251,7 +264,7 @@ function gambarPerhatian(indikator: Indikator[]): void {
             'p',
             { class: 'perhatian__ringkas' },
             h('strong', null, formatAngka(k.jumlah)),
-            ` dari ${formatAngka(k.dari)} indikator berada di tiga terbawah`,
+            ` dari ${formatAngka(k.dari)} indikator berarah berada di tiga terbawah`,
           ),
           h(
             'span',
@@ -337,8 +350,8 @@ async function mulaiKursus(): Promise<void> {
           'li',
           null,
           kosong(
-            'Kursus segera hadir',
-            'Ruang Belajar sedang disiapkan. Kunjungi katalog untuk kabar terbaru.',
+            'Sedang dalam tahap pengembangan',
+            'Ruang Belajar sedang dikembangkan. Kursus akan diterbitkan bertahap setelah materi dan ujian selesai diuji.',
           ),
         ),
       );

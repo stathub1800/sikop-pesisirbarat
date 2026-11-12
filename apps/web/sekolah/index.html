@@ -5,16 +5,22 @@
     <title>Data Sekolah | SIKOP Pesisir Barat</title>
     <meta
       name="description"
-      content="Cari dan unduh data satuan pendidikan di Kabupaten Pesisir Barat: peserta didik, guru, rombongan belajar, dan akreditasi per kecamatan."
+      content="Cari dan unduh data satuan pendidikan di Kabupaten Pesisir Barat: jenjang, status, akreditasi, alamat, dan sarana per kecamatan."
     />
     <script type="module" src="/src/pages/sekolah.ts"></script>
   </head>
   <body>
     <!--sikop:header aktif="peta"-->
     <main id="isi" class="wadah halaman">
+      <nav class="remah" aria-label="Remah roti">
+        <a href="/peta/">Peta Tematik</a> / <span aria-current="page">Data Sekolah</span>
+      </nav>
       <div class="halaman__judul">
         <h1>Data Sekolah</h1>
-        <p>Satuan pendidikan formal dan nonformal di 11 kecamatan Kabupaten Pesisir Barat.</p>
+        <p>
+          Satuan pendidikan formal dan nonformal di 11 kecamatan Kabupaten Pesisir Barat. Halaman
+          ini bagian dari Peta Tematik tema Pendidikan.
+        </p>
       </div>
       <form id="filter" class="filter" role="search" aria-label="Saring data sekolah">
         <div class="isian filter__cari">
@@ -52,6 +58,11 @@
           </select>
         </div>
       </form>
+      <ul
+        class="rekap-jenjang"
+        id="rekap-jenjang"
+        aria-label="Banyaknya sekolah menurut jenjang"
+      ></ul>
       <div class="hasil-kepala">
         <p id="ringkas-hasil" aria-live="polite"></p>
         <div class="baris-tombol">
@@ -66,6 +77,10 @@
       <div id="tabel-sekolah"></div>
       <nav class="paginasi" id="paginasi" aria-label="Halaman hasil"></nav>
       <p class="sumber" id="sumber-sekolah"></p>
+      <p class="sumber">
+        Jumlah peserta didik dan guru per sekolah sementara tidak ditayangkan karena data sumbernya
+        belum lengkap (misalnya madrasah yang datanya tercatat di EMIS Kemenag).
+      </p>
     </main>
     <!--sikop:footer-->
   </body>

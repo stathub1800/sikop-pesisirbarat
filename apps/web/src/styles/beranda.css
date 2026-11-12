@@ -310,6 +310,14 @@
   font-size: var(--t-lg);
   line-height: 1.3;
 }
+.sorotan__narasi {
+  font-size: var(--t-sm);
+  line-height: 1.5;
+  color: var(--teks);
+}
+.sorotan__narasi:empty {
+  display: none;
+}
 .sorotan__isi {
   display: grid;
   grid-template-columns: minmax(0, 1fr) minmax(200px, 0.9fr);
