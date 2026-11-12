@@ -43,6 +43,32 @@ const NAV = [
   { id: 'layanan', href: '/layanan/', label: 'Layanan Data' },
 ];
 
+/**
+ * Server dev Vite tidak membaca public/_redirects (fitur Cloudflare Pages). Plugin ini menerapkan aturan
+ * sederhana "asal tujuan kode" agar perilaku lokal dan CI sama dengan produksi.
+ */
+function alihkan(): Plugin {
+  return {
+    name: 'sikop-redirects',
+    configureServer(server) {
+      const aturan = readFileSync(resolve(__dirname, 'public/_redirects'), 'utf8')
+        .split('\n')
+        .map((b) => b.trim())
+        .filter((b) => b && !b.startsWith('#'))
+        .map((b) => b.split(/\s+/))
+        .filter((b) => b.length >= 2 && !b[0]!.includes('*') && !b[0]!.includes(':'));
+      server.middlewares.use((req, res, next) => {
+        const [jalur, kueri] = (req.url ?? '').split('?');
+        const cocok = aturan.find((a) => a[0] === jalur);
+        if (!cocok) return next();
+        res.statusCode = Number(cocok[2] ?? 302);
+        res.setHeader('Location', cocok[1] + (kueri ? `?${kueri}` : ''));
+        res.end();
+      });
+    },
+  };
+}
+
 function partials(): Plugin {
   const baca = (n: string): string => readFileSync(resolve(ROOT, 'src/partials', n), 'utf8');
   return {
@@ -68,7 +94,7 @@ function partials(): Plugin {
 export default defineConfig({
   root: ROOT,
   publicDir: 'public',
-  plugins: [partials()],
+  plugins: [partials(), alihkan()],
   build: {
     outDir: 'dist',
     emptyOutDir: true,

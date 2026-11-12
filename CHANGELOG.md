@@ -4,6 +4,12 @@ Format mengikuti [Keep a Changelog](https://keepachangelog.com/id-ID/1.1.0/) dan
 
 ## [Belum dirilis]
 
+### Diperbaiki
+
+- Server dev Vite kini menerapkan `public/_redirects`, sehingga uji E2E alamat lama `/podes/` lolos di CI
+  seperti di produksi.
+- Berkas sistem `desktop.ini` dan `Thumbs.db` tidak lagi dilacak git.
+
 ### Keamanan
 
 - MapLibre GL dinaikkan ke 6.17 untuk menutup CVE-2026-85061 (XSS lewat atribusi peta). Worker MapLibre
