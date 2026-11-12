@@ -619,26 +619,72 @@ const WARNA_PESERTA: Record<string, 'kuning' | 'hijau' | 'merah' | ''> = {
   nonaktif: '',
 };
 
+interface RingkasanPeserta {
+  total: number;
+  status: Record<string, number>;
+  kategori: Record<string, number>;
+}
+const LABEL_STATUS_PESERTA: Record<string, string> = {
+  menunggu: 'Menunggu verifikasi',
+  terverifikasi: 'Terverifikasi',
+  ditolak: 'Ditolak',
+  nonaktif: 'Nonaktif',
+};
+
+/** Kartu jumlah yang sekaligus menjadi tombol saringan cepat. */
+function kartuJumlah(
+  label: string,
+  nilai: number,
+  aktif: boolean,
+  saring: Record<string, string>,
+): HTMLElement {
+  return h(
+    'a',
+    {
+      class: `kartu-jumlah${aktif ? ' aktif' : ''}`,
+      href: `#/peserta${qs({ ...saring, halaman: 1 })}`,
+      'aria-current': aktif ? 'true' : null,
+    },
+    h('strong', null, formatAngka(nilai)),
+    h('span', null, label),
+  );
+}
+
 export async function layarPeserta(k: Konteks): Promise<void> {
   const p = paramHash();
   const f = {
     status: p.get('status') ?? '',
+    kategori: p.get('kategori') ?? '',
     q: p.get('q') ?? '',
     halaman: Number(p.get('halaman') ?? 1),
   };
-  const r = await get<{ items: Peserta[]; total: number; halaman: number; ukuran: number }>(
-    `/admin/lms/peserta${qs(f)}`,
-  );
+  const r = await get<{
+    items: Peserta[];
+    total: number;
+    halaman: number;
+    ukuran: number;
+    ringkasan?: RingkasanPeserta;
+  }>(`/admin/lms/peserta${qs(f)}`);
+  const rk = r.ringkasan;
   const form = h(
     'form',
     { class: 'saringan' },
     pilihan(
       'status',
       'Status',
-      [['', 'Semua'], ...STATUS_PESERTA.map((s) => [s, s] as [string, string])],
+      [
+        ['', 'Semua'],
+        ...STATUS_PESERTA.map((s) => [s, LABEL_STATUS_PESERTA[s] ?? s] as [string, string]),
+      ],
       f.status,
     ),
-    teks('q', 'Nama, instansi, NIP, atau email', f.q),
+    pilihan(
+      'kategori',
+      'Kategori',
+      [['', 'Semua'], ...(Object.entries(LABEL_KATEGORI_PESERTA) as [string, string][])],
+      f.kategori,
+    ),
+    teks('q', 'Cari nama, instansi, NIP, atau email', f.q),
     h('button', { class: 'tombol', type: 'submit' }, 'Terapkan'),
   ) as HTMLFormElement;
   form.addEventListener('submit', (e) => {
@@ -676,15 +722,51 @@ export async function layarPeserta(k: Konteks): Promise<void> {
       toast(e instanceof Error ? e.message : 'Gagal memperbarui.', 'galat');
     }
   };
+  const ringkasan = rk
+    ? h(
+        'section',
+        { class: 'ringkas-peserta', 'aria-label': 'Ringkasan peserta' },
+        h(
+          'div',
+          { class: 'kisi-jumlah' },
+          kartuJumlah('Semua peserta', rk.total, !f.status && !f.kategori, {}),
+          STATUS_PESERTA.map((s) =>
+            kartuJumlah(
+              LABEL_STATUS_PESERTA[s] ?? s,
+              rk.status[s] ?? 0,
+              f.status === s && !f.kategori,
+              {
+                status: s,
+              },
+            ),
+          ),
+        ),
+        h(
+          'div',
+          { class: 'kisi-jumlah kisi-jumlah--kecil' },
+          (Object.entries(LABEL_KATEGORI_PESERTA) as [string, string][]).map(([v, t]) =>
+            kartuJumlah(t, rk.kategori[v] ?? 0, f.kategori === v && !f.status, { kategori: v }),
+          ),
+        ),
+      )
+    : null;
   isi(
     k.isi,
-    h('h1', null, 'Peserta'),
+    h('h1', null, 'Peserta Ruang Belajar'),
     h(
       'p',
       { class: 'isian__bantu' },
-      'Verifikasi dilakukan dengan mencocokkan NIP, nama, dan instansi terhadap data kepegawaian. NIP utuh hanya tampil di halaman ini.',
+      'Semua orang yang sudah mendaftar sebagai peserta Ruang Belajar. Peserta ASN diverifikasi dengan mencocokkan NIP, nama, dan instansi terhadap data kepegawaian; NIP utuh hanya tampil di halaman ini. Untuk menambah pengelola situs, buka ',
+      h('a', { href: '#/pengguna' }, 'Admin dan peran'),
+      '.',
     ),
+    ringkasan,
     form,
+    h(
+      'p',
+      { class: 'isian__bantu' },
+      `Menampilkan ${formatAngka(r.items.length)} dari ${formatAngka(r.total)} peserta sesuai saringan.`,
+    ),
     tabel<Peserta>(
       [
         {
@@ -704,7 +786,15 @@ export async function layarPeserta(k: Konteks): Promise<void> {
           isi: (x) => (x.nilai_akhir === null ? '–' : formatAngka(x.nilai_akhir, 0)),
           kanan: true,
         },
-        { judul: 'Status', isi: (x) => lencanaStatus(x.status, WARNA_PESERTA[x.status] ?? '') },
+        { judul: 'Terdaftar', isi: (x) => formatTanggal(x.created_at), hp: true },
+        {
+          judul: 'Status',
+          isi: (x) =>
+            lencanaStatus(
+              LABEL_STATUS_PESERTA[x.status] ?? x.status,
+              WARNA_PESERTA[x.status] ?? '',
+            ),
+        },
         {
           judul: 'Aksi',
           isi: (x) =>

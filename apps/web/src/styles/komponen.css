@@ -88,6 +88,9 @@
 .isian {
   display: grid;
   gap: var(--s-1);
+  /* Isi menempel ke atas: tanpa ini kolom yang berdampingan dengan isian berketerangan ikut meregang,
+     sehingga kotak isian tampak lebih tinggi dan tidak sejajar. */
+  align-content: start;
   margin-bottom: var(--s-4);
 }
 .isian > label,
@@ -158,6 +161,19 @@ fieldset {
   display: grid;
   gap: 0 var(--s-4);
   grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  align-items: start;
+}
+/* Isian sebaris berbagi garis baris (subgrid): label, kotak isian, keterangan, dan pesan galat. Label yang
+   terlipat dua baris tidak lagi menurunkan kotak isiannya sehingga semua kotak dalam satu baris sejajar. */
+@supports (grid-template-rows: subgrid) {
+  .grid-isian > .isian {
+    grid-row: span 4;
+    grid-template-rows: subgrid;
+    row-gap: var(--s-1);
+  }
+  .grid-isian > .isian > :first-child {
+    align-self: end;
+  }
 }
 
 /* ---------- Panel & tata letak ---------- */
