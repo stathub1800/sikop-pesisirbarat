@@ -6,9 +6,10 @@ Format mengikuti [Keep a Changelog](https://keepachangelog.com/id-ID/1.1.0/) dan
 
 ### Diubah
 
-- Nama indikator Podes dan Dapodik memakai bahasa Indonesia baku dan huruf kapital kalimat yang seragam,
-  misalnya "Ada SMA/MA/SMK" menjadi "Ketersediaan SMA/MA/SMK" dan "Jumlah Satuan Pendidikan" menjadi
-  "Jumlah satuan pendidikan". Nama di D1 ikut berubah setelah alur data dijalankan ulang.
+- Nama indikator Podes dan Dapodik memakai bahasa Indonesia baku dan menyebut satuan yang dihitung,
+  misalnya "Ada SMA/MA/SMK" menjadi "Desa/kelurahan yang memiliki SMA/MA/SMK", agar jelas bahwa angkanya
+  persentase desa/kelurahan, bukan jumlah fasilitas. Nama Dapodik memakai huruf kapital kalimat. Nama di
+  D1 ikut berubah setelah alur data dijalankan ulang dengan impor.
 - Beranda: peta sorotan kini punya legenda warna Rendah sampai Tinggi. Keterangan lama "warna makin gelap
   berarti nilai makin tinggi" keliru pada mode gelap (skala warnanya terbalik) dan dihapus.
 - Beranda: kepanjangan SIKOP tampil di pembuka, "Data terakhir dimuat" menjadi "Data terakhir diperbarui",

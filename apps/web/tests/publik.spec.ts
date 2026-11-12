@@ -174,7 +174,7 @@ test('profil kecamatan: ringkasan pimpinan dan kalimat penjelasan indikator', as
   await page.goto('/kecamatan/?kode=1813090');
   await expect(page.locator('#j-ringkasan')).toContainText('Ngambur');
   await expect(page.locator('.ringkasan__kolom--baik li').first()).toBeVisible();
-  // "Ketersediaan SD/MI" dijelaskan dengan kalimat lengkap, bukan hanya nama singkat.
+  // "Desa/kelurahan yang memiliki SD/MI" dijelaskan dengan kalimat lengkap, bukan hanya nama singkat.
   await expect(
     page.locator('.narasi-baris', { hasText: 'memiliki sedikitnya satu SD atau MI' }),
   ).toBeVisible();
@@ -187,9 +187,11 @@ test('tabel dinamis: indikator per kecamatan dan tabulasi silang sekolah', async
   await page.goto('/tabel/');
   await expect(page.locator('.tabel-dinamis tbody tr')).toHaveCount(11);
   await page.selectOption('#t-tema', 'Infrastruktur');
-  await page.locator('.daftar-centang label', { hasText: 'Jalan antardesa beraspal' }).click();
+  await page.locator('.daftar-centang label', { hasText: 'jalan antardesa beraspal' }).click();
   await expect(page).toHaveURL(/ind=[^&]*podes_jalan_aspal/);
-  await expect(page.locator('.tabel-dinamis thead')).toContainText('Jalan antardesa beraspal');
+  await expect(page.locator('.tabel-dinamis thead')).toContainText(
+    'Desa/kelurahan dengan jalan antardesa beraspal',
+  );
   await page.getByRole('button', { name: 'Tabulasi silang sekolah' }).click();
   await page.selectOption('#s-baris', 'jenjang');
   await page.selectOption('#s-kolom', 'status');
