@@ -232,7 +232,7 @@ fieldset {
 }
 .lencana--kuning {
   background: var(--kuning-lembut);
-  color: var(--n-900);
+  color: var(--teks);
 }
 
 /* ---------- Tabel ---------- */

@@ -14,7 +14,8 @@ atau di isu GitHub yang dibuat pemilik proyek. Status diperbarui di pull request
 | Layanan data, verifikasi sertifikat, direktori sekolah                  | Selesai     | `docs/api.md`               |
 | Aturan kerja untuk staf dan AI (AGENTS.md, pagar otomatis)              | Selesai     | `docs/panduan-delegasi.md`  |
 | Fase 2: Ruang Belajar sisi peserta                                      | Selesai     | bagian di bawah             |
-| **Fase 3: Penyusun kursus di admin**                                    | **Selesai** | ADR-0008                    |
+| Fase 3: Penyusun kursus di admin                                        | Selesai     | ADR-0009                    |
+| **Fase 3.1: Ruang Belajar interaktif untuk peserta**                    | **Selesai** | bagian di bawah             |
 
 ## Fase 2: Ruang Belajar sisi peserta
 
@@ -77,7 +78,7 @@ Pecah menjadi pull request kecil sesuai urutan berikut. Setiap butir = satu isu 
 **Kriteria selesai Fase 2**: semua alur di atas tercakup uji E2E (desktop dan ponsel), `npm run check`
 hijau, tangkapan layar terang dan gelap terlampir di PR, tidak ada aturan AGENTS.md yang dilanggar.
 
-## Fase 3: Penyusun kursus di admin (SELESAI, ADR-0008)
+## Fase 3: Penyusun kursus di admin (SELESAI, ADR-0009)
 
 - CRUD Kursus → Bab → Pelajaran dengan urutan seret-lepas atau tombol naik/turun.
 - Penyunting per jenis materi: tautan YouTube (divalidasi), Markdown dengan pratinjau, unggah atau tautan
@@ -88,6 +89,17 @@ hijau, tangkapan layar terang dan gelap terlampir di PR, tidak ada aturan AGENTS
 Catatan hasil: urutan memakai tombol naik/turun (seret-lepas ditunda), PDF berupa tautan https (unggah
 membutuhkan R2 dan perubahan CSP, perlu ADR tersendiri), dan kesiapan terbit bersifat peringatan, tidak
 memblokir.
+
+## Fase 3.1: Ruang Belajar interaktif untuk peserta (SELESAI)
+
+Permintaan pemilik proyek (13 November 2026) setelah mencoba Ruang Belajar sebagai pengunjung: katalog
+kosong menjadi jalan buntu, menandai pelajaran butuh dua klik, dan latihan tampil sekaligus tanpa cara
+mengulang yang jelas.
+
+- Panduan tiga langkah di katalog, rekomendasi kursus menurut kategori peserta.
+- "Berikutnya" sekaligus menandai selesai; pemberitahuan bab tuntas dan panel kursus tuntas.
+- Latihan bertahap satu soal per layar dengan nomor soal, skor, tinjauan, dan "Ulangi latihan".
+- Tanpa perubahan skema, API, penilaian, atau dependensi.
 
 ## Di luar rencana (perlu persetujuan dan ADR sebelum dikerjakan)
 

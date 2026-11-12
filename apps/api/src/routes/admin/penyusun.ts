@@ -1,5 +1,5 @@
 /**
- * Penyusun kursus (ADR-0008): bab, pelajaran, soal latihan, urutan, pratinjau, kesiapan, riwayat.
+ * Penyusun kursus (ADR-0009): bab, pelajaran, soal latihan, urutan, pratinjau, kesiapan, riwayat.
  * Dipasang di bawah /admin/lms sehingga peran `pengelola_lms` sudah diwajibkan oleh induknya.
  */
 import { Hono } from 'hono';

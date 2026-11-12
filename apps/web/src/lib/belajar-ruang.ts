@@ -153,7 +153,7 @@ export const cocokSaringan = (k: Kursus, f: Saringan): boolean =>
   (!f.tema || k.kategori === f.tema) &&
   (!f.q.trim() || k.judul.toLowerCase().includes(f.q.trim().toLowerCase()));
 
-function kartuKursus(k: Kursus): HTMLElement {
+function kartuKursus(k: Kursus, sesuai = false): HTMLElement {
   const href = `#/kursus/${k.id}`;
   return h(
     'article',
@@ -173,6 +173,7 @@ function kartuKursus(k: Kursus): HTMLElement {
         { class: 'baris-lencana' },
         k.level ? h('span', { class: 'lencana lencana--biru' }, LABEL_LEVEL_KURSUS[k.level]) : null,
         k.bersertifikat ? h('span', { class: 'lencana lencana--hijau' }, 'Bersertifikat') : null,
+        sesuai ? h('span', { class: 'lencana lencana--kuning' }, 'Sesuai untuk Anda') : null,
       ),
       h('h3', null, h('a', { href }, k.judul)),
       h('p', { class: 'kartu-kursus__deskripsi' }, k.subjudul || k.deskripsi),
@@ -194,6 +195,66 @@ function kartuKursus(k: Kursus): HTMLElement {
   );
 }
 
+/** Kursus yang menyasar kategori peserta ini secara khusus (bukan kursus untuk semua peserta). */
+export const sesuaiKategori = (k: Kursus, kategori: KategoriPeserta | undefined): boolean =>
+  Boolean(kategori && k.sasaran?.length && k.sasaran.includes(kategori));
+
+/** Kursus yang sesuai kategori peserta ditaruh di depan; urutan lain dipertahankan. */
+export const urutkanUntukPeserta = (
+  daftar: Kursus[],
+  kategori: KategoriPeserta | undefined,
+): Kursus[] =>
+  daftar
+    .map((k, i) => ({ k, i, s: sesuaiKategori(k, kategori) ? 0 : 1 }))
+    .sort((a, b) => a.s - b.s || a.i - b.i)
+    .map((x) => x.k);
+
+/** Tiga langkah singkat agar pengunjung baru langsung paham cara belajar di SIKOP. */
+function langkahBelajar(s: Saya): HTMLElement {
+  const langkah: [string, string, string][] = [
+    [
+      IKON.cari,
+      'Pilih kursus',
+      'Lihat silabus tanpa masuk. Saringan membantu menemukan kursus sesuai kebutuhan Anda.',
+    ],
+    [
+      IKON.belajar,
+      'Belajar dengan santai',
+      'Tonton video, baca materi, dan kerjakan latihan. Kemajuan Anda tersimpan otomatis.',
+    ],
+    [
+      IKON.latihan,
+      'Uji dan dapatkan sertifikat',
+      'Kerjakan evaluasi bab dan ujian akhir. Sertifikat dapat diverifikasi secara daring.',
+    ],
+  ];
+  const aksi = !s.akun
+    ? h('a', { class: 'tombol tombol--primer', href: '#/masuk' }, 'Masuk untuk mulai')
+    : !s.peserta
+      ? h('a', { class: 'tombol tombol--primer', href: '#/akun' }, 'Lengkapi profil peserta')
+      : null;
+  return h(
+    'section',
+    { class: 'langkah-belajar', 'aria-labelledby': 'j-langkah' },
+    h('h2', { id: 'j-langkah', class: 'langkah-belajar__judul' }, 'Cara belajar di sini'),
+    h(
+      'ol',
+      { class: 'langkah-belajar__daftar' },
+      langkah.map(([ik, judul, teks], i) =>
+        h(
+          'li',
+          null,
+          h('span', { class: 'langkah-belajar__nomor', 'aria-hidden': 'true' }, String(i + 1)),
+          ikon(ik),
+          h('strong', null, judul),
+          h('span', { class: 'isian__bantu' }, teks),
+        ),
+      ),
+    ),
+    aksi ? h('div', { class: 'baris-tombol' }, aksi) : null,
+  );
+}
+
 export async function halamanKatalog(ctx: Konteks, s: Saya): Promise<void> {
   ctx.judul('Ruang Belajar');
   isi(ctx.app, kerangka(6));
@@ -208,13 +269,17 @@ export async function halamanKatalog(ctx: Konteks, s: Saya): Promise<void> {
   const daftar = h('div', { class: 'grid-kursus', 'aria-live': 'polite' });
   const jumlah = h('p', { class: 'isian__bantu' });
 
+  const kategori = s.peserta?.kategori;
   const gambar = (): void => {
-    const hasil = kursus.filter((k) => cocokSaringan(k, f));
+    const hasil = urutkanUntukPeserta(
+      kursus.filter((k) => cocokSaringan(k, f)),
+      kategori,
+    );
     jumlah.textContent = `${hasil.length} dari ${kursus.length} kursus`;
     isi(
       daftar,
       hasil.length
-        ? hasil.map(kartuKursus)
+        ? hasil.map((k) => kartuKursus(k, sesuaiKategori(k, kategori)))
         : kursus.length === 0
           ? kosong(
               'Sedang dalam tahap pengembangan',
@@ -319,25 +384,28 @@ export async function halamanKatalog(ctx: Konteks, s: Saya): Promise<void> {
       : s.peserta
         ? h('p', null, h('a', { href: '#/saya' }, 'Lihat kursus saya'))
         : null,
-    h(
-      'form',
-      {
-        class: 'saringan',
-        role: 'search',
-        'aria-label': 'Saring kursus',
-        onsubmit: (e: Event) => e.preventDefault(),
-      },
-      h('div', { class: 'isian' }, h('label', { for: 'f-cari' }, 'Cari judul'), cari),
-      pilih('f-sasaran', 'Sasaran peserta', Object.entries(LABEL_KATEGORI_PESERTA), 'sasaran'),
-      pilih('f-level', 'Level', Object.entries(LABEL_LEVEL_KURSUS), 'level'),
-      pilih(
-        'f-tema',
-        'Tema',
-        tema.map((t) => [t, t]),
-        'tema',
-      ),
-    ),
-    jumlah,
+    lanjut ? null : langkahBelajar(s),
+    kursus.length === 0
+      ? null
+      : h(
+          'form',
+          {
+            class: 'saringan',
+            role: 'search',
+            'aria-label': 'Saring kursus',
+            onsubmit: (e: Event) => e.preventDefault(),
+          },
+          h('div', { class: 'isian' }, h('label', { for: 'f-cari' }, 'Cari judul'), cari),
+          pilih('f-sasaran', 'Sasaran peserta', Object.entries(LABEL_KATEGORI_PESERTA), 'sasaran'),
+          pilih('f-level', 'Level', Object.entries(LABEL_LEVEL_KURSUS), 'level'),
+          pilih(
+            'f-tema',
+            'Tema',
+            tema.map((t) => [t, t]),
+            'tema',
+          ),
+        ),
+    kursus.length === 0 ? null : jumlah,
     daftar,
   );
   gambar();
@@ -722,10 +790,49 @@ function renderPemutar(
 
   const badan = h('div', { class: 'pemutar__isi' });
   const aksi = h('div', { class: 'pemutar__aksi' });
+  const capaian = h('div', { 'aria-live': 'polite' });
+  const babIni = bab.find((b) => b.pelajaran.some((x) => x.id === p.id));
+  const semuaSelesai = (): boolean => selesai.size >= data.progres.total && data.progres.total > 0;
+
+  /** Mencatat selesai di server lalu memberi umpan capaian (bab tuntas, kursus tuntas). */
+  const catatSelesai = async (): Promise<void> => {
+    if (sudahSelesai || pratinjau) return;
+    await kirim('POST', `/lms/saya/progres/${p.id}`);
+    selesai.add(p.id);
+    sudahSelesai = true;
+    gambarSisi();
+    rayakan();
+  };
+  const rayakan = (): void => {
+    if (semuaSelesai()) {
+      isi(
+        capaian,
+        h(
+          'section',
+          { class: 'panel panel--capaian', 'aria-labelledby': 'j-capaian' },
+          h('h2', { id: 'j-capaian' }, 'Selamat, semua pelajaran selesai'),
+          h(
+            'p',
+            null,
+            'Langkah berikutnya: kerjakan evaluasi bab dan ujian akhir di halaman kursus untuk memperoleh sertifikat.',
+          ),
+          h(
+            'a',
+            { class: 'tombol tombol--primer', href: asalKursus },
+            'Ke evaluasi dan ujian akhir',
+          ),
+        ),
+      );
+    } else if (babIni && babIni.pelajaran.every((x) => selesai.has(x.id))) {
+      toast(`Bab ${babIni.urutan} selesai. Lanjutkan ke bab berikutnya.`, 'berhasil', 5000);
+    }
+  };
+
   const gambarAksi = (): void => {
     const tandai = h(
       'button',
-      { class: 'tombol tombol--primer', type: 'button' },
+      { class: 'tombol', type: 'button' },
+      ikon(IKON.centang),
       'Tandai selesai',
     ) as HTMLButtonElement;
     tandai.addEventListener(
@@ -733,10 +840,7 @@ function renderPemutar(
       () =>
         void sibuk(tandai, async () => {
           try {
-            await kirim('POST', `/lms/saya/progres/${p.id}`);
-            selesai.add(p.id);
-            sudahSelesai = true;
-            gambarSisi();
+            await catatSelesai();
             gambarAksi();
           } catch (e) {
             toast(e instanceof Error ? e.message : 'Gagal menyimpan kemajuan.', 'galat', 8000);
@@ -758,24 +862,39 @@ function renderPemutar(
         : sudahSelesai
           ? h('span', { class: 'lencana lencana--hijau' }, 'Selesai')
           : tandai;
+
+    // "Berikutnya" pada materi non-latihan sekaligus menandai selesai, agar peserta cukup satu klik.
+    let berikut: HTMLElement;
+    if (data.berikutnya !== null) {
+      const href = tautan(data.berikutnya);
+      const a = h(
+        'a',
+        { class: 'tombol tombol--primer', href },
+        'Berikutnya',
+        ikon(IKON.kanan),
+      ) as HTMLAnchorElement;
+      if (!pratinjau && !sudahSelesai && p.jenis !== 'latihan')
+        a.addEventListener('click', (e) => {
+          e.preventDefault();
+          void catatSelesai()
+            .catch(() => toast('Kemajuan belum tersimpan. Coba tandai lagi nanti.', 'galat', 6000))
+            .finally(() => (location.hash = href));
+        });
+      berikut = a;
+    } else {
+      berikut = h(
+        'a',
+        { class: 'tombol tombol--primer', href: asalKursus },
+        pratinjau ? 'Kembali ke penyusun' : 'Ke halaman kursus',
+      );
+    }
     isi(
       aksi,
       data.sebelumnya !== null
         ? h('a', { class: 'tombol', href: tautan(data.sebelumnya) }, ikon(IKON.kiri), 'Sebelumnya')
         : h('span'),
       tengah,
-      data.berikutnya !== null
-        ? h(
-            'a',
-            { class: 'tombol tombol--primer', href: tautan(data.berikutnya) },
-            'Berikutnya',
-            ikon(IKON.kanan),
-          )
-        : h(
-            'a',
-            { class: 'tombol tombol--primer', href: asalKursus },
-            pratinjau ? 'Kembali ke penyusun' : 'Ke halaman kursus',
-          ),
+      berikut,
     );
   };
 
@@ -789,10 +908,12 @@ function renderPemutar(
         : `/lms/pelajaran/${p.id}/latihan`,
       (lulus) => {
         if (!lulus || pratinjau) return;
+        const baru = !sudahSelesai;
         selesai.add(p.id);
         sudahSelesai = true;
         gambarSisi();
         gambarAksi();
+        if (baru) rayakan();
       },
     ),
   );
@@ -839,6 +960,7 @@ function renderPemutar(
         ),
         badan,
         aksi,
+        capaian,
       ),
     ),
   );
@@ -910,6 +1032,10 @@ function kontenPelajaran(
   }
 }
 
+/**
+ * Latihan bertahap: satu soal per layar dengan penanda nomor, lalu semua soal ditinjau bersama
+ * pembahasannya setelah diperiksa server. Kunci jawaban tidak pernah ada di browser (ADR-0004).
+ */
 function formLatihan(
   p: DataPelajaran['pelajaran'],
   _d: DataPelajaran,
@@ -918,8 +1044,117 @@ function formLatihan(
 ): HTMLElement {
   const soal = p.soal ?? [];
   const ambang = Number(p.isi.nilai_lulus ?? 60);
-  const hasil = h('div', { 'aria-live': 'polite' });
   if (soal.length === 0) return h('p', { class: 'pesan' }, 'Soal latihan ini belum tersedia.');
+  const n = soal.length;
+  let aktif = 0;
+  let tinjau = false;
+
+  const hasil = h('div', { 'aria-live': 'polite' });
+  const status = h('p', { class: 'latihan__status' });
+  const titik = h('ol', { class: 'latihan__titik', 'aria-label': 'Nomor soal' });
+  const kotak = soal.map((s, i) =>
+    h(
+      'fieldset',
+      { class: 'latihan__soal', 'data-soal': s.id },
+      h('legend', null, `${i + 1}. ${s.pertanyaan}`),
+      s.opsi.map((o) =>
+        h(
+          'label',
+          { class: 'latihan__opsi' },
+          h('input', { type: 'radio', name: `s${s.id}`, value: o.id }),
+          h('span', null, o.text),
+        ),
+      ),
+      h('div', { class: 'latihan__umpan', 'data-umpan': s.id }),
+    ),
+  ) as HTMLFieldSetElement[];
+
+  const sebelumnya = h(
+    'button',
+    { class: 'tombol', type: 'button' },
+    ikon(IKON.kiri),
+    'Soal sebelumnya',
+  ) as HTMLButtonElement;
+  const lanjut = h(
+    'button',
+    { class: 'tombol tombol--primer', type: 'button' },
+    'Soal berikutnya',
+    ikon(IKON.kanan),
+  ) as HTMLButtonElement;
+  const periksa = h(
+    'button',
+    { class: 'tombol tombol--primer', type: 'submit' },
+    'Periksa jawaban',
+  ) as HTMLButtonElement;
+  const ulangi = h(
+    'button',
+    { class: 'tombol', type: 'button' },
+    'Ulangi latihan',
+  ) as HTMLButtonElement;
+
+  const terjawab = (i: number): boolean =>
+    Boolean(kotak[i]!.querySelector<HTMLInputElement>('input:checked'));
+  const jumlahTerjawab = (): number => soal.filter((_, i) => terjawab(i)).length;
+
+  const gambar = (fokus = false): void => {
+    kotak.forEach((k, i) => (k.hidden = !tinjau && i !== aktif));
+    isi(
+      titik,
+      soal.map((_, i) => {
+        const kelas = ['latihan__nomor'];
+        if (i === aktif && !tinjau) kelas.push('aktif');
+        if (terjawab(i)) kelas.push('terjawab');
+        const b = h(
+          'button',
+          {
+            type: 'button',
+            class: kelas.join(' '),
+            'aria-label': `Soal ${i + 1}${terjawab(i) ? ', sudah dijawab' : ', belum dijawab'}`,
+            'aria-current': i === aktif && !tinjau ? 'step' : null,
+          },
+          String(i + 1),
+        ) as HTMLButtonElement;
+        b.addEventListener('click', () => {
+          if (tinjau) return void kotak[i]!.scrollIntoView({ block: 'center' });
+          aktif = i;
+          gambar(true);
+        });
+        return h('li', null, b);
+      }),
+    );
+    status.textContent = tinjau
+      ? `Hasil pemeriksaan ${n} soal`
+      : `Soal ${aktif + 1} dari ${n}, ${jumlahTerjawab()} terjawab`;
+    sebelumnya.hidden = tinjau || aktif === 0;
+    lanjut.hidden = tinjau || aktif === n - 1;
+    periksa.hidden = tinjau || (aktif !== n - 1 && jumlahTerjawab() < n);
+    ulangi.hidden = !tinjau;
+    if (fokus && !tinjau) kotak[aktif]!.querySelector<HTMLInputElement>('input')?.focus();
+  };
+
+  sebelumnya.addEventListener('click', () => {
+    aktif = Math.max(0, aktif - 1);
+    gambar(true);
+  });
+  lanjut.addEventListener('click', () => {
+    aktif = Math.min(n - 1, aktif + 1);
+    gambar(true);
+  });
+  ulangi.addEventListener('click', () => {
+    for (const k of kotak) {
+      k.querySelectorAll<HTMLInputElement>('input').forEach((x) => {
+        x.checked = false;
+        x.disabled = false;
+      });
+      k.classList.remove('benar', 'salah');
+      isi(k.querySelector('[data-umpan]')!);
+    }
+    isi(hasil);
+    tinjau = false;
+    aktif = 0;
+    gambar(true);
+  });
+
   const form = h(
     'form',
     { class: 'latihan', novalidate: true },
@@ -929,83 +1164,90 @@ function formLatihan(
       { class: 'isian__bantu' },
       `Nilai minimal ${ambang}. Latihan dapat diulang tanpa batas.`,
     ),
-    soal.map((s, i) =>
-      h(
-        'fieldset',
-        { class: 'latihan__soal', 'data-soal': s.id },
-        h('legend', null, `${i + 1}. ${s.pertanyaan}`),
-        s.opsi.map((o) =>
-          h(
-            'label',
-            { class: 'latihan__opsi' },
-            h('input', { type: 'radio', name: `s${s.id}`, value: o.id }),
-            h('span', null, o.text),
-          ),
-        ),
-        h('div', { class: 'latihan__umpan', 'data-umpan': s.id }),
-      ),
-    ),
+    h('div', { class: 'latihan__kepala' }, status, titik),
+    kotak,
     hasil,
-    h(
-      'div',
-      { class: 'baris-tombol' },
-      h('button', { class: 'tombol tombol--primer', type: 'submit' }, 'Periksa jawaban'),
-    ),
+    h('div', { class: 'baris-tombol latihan__tombol' }, sebelumnya, lanjut, periksa, ulangi),
   ) as HTMLFormElement;
+
+  // Memilih jawaban langsung memperbarui penanda nomor dan menampilkan tombol periksa bila semua terjawab.
+  form.addEventListener('change', (e) => {
+    if ((e.target as HTMLInputElement).type === 'radio' && !tinjau) gambar();
+  });
+
   form.addEventListener('submit', (e) => {
     e.preventDefault();
+    if (tinjau) return;
     const jawaban: Record<string, string> = {};
     for (const s of soal) {
       const dipilih = form.querySelector<HTMLInputElement>(`input[name="s${s.id}"]:checked`);
       if (dipilih) jawaban[String(s.id)] = dipilih.value;
     }
-    if (Object.keys(jawaban).length < soal.length) {
+    const kurang = n - Object.keys(jawaban).length;
+    if (kurang > 0) {
+      aktif = soal.findIndex((_, i) => !terjawab(i));
+      gambar(true);
       isi(
         hasil,
         h(
           'p',
           { class: 'pesan pesan--peringatan', role: 'alert' },
-          'Jawab semua soal sebelum memeriksa.',
+          `Masih ada ${kurang} soal yang belum dijawab.`,
         ),
       );
       return;
     }
-    void sibuk(form.querySelector('button[type=submit]') as HTMLButtonElement, async () => {
+    void sibuk(periksa, async () => {
       try {
         const r = await kirim<HasilLatihan & { selesai: boolean }>('POST', endpoint, { jawaban });
         for (const x of r.hasil) {
-          const u = form.querySelector(`[data-umpan="${x.id}"]`);
-          if (u)
-            isi(
-              u,
-              h(
-                'p',
-                { class: x.benar ? 'umpan umpan--benar' : 'umpan umpan--salah' },
-                x.benar ? 'Benar.' : 'Belum tepat.',
-                x.pembahasan ? ` ${x.pembahasan}` : '',
-              ),
-            );
+          const k = kotak.find((el) => el.dataset.soal === String(x.id));
+          if (!k) continue;
+          k.classList.add(x.benar ? 'benar' : 'salah');
+          k.querySelectorAll<HTMLInputElement>('input').forEach((i) => (i.disabled = true));
+          isi(
+            k.querySelector('[data-umpan]')!,
+            h(
+              'p',
+              { class: x.benar ? 'umpan umpan--benar' : 'umpan umpan--salah' },
+              x.benar ? 'Benar.' : 'Belum tepat.',
+              x.pembahasan ? ` ${x.pembahasan}` : '',
+            ),
+          );
         }
+        tinjau = true;
+        gambar();
         isi(
           hasil,
           h(
-            'p',
+            'div',
             {
-              class: r.lulus ? 'pesan pesan--berhasil' : 'pesan pesan--peringatan',
+              class: `latihan__skor ${r.lulus ? 'latihan__skor--lulus' : 'latihan__skor--ulang'}`,
               role: 'status',
             },
-            `Nilai ${r.nilai} (${r.benar} dari ${r.total} benar). `,
-            r.lulus
-              ? 'Lulus, pelajaran ini selesai.'
-              : `Nilai minimal ${r.ambang}. Tinjau pembahasan lalu coba lagi.`,
+            h(
+              'strong',
+              { class: 'latihan__angka', 'aria-hidden': 'true' },
+              String(Math.round(r.nilai)),
+            ),
+            h(
+              'p',
+              null,
+              `Nilai ${r.nilai} (${r.benar} dari ${r.total} benar). `,
+              r.lulus
+                ? 'Lulus, pelajaran ini selesai.'
+                : `Nilai minimal ${r.ambang}. Tinjau pembahasan di atas lalu ulangi latihan.`,
+            ),
           ),
         );
+        hasil.scrollIntoView({ block: 'nearest' });
         saatLatihan(r.lulus);
       } catch (err) {
         toast(err instanceof Error ? err.message : 'Latihan tidak dapat diperiksa.', 'galat', 8000);
       }
     });
   });
+  gambar();
   return form;
 }
 

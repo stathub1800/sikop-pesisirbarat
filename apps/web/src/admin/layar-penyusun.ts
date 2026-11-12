@@ -1,5 +1,5 @@
 /**
- * Penyusun kursus (ADR-0008): struktur bab dan pelajaran, penyunting per jenis materi, soal latihan,
+ * Penyusun kursus (ADR-0009): struktur bab dan pelajaran, penyunting per jenis materi, soal latihan,
  * kesiapan terbit, riwayat perubahan, dan pratinjau sebagai peserta.
  *
  *   #/penyusun                       daftar kursus

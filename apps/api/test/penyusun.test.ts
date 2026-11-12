@@ -1,5 +1,5 @@
 /**
- * Fase 3 (ADR-0008): penyusun kursus di admin: bab, pelajaran, soal latihan, urutan, draf/terbit,
+ * Fase 3 (ADR-0009): penyusun kursus di admin: bab, pelajaran, soal latihan, urutan, draf/terbit,
  * pratinjau, kesiapan, riwayat, dan hak akses.
  */
 import { env } from 'cloudflare:test';

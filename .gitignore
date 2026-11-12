@@ -32,3 +32,5 @@ Thumbs.db
 
 # Status pemasang lokal (tanpa rahasia)
 .pasang-sikop.json
+
+.claude/

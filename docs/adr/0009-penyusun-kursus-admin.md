@@ -1,4 +1,4 @@
-# ADR-0008: Penyusun kursus di panel admin
+# ADR-0009: Penyusun kursus di panel admin
 
 Status: diterima, 12 November 2026 (Fase 3; disetujui pemilik proyek)
 

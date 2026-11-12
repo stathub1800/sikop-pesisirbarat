@@ -6,6 +6,20 @@ Format mengikuti [Keep a Changelog](https://keepachangelog.com/id-ID/1.1.0/) dan
 
 ### Diubah
 
+- **Ruang Belajar lebih mudah dan interaktif bagi peserta**:
+  - Katalog menampilkan panduan "Cara belajar di sini" (pilih kursus, belajar, uji dan sertifikat) dengan
+    tombol masuk atau lengkapi profil. Selama katalog masih kosong, saringan disembunyikan.
+  - Kursus yang menyasar kategori peserta (mis. pelajar) didahulukan dan diberi lencana "Sesuai untuk Anda".
+  - Pemutar: tombol "Berikutnya" pada video, bacaan, dan dokumen sekaligus menandai pelajaran selesai
+    (cukup satu klik). Muncul pemberitahuan saat satu bab tuntas dan panel "Selamat, semua pelajaran
+    selesai" yang mengarahkan ke evaluasi bab dan ujian akhir.
+  - Latihan bertahap: satu soal per layar dengan tombol nomor soal, penanda soal terjawab, skor dalam
+    lingkaran, tinjauan pembahasan semua soal, dan tombol "Ulangi latihan". Penilaian tetap di server.
+- Tautan akun di kepala halaman langsung berubah menjadi "Akun saya" setelah masuk atau mendaftar, tanpa
+  memuat ulang halaman.
+- Lencana kuning kini terbaca di mode gelap.
+- ADR penyusun kursus diberi nomor 0009 karena nomor 0008 sudah dipakai ADR tabel dinamis.
+
 - Nama indikator Podes dan Dapodik memakai bahasa Indonesia baku dan menyebut satuan yang dihitung,
   misalnya "Ada SMA/MA/SMK" menjadi "Desa/kelurahan yang memiliki SMA/MA/SMK", agar jelas bahwa angkanya
   persentase desa/kelurahan, bukan jumlah fasilitas. Nama Dapodik memakai huruf kapital kalimat. Nama di
@@ -57,10 +71,10 @@ Format mengikuti [Keep a Changelog](https://keepachangelog.com/id-ID/1.1.0/) dan
   naik/turun), menerbitkan, dan menghapus bab serta pelajaran; penyunting per jenis (video YouTube yang
   dinormalkan, bacaan Markdown dengan pratinjau langsung, tautan dokumen, pengelola soal latihan);
   pratinjau sebagai peserta dengan tampilan yang sama; status draf/terbit per bab dan pelajaran; panel
-  kesiapan terbit; riwayat perubahan per kursus. ADR-0008, migrasi aditif `0004_penyusun_kursus.sql`
+  kesiapan terbit; riwayat perubahan per kursus. ADR-0009, migrasi aditif `0004_penyusun_kursus.sql`
   (`is_published`, `version`, `updated_at`, `updated_by`), penguncian optimistik agar suntingan tidak saling
   menimpa, dan E2E `penyusun-kursus.spec.ts`. Berkas PDF belum dapat diunggah (hanya tautan), dan urutan
-  memakai tombol, bukan seret-lepas (lihat ADR-0008).
+  memakai tombol, bukan seret-lepas (lihat ADR-0009).
 
 ### Diubah
 
