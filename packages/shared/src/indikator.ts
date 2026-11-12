@@ -68,7 +68,7 @@ const LISTRIK_ADA = new Set([
 export const INDIKATOR_SEKOLAH: readonly IndikatorTurunan[] = [
   {
     id: 'jumlah_sekolah',
-    nama: 'Jumlah Satuan Pendidikan',
+    nama: 'Jumlah satuan pendidikan',
     satuan: 'unit',
     kategori: 'Pendidikan',
     metode: 'Banyaknya satuan pendidikan (formal dan nonformal) yang terdaftar di kecamatan.',
@@ -80,7 +80,7 @@ export const INDIKATOR_SEKOLAH: readonly IndikatorTurunan[] = [
   },
   {
     id: 'jumlah_peserta_didik',
-    nama: 'Jumlah Peserta Didik',
+    nama: 'Jumlah peserta didik',
     satuan: 'orang',
     kategori: 'Pendidikan',
     metode: 'Jumlah peserta didik pada seluruh satuan pendidikan di kecamatan.',
@@ -92,7 +92,7 @@ export const INDIKATOR_SEKOLAH: readonly IndikatorTurunan[] = [
   },
   {
     id: 'jumlah_guru',
-    nama: 'Jumlah Guru',
+    nama: 'Jumlah guru',
     satuan: 'orang',
     kategori: 'Pendidikan',
     metode: 'Jumlah guru pada seluruh satuan pendidikan di kecamatan.',
@@ -104,7 +104,7 @@ export const INDIKATOR_SEKOLAH: readonly IndikatorTurunan[] = [
   },
   {
     id: 'rasio_murid_guru',
-    nama: 'Rasio Peserta Didik per Guru',
+    nama: 'Rasio peserta didik per guru',
     satuan: 'peserta didik per guru',
     kategori: 'Pendidikan',
     metode: 'Total peserta didik dibagi total guru di kecamatan. Makin kecil makin baik.',
@@ -116,7 +116,7 @@ export const INDIKATOR_SEKOLAH: readonly IndikatorTurunan[] = [
   },
   {
     id: 'rasio_murid_rombel',
-    nama: 'Rata-rata Peserta Didik per Rombel',
+    nama: 'Rata-rata peserta didik per rombongan belajar',
     satuan: 'peserta didik per rombel',
     kategori: 'Pendidikan',
     metode: 'Total peserta didik dibagi total rombongan belajar di kecamatan.',
@@ -128,7 +128,7 @@ export const INDIKATOR_SEKOLAH: readonly IndikatorTurunan[] = [
   },
   {
     id: 'persen_kelas_baik',
-    nama: 'Ruang Kelas dalam Kondisi Baik',
+    nama: 'Ruang kelas dalam kondisi baik',
     satuan: '%',
     kategori: 'Pendidikan',
     metode:
@@ -141,7 +141,7 @@ export const INDIKATOR_SEKOLAH: readonly IndikatorTurunan[] = [
   },
   {
     id: 'persen_akses_internet',
-    nama: 'Sekolah dengan Akses Internet',
+    nama: 'Sekolah dengan akses internet',
     satuan: '%',
     kategori: 'Pendidikan',
     metode:
@@ -157,7 +157,7 @@ export const INDIKATOR_SEKOLAH: readonly IndikatorTurunan[] = [
   },
   {
     id: 'persen_listrik',
-    nama: 'Sekolah dengan Sumber Listrik',
+    nama: 'Sekolah dengan sumber listrik',
     satuan: '%',
     kategori: 'Pendidikan',
     metode:
@@ -173,7 +173,7 @@ export const INDIKATOR_SEKOLAH: readonly IndikatorTurunan[] = [
   },
   {
     id: 'persen_akreditasi_ab',
-    nama: 'Sekolah Terakreditasi A atau B',
+    nama: 'Sekolah terakreditasi A atau B',
     satuan: '%',
     kategori: 'Pendidikan',
     metode: 'Sekolah berakreditasi A atau B dibagi seluruh satuan pendidikan × 100.',

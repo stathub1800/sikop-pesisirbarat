@@ -46,7 +46,7 @@ test('beranda: pintu masuk ringkas, sorotan lintas tema, angka dari basis data',
   const galat = galatKonsol(page);
   await page.goto('/');
   await expect(page.locator('h1')).toHaveText('Data Pesisir Barat dalam satu peta.');
-  // Dua pintu utama.
+  // Dua pintu utama (data uji memuat kursus terbit, jadi tombol kedua tetap ke Ruang Belajar).
   await expect(page.locator('.pembuka__aksi a[href="/peta/"]')).toBeVisible();
   await expect(page.locator('.pembuka__aksi a[href="/belajar/"]')).toBeVisible();
   // Isi SIKOP dari API, bukan angka tertulis tetap.
@@ -112,7 +112,7 @@ test('peta tematik: tema -> kartu -> peta -> drill-down kecamatan, hanya agregat
   await periksaA11yDasar(page);
 
   // Kartu mewarnai peta; penjelasan indikator dapat dibuka.
-  await kartu.filter({ hasText: 'Jumlah Satuan Pendidikan' }).locator('.kartu__utama').click();
+  await kartu.filter({ hasText: 'Jumlah satuan pendidikan' }).locator('.kartu__utama').click();
   await expect(page.locator('.kartu--aktif')).toContainText('364');
   await expect(page).toHaveURL(/ind=jumlah_sekolah/);
   await page.locator('.kartu--aktif .kartu__info').click();
@@ -153,8 +153,8 @@ test('menu utama: Peta Tematik dan Ruang Belajar; alamat lama Potret Desa dialih
   await page.goto('/');
   if (isMobile) await page.locator('.kepala__menu').click();
   const nav = page.locator('#nav-utama');
-  await expect(nav.getByRole('link', { name: 'Peta Tematik' })).toBeVisible();
-  await expect(nav.getByRole('link', { name: 'Ruang Belajar' })).toBeVisible();
+  await expect(nav.getByRole('link', { name: 'Peta Tematik', exact: true })).toBeVisible();
+  await expect(nav.getByRole('link', { name: 'Ruang Belajar', exact: true })).toBeVisible();
   await expect(nav.getByRole('link', { name: 'Data Sekolah' })).toHaveCount(0);
   await page.goto('/podes/');
   await expect(page).toHaveURL(/\/peta\/(\?|$)/);
@@ -165,17 +165,16 @@ test('profil kecamatan menampilkan semua indikator per tema', async ({ page }) =
   await expect(page.locator('#j-ind')).toHaveText('Profil lintas tema');
   await expect(page.locator('.baris-kelompok', { hasText: 'Wilayah' })).toBeVisible();
   await expect(page.locator('.baris-kelompok', { hasText: 'Pendidikan' })).toBeVisible();
-  await expect(page.getByRole('link', { name: 'Desa pesisir', exact: true })).toHaveAttribute(
-    'href',
-    '/peta/?ind=podes_pesisir&kec=1813030',
-  );
+  await expect(
+    page.getByRole('link', { name: 'Desa/kelurahan pesisir', exact: true }),
+  ).toHaveAttribute('href', '/peta/?ind=podes_pesisir&kec=1813030');
 });
 
 test('profil kecamatan: ringkasan pimpinan dan kalimat penjelasan indikator', async ({ page }) => {
   await page.goto('/kecamatan/?kode=1813090');
   await expect(page.locator('#j-ringkasan')).toContainText('Ngambur');
   await expect(page.locator('.ringkasan__kolom--baik li').first()).toBeVisible();
-  // "Ada SD/MI" dijelaskan dengan kalimat lengkap, bukan hanya nama singkat.
+  // "Ketersediaan SD/MI" dijelaskan dengan kalimat lengkap, bukan hanya nama singkat.
   await expect(
     page.locator('.narasi-baris', { hasText: 'memiliki sedikitnya satu SD atau MI' }),
   ).toBeVisible();

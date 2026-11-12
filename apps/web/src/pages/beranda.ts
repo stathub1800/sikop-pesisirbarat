@@ -90,7 +90,7 @@ function gambarIsiData(indikator: Indikator[]): void {
     .sort()
     .at(-1);
   $('#isi-data-kaki').textContent = terbaru
-    ? `Data terakhir dimuat ${formatTanggal(terbaru)}.`
+    ? `Data terakhir diperbarui ${formatTanggal(terbaru)}.`
     : 'Setiap angka mencantumkan sumber dan tahunnya.';
 }
 
@@ -134,7 +134,7 @@ function gambarKartuSorotan(): void {
         h(
           'span',
           { class: 'kartu-sorot__rinci' },
-          r ? `${r} · kabupaten` : `Kabupaten · ${i.satuan === '%' ? 'persen' : i.satuan}`,
+          r ? `Kabupaten: ${r}` : `Tingkat kabupaten (${i.satuan === '%' ? 'persen' : i.satuan})`,
         ),
       );
     }),
@@ -162,6 +162,17 @@ async function gambarPetaSorotan(i: Indikator): Promise<void> {
   });
   isi(wadah, svg);
   wadah.removeAttribute('aria-busy');
+
+  // Legenda: warna terang/gelap bergantung pada tema tampilan, jadi arti warna selalu dijelaskan.
+  const nilaiAda = keadaan.kecamatan
+    .map((k) => i.nilai[k.kode])
+    .filter((x): x is number => x !== null && x !== undefined);
+  const legenda = $('#legenda-beranda');
+  legenda.hidden = !nilaiAda.length;
+  if (nilaiAda.length) {
+    $('#legenda-rendah').textContent = `Rendah ${fmtRingkas(i, Math.min(...nilaiAda))}`;
+    $('#legenda-tinggi').textContent = `Tinggi ${fmtRingkas(i, Math.max(...nilaiAda))}`;
+  }
 
   const baris = urutKecamatan(i, keadaan.kecamatan);
   const ada = baris.filter((b) => b.v !== null).map((b) => b.v!);
@@ -219,7 +230,7 @@ async function aktifkan(id: string, dariKlik = false): Promise<void> {
     (k) => i.nilai[k.kode] !== null && jumlahSeri(i, keadaan.kecamatan, k.kode) > 1,
   );
   $('#sumber-peta').textContent =
-    `Kabupaten ${fmt(i, i.kabupaten)}. ${arah}${adaSeri ? ' Tanda "=" berarti beberapa kecamatan bernilai sama.' : ''} Warna makin gelap berarti nilai makin tinggi. Sumber: ${labelSumber(i)}.`;
+    `Kabupaten ${fmt(i, i.kabupaten)}. ${arah}${adaSeri ? ' Tanda "=" berarti beberapa kecamatan bernilai sama.' : ''} Warna peta mengikuti legenda di atas. Sumber: ${labelSumber(i)}.`;
   ($('#buka-sorotan') as HTMLAnchorElement).href = tautanPeta(i);
   await gambarPetaSorotan(i);
   // Pada layar sempit peta berada di bawah kartu: bawa ke peta agar perubahan terlihat.
@@ -338,12 +349,38 @@ async function mulaiData(): Promise<void> {
   }
 }
 
+/**
+ * Selama belum ada kursus yang terbit, tombol kedua di pembuka diarahkan ke Layanan Data agar
+ * pengunjung tidak diarahkan ke halaman yang masih kosong. Begitu kursus pertama terbit, tombol
+ * kembali ke Ruang Belajar dengan sendirinya. Menu Ruang Belajar di kepala halaman tetap ada.
+ */
+function gantiAksiKedua(): void {
+  const a = document.querySelector<HTMLAnchorElement>('#aksi-kedua');
+  if (!a) return;
+  a.href = '/layanan/';
+  a.replaceChildren(
+    h(
+      'svg',
+      { viewBox: '0 0 24 24', 'aria-hidden': 'true' },
+      h('path', {
+        d: 'M7 3h7l5 5v13H7V3Zm7 0v5h5M10 13h6M10 17h6',
+        fill: 'none',
+        stroke: 'currentColor',
+        'stroke-width': '1.8',
+        'stroke-linejoin': 'round',
+      }),
+    ),
+    'Ajukan permohonan data',
+  );
+}
+
 async function mulaiKursus(): Promise<void> {
   const wadah = $('#kursus-terbaru');
   try {
     const { kursus } = await get<{ kursus: Kursus[] }>('/lms/kursus');
     wadah.removeAttribute('aria-busy');
     if (!kursus.length) {
+      gantiAksiKedua();
       isi(
         wadah,
         h(

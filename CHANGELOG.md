@@ -4,6 +4,24 @@ Format mengikuti [Keep a Changelog](https://keepachangelog.com/id-ID/1.1.0/) dan
 
 ## [Belum dirilis]
 
+### Diubah
+
+- Nama indikator Podes dan Dapodik memakai bahasa Indonesia baku dan huruf kapital kalimat yang seragam,
+  misalnya "Ada SMA/MA/SMK" menjadi "Ketersediaan SMA/MA/SMK" dan "Jumlah Satuan Pendidikan" menjadi
+  "Jumlah satuan pendidikan". Nama di D1 ikut berubah setelah alur data dijalankan ulang.
+- Beranda: peta sorotan kini punya legenda warna Rendah sampai Tinggi. Keterangan lama "warna makin gelap
+  berarti nilai makin tinggi" keliru pada mode gelap (skala warnanya terbalik) dan dihapus.
+- Beranda: kepanjangan SIKOP tampil di pembuka, "Data terakhir dimuat" menjadi "Data terakhir diperbarui",
+  dan keterangan kartu sorotan menjadi "Kabupaten: 19 dari 121 desa/kelurahan".
+- Keterbacaan: ukuran teks terkecil (`--t-xs`) naik dari 12 px ke 13 px, teks 10 px di peta dihapus, dan
+  jarak antarkata sedikit dilebarkan.
+- Peta Tematik di ponsel: tombol peta tidak lagi menimpa teks atribusi.
+- Beranda: selama belum ada kursus terbit, tombol kedua di pembuka mengarah ke "Ajukan permohonan data"
+  dan kembali ke Ruang Belajar dengan sendirinya setelah kursus pertama terbit.
+- Tombol "Masuk peserta" di kepala halaman menjadi "Masuk Ruang Belajar" agar jelas untuk siapa.
+- Peta Tematik: label kecamatan punya tooltip nama dan nilai, dan legenda memberi petunjuk bila sebagian
+  nama kecamatan disembunyikan karena letaknya berdekatan.
+
 ### Keamanan
 
 - MapLibre GL dinaikkan ke 6.17 untuk menutup CVE-2026-85061 (XSS lewat atribusi peta). Worker MapLibre
