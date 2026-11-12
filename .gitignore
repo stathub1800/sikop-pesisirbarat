@@ -33,4 +33,9 @@ Thumbs.db
 # Status pemasang lokal (tanpa rahasia)
 .pasang-sikop.json
 
+# Berkas sistem Windows/Google Drive
+desktop.ini
+Thumbs.db
+
+# Konfigurasi lokal asisten AI
 .claude/
