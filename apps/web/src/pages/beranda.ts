@@ -349,12 +349,38 @@ async function mulaiData(): Promise<void> {
   }
 }
 
+/**
+ * Selama belum ada kursus yang terbit, tombol kedua di pembuka diarahkan ke Layanan Data agar
+ * pengunjung tidak diarahkan ke halaman yang masih kosong. Begitu kursus pertama terbit, tombol
+ * kembali ke Ruang Belajar dengan sendirinya. Menu Ruang Belajar di kepala halaman tetap ada.
+ */
+function gantiAksiKedua(): void {
+  const a = document.querySelector<HTMLAnchorElement>('#aksi-kedua');
+  if (!a) return;
+  a.href = '/layanan/';
+  a.replaceChildren(
+    h(
+      'svg',
+      { viewBox: '0 0 24 24', 'aria-hidden': 'true' },
+      h('path', {
+        d: 'M7 3h7l5 5v13H7V3Zm7 0v5h5M10 13h6M10 17h6',
+        fill: 'none',
+        stroke: 'currentColor',
+        'stroke-width': '1.8',
+        'stroke-linejoin': 'round',
+      }),
+    ),
+    'Ajukan permohonan data',
+  );
+}
+
 async function mulaiKursus(): Promise<void> {
   const wadah = $('#kursus-terbaru');
   try {
     const { kursus } = await get<{ kursus: Kursus[] }>('/lms/kursus');
     wadah.removeAttribute('aria-busy');
     if (!kursus.length) {
+      gantiAksiKedua();
       isi(
         wadah,
         h(

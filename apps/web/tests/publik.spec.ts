@@ -46,7 +46,7 @@ test('beranda: pintu masuk ringkas, sorotan lintas tema, angka dari basis data',
   const galat = galatKonsol(page);
   await page.goto('/');
   await expect(page.locator('h1')).toHaveText('Data Pesisir Barat dalam satu peta.');
-  // Dua pintu utama.
+  // Dua pintu utama (data uji memuat kursus terbit, jadi tombol kedua tetap ke Ruang Belajar).
   await expect(page.locator('.pembuka__aksi a[href="/peta/"]')).toBeVisible();
   await expect(page.locator('.pembuka__aksi a[href="/belajar/"]')).toBeVisible();
   // Isi SIKOP dari API, bukan angka tertulis tetap.

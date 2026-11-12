@@ -16,6 +16,11 @@ Format mengikuti [Keep a Changelog](https://keepachangelog.com/id-ID/1.1.0/) dan
 - Keterbacaan: ukuran teks terkecil (`--t-xs`) naik dari 12 px ke 13 px, teks 10 px di peta dihapus, dan
   jarak antarkata sedikit dilebarkan.
 - Peta Tematik di ponsel: tombol peta tidak lagi menimpa teks atribusi.
+- Beranda: selama belum ada kursus terbit, tombol kedua di pembuka mengarah ke "Ajukan permohonan data"
+  dan kembali ke Ruang Belajar dengan sendirinya setelah kursus pertama terbit.
+- Tombol "Masuk peserta" di kepala halaman menjadi "Masuk Ruang Belajar" agar jelas untuk siapa.
+- Peta Tematik: label kecamatan punya tooltip nama dan nilai, dan legenda memberi petunjuk bila sebagian
+  nama kecamatan disembunyikan karena letaknya berdekatan.
 
 ### Keamanan
 

@@ -321,6 +321,9 @@ function atasiTumpuk(): void {
     if (el.offsetParent === null) continue;
     diterima.push({ el, r: coba(el) });
   }
+  // Beri tahu pengguna bila ada nama yang disembunyikan, beserta cara melihatnya.
+  const petunjuk = document.querySelector<HTMLElement>('#petunjuk-label');
+  if (petunjuk) petunjuk.hidden = !diterima.some((x) => x.el.classList.contains('pil--tanpa-nama'));
 }
 // Warna peta dibaca dari token CSS saat lapisan dipasang; muat ulang agar ikut tema baru.
 document.addEventListener('sikop:tema', () => location.reload());
@@ -430,6 +433,7 @@ function terapkanPeta(): void {
     p.el.classList.toggle('aktif', kode === keadaan.kec);
     p.el.classList.toggle('redup', Boolean(keadaan.kec) && kode !== keadaan.kec);
     p.el.setAttribute('aria-label', `Kecamatan ${namaKec(kode)}: ${fmt(i, i.nilai[kode])}`);
+    p.el.title = `${namaKec(kode)}: ${fmt(i, i.nilai[kode])}`;
   }
   requestAnimationFrame(aturNama);
   gambarLegenda(i);

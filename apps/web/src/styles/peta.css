@@ -414,6 +414,15 @@
   color: var(--teks-2);
   font-variant-numeric: tabular-nums;
 }
+.legenda__petunjuk {
+  margin: 8px 0 0;
+  font-size: var(--t-xs);
+  line-height: 1.4;
+  color: var(--teks-2);
+}
+.legenda__petunjuk[hidden] {
+  display: none;
+}
 .legenda__kosong {
   display: flex;
   align-items: center;
