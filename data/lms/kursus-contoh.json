@@ -1,0 +1,1211 @@
+{
+  "_catatan": "Kursus contoh SINTETIS. Soal dan kunci dibuat untuk pengujian; bukan bank soal asli. Sumber seed: npm run data:lms:contoh",
+  "kursus": [
+    {
+      "id": "membaca-data-bps",
+      "kode": "MDB-2026",
+      "judul": "Membaca Data BPS untuk Perencanaan Daerah",
+      "subjudul": "Dari angka di tabel menjadi dasar keputusan",
+      "deskripsi": "Kursus dasar untuk memahami asal data BPS, membaca persentase, rasio, dan tren, lalu memakainya dalam perencanaan daerah. Cocok untuk ASN, pelajar, masyarakat umum, dan mitra BPS.",
+      "kategori": "Literasi Data",
+      "estimasi": "Sekitar 1,5 jam",
+      "nilai_lulus_akhir": 80,
+      "durasi_akhir_menit": 30,
+      "jumlah_soal_akhir": 6,
+      "level": "dasar",
+      "sasaran": ["asn", "umum", "pelajar", "mitra"],
+      "hasil_belajar": [
+        "Membedakan data, statistik, dan indikator serta sumbernya: sensus, survei, dan data administrasi.",
+        "Membaca persentase, rasio, dan perubahan angka dengan satuan yang benar.",
+        "Mengajukan pertanyaan kritis tentang sumber, periode, dan cara hitung sebelum memakai angka.",
+        "Memakai indikator per kecamatan untuk menyusun dasar pertimbangan perencanaan."
+      ],
+      "durasi_menit": 0,
+      "gambar_url": "/gambar/kursus-contoh.svg",
+      "is_published": true,
+      "urutan": 50
+    }
+  ],
+  "modul": [
+    {
+      "id": 2001,
+      "kursus_id": "membaca-data-bps",
+      "nomor": 1,
+      "kode": "MDB-MOD-01",
+      "judul": "Mengenal Data dan Indikator BPS",
+      "subjudul": "",
+      "deskripsi": "Data, statistik, indikator, dan asal data. Materi ada di pelajaran bab ini.",
+      "kategori": "Literasi Data",
+      "estimasi": "30 menit",
+      "nilai_lulus": 75,
+      "ringkasan": "",
+      "video": [],
+      "kompetensi": [],
+      "sumber": [],
+      "is_published": true
+    },
+    {
+      "id": 2002,
+      "kursus_id": "membaca-data-bps",
+      "nomor": 2,
+      "kode": "MDB-MOD-02",
+      "judul": "Membaca Angka: Persen, Rasio, dan Tren",
+      "subjudul": "",
+      "deskripsi": "Cara membaca angka dan perubahannya dengan benar. Materi ada di pelajaran bab ini.",
+      "kategori": "Literasi Data",
+      "estimasi": "30 menit",
+      "nilai_lulus": 75,
+      "ringkasan": "",
+      "video": [],
+      "kompetensi": [],
+      "sumber": [],
+      "is_published": true
+    },
+    {
+      "id": 2003,
+      "kursus_id": "membaca-data-bps",
+      "nomor": 3,
+      "kode": "MDB-MOD-03",
+      "judul": "Memakai Data untuk Perencanaan Daerah",
+      "subjudul": "",
+      "deskripsi": "Dari pertanyaan kebijakan sampai pemakaian indikator. Materi ada di pelajaran bab ini.",
+      "kategori": "Literasi Data",
+      "estimasi": "30 menit",
+      "nilai_lulus": 75,
+      "ringkasan": "",
+      "video": [],
+      "kompetensi": [],
+      "sumber": [],
+      "is_published": true
+    }
+  ],
+  "bab": [
+    {
+      "id": 2001,
+      "kursus_id": "membaca-data-bps",
+      "modul_id": 2001,
+      "urutan": 1,
+      "judul": "Mengenal Data dan Indikator BPS"
+    },
+    {
+      "id": 2002,
+      "kursus_id": "membaca-data-bps",
+      "modul_id": 2002,
+      "urutan": 2,
+      "judul": "Membaca Angka: Persen, Rasio, dan Tren"
+    },
+    {
+      "id": 2003,
+      "kursus_id": "membaca-data-bps",
+      "modul_id": 2003,
+      "urutan": 3,
+      "judul": "Memakai Data untuk Perencanaan Daerah"
+    }
+  ],
+  "pelajaran": [
+    {
+      "id": 200101,
+      "bab_id": 2001,
+      "urutan": 1,
+      "judul": "Video: mengenal sumber dan peran data ekonomi",
+      "jenis": "video",
+      "isi": {
+        "url": "https://www.youtube-nocookie.com/embed/tUXqJ1xyqIk"
+      },
+      "durasi_menit": 15,
+      "wajib": true
+    },
+    {
+      "id": 200102,
+      "bab_id": 2001,
+      "urutan": 2,
+      "judul": "Bacaan: data, statistik, dan indikator",
+      "jenis": "bacaan",
+      "isi": {
+        "markdown": "## Apa itu data, statistik, dan indikator?\n\n**Data** adalah catatan fakta yang belum diolah, misalnya jumlah penduduk satu kecamatan. **Statistik** adalah hasil pengolahan data menjadi ringkasan yang bermakna. **Indikator** adalah ukuran terpilih untuk memantau suatu keadaan dari waktu ke waktu, misalnya tingkat pengangguran terbuka.\n\n## Dari mana data BPS berasal?\n\n- **Sensus**: pencacahan lengkap terhadap seluruh populasi, dilakukan berkala.\n- **Survei**: pencacahan terhadap sampel yang dipilih secara ilmiah, lalu hasilnya diperluas untuk menggambarkan populasi.\n- **Kompilasi produk administrasi**: pemanfaatan catatan instansi lain, seperti data sekolah atau data kependudukan.\n\n## Empat pertanyaan sebelum memakai angka\n\n1. Siapa yang menerbitkan angka ini, dan kapan?\n2. Apa satuannya: jiwa, persen, rupiah, atau per 1.000 penduduk?\n3. Wilayah dan periode mana yang dicakup?\n4. Bagaimana cara menghitungnya?\n\nJawaban pertanyaan terakhir biasanya ada pada **metadata** atau catatan teknis di bawah tabel."
+      },
+      "durasi_menit": 8,
+      "wajib": true
+    },
+    {
+      "id": 200103,
+      "bab_id": 2001,
+      "urutan": 3,
+      "judul": "Latihan: istilah dasar",
+      "jenis": "latihan",
+      "isi": {
+        "petunjuk": "Jawab tiga soal singkat. Latihan boleh diulang sampai nilai minimal tercapai.",
+        "nilai_lulus": 60
+      },
+      "durasi_menit": 5,
+      "wajib": true
+    },
+    {
+      "id": 200201,
+      "bab_id": 2002,
+      "urutan": 1,
+      "judul": "Bacaan: persentase, rasio, dan tren",
+      "jenis": "bacaan",
+      "isi": {
+        "markdown": "## Persentase\n\nPersentase menyatakan bagian terhadap keseluruhan: **bagian ÷ keseluruhan × 100**. Bila 45 dari 60 desa memiliki suatu fasilitas, persentasenya 45 ÷ 60 × 100 = 75 persen.\n\n## Rasio\n\nRasio membandingkan dua besaran yang berbeda, misalnya jumlah murid per guru. Bila ada 360 murid dan 24 guru, rasionya 15 murid per guru. Rasio tidak selalu bernilai 100 atau kurang.\n\n## Perubahan angka\n\nAda dua cara menyatakan perubahan:\n\n- **Poin persentase**: selisih dua persentase. Dari 8 persen menjadi 10 persen berarti naik 2 poin persentase.\n- **Persen perubahan**: selisih dibagi nilai awal. Pada contoh yang sama, 2 ÷ 8 × 100 = 25 persen.\n\nKedua cara itu benar, tetapi artinya berbeda. Tulislah dengan jelas yang mana yang dipakai.\n\n## Membaca tren\n\n- Bandingkan periode yang sebanding, misalnya triwulan dengan triwulan yang sama tahun lalu.\n- Pastikan definisi dan cara hitung tidak berubah di antara dua titik waktu.\n- Satu titik naik atau turun belum tentu sebuah tren; lihat beberapa periode."
+      },
+      "durasi_menit": 10,
+      "wajib": true
+    },
+    {
+      "id": 200202,
+      "bab_id": 2002,
+      "urutan": 2,
+      "judul": "Dokumen: publikasi resmi BPS",
+      "jenis": "pdf",
+      "isi": {
+        "url": "https://www.bps.go.id/id/publication",
+        "penerbit": "BPS"
+      },
+      "durasi_menit": 10,
+      "wajib": false
+    },
+    {
+      "id": 200203,
+      "bab_id": 2002,
+      "urutan": 3,
+      "judul": "Latihan: menghitung dan membaca angka",
+      "jenis": "latihan",
+      "isi": {
+        "petunjuk": "Hitung dengan teliti. Boleh memakai kalkulator.",
+        "nilai_lulus": 60
+      },
+      "durasi_menit": 8,
+      "wajib": true
+    },
+    {
+      "id": 200301,
+      "bab_id": 2003,
+      "urutan": 1,
+      "judul": "Video: mengapa data dikumpulkan",
+      "jenis": "video",
+      "isi": {
+        "url": "https://www.youtube-nocookie.com/embed/L86LTnOeXQE"
+      },
+      "durasi_menit": 5,
+      "wajib": true
+    },
+    {
+      "id": 200302,
+      "bab_id": 2003,
+      "urutan": 2,
+      "judul": "Bacaan: dari data ke keputusan",
+      "jenis": "bacaan",
+      "isi": {
+        "markdown": "## Dari data ke keputusan\n\n1. **Rumuskan pertanyaan kebijakan.** Misalnya: kecamatan mana yang paling memerlukan tambahan fasilitas kesehatan?\n2. **Pilih indikator yang relevan.** Cari indikator yang benar-benar menjawab pertanyaan itu, bukan yang kebetulan tersedia.\n3. **Bandingkan dengan wajar.** Bandingkan antarwilayah dan antarwaktu dengan satuan, tahun, dan cara hitung yang sama.\n4. **Periksa arah indikator.** Pada sebagian indikator nilai tinggi itu baik, pada yang lain nilai rendah yang baik.\n5. **Catat keterbatasan dan sumber.** Tulis sumber, tahun, dan catatan agar orang lain dapat menelusuri kembali.\n\n## Contoh di SIKOP\n\nPeta Tematik menampilkan indikator per kecamatan. Setiap kartu mencantumkan sumber, tahun, dan cara hitung. Data ditampilkan sebagai agregat kecamatan, tanpa rincian per desa atau per individu. Gunakan peringkat dan pembanding kabupaten untuk melihat posisi sebuah kecamatan, lalu baca catatan cara hitung sebelum menyimpulkan."
+      },
+      "durasi_menit": 8,
+      "wajib": true
+    },
+    {
+      "id": 200303,
+      "bab_id": 2003,
+      "urutan": 3,
+      "judul": "Latihan: memakai indikator",
+      "jenis": "latihan",
+      "isi": {
+        "petunjuk": "Pilih jawaban yang paling tepat untuk situasi perencanaan.",
+        "nilai_lulus": 60
+      },
+      "durasi_menit": 5,
+      "wajib": true
+    }
+  ],
+  "soal_latihan": [
+    {
+      "id": 2001,
+      "pelajaran_id": 200103,
+      "urutan": 1,
+      "pertanyaan": "Pencacahan terhadap seluruh anggota populasi disebut...",
+      "opsi": [
+        {
+          "id": "A",
+          "text": "Sensus"
+        },
+        {
+          "id": "B",
+          "text": "Survei"
+        },
+        {
+          "id": "C",
+          "text": "Penarikan sampel"
+        },
+        {
+          "id": "D",
+          "text": "Kompilasi produk administrasi"
+        }
+      ],
+      "kunci": "A",
+      "pembahasan": "Sensus mencacah seluruh populasi, sedangkan survei hanya mencacah sampel."
+    },
+    {
+      "id": 2002,
+      "pelajaran_id": 200103,
+      "urutan": 2,
+      "pertanyaan": "Ukuran terpilih yang dipakai untuk memantau suatu keadaan dari waktu ke waktu disebut...",
+      "opsi": [
+        {
+          "id": "A",
+          "text": "Metadata"
+        },
+        {
+          "id": "B",
+          "text": "Indikator"
+        },
+        {
+          "id": "C",
+          "text": "Sampel"
+        },
+        {
+          "id": "D",
+          "text": "Responden"
+        }
+      ],
+      "kunci": "B",
+      "pembahasan": "Indikator memudahkan pemantauan, misalnya tingkat pengangguran terbuka."
+    },
+    {
+      "id": 2003,
+      "pelajaran_id": 200103,
+      "urutan": 3,
+      "pertanyaan": "Data jumlah siswa yang dicatat oleh dinas pendidikan lalu dimanfaatkan BPS termasuk sumber...",
+      "opsi": [
+        {
+          "id": "A",
+          "text": "Sensus penduduk"
+        },
+        {
+          "id": "B",
+          "text": "Survei rumah tangga"
+        },
+        {
+          "id": "C",
+          "text": "Produk administrasi"
+        },
+        {
+          "id": "D",
+          "text": "Wawancara telepon"
+        }
+      ],
+      "kunci": "C",
+      "pembahasan": "Catatan rutin instansi lain yang dimanfaatkan BPS disebut produk administrasi."
+    },
+    {
+      "id": 2004,
+      "pelajaran_id": 200203,
+      "urutan": 1,
+      "pertanyaan": "Sebanyak 45 dari 60 desa memiliki suatu fasilitas. Berapa persentasenya?",
+      "opsi": [
+        {
+          "id": "A",
+          "text": "45 persen"
+        },
+        {
+          "id": "B",
+          "text": "60 persen"
+        },
+        {
+          "id": "C",
+          "text": "85 persen"
+        },
+        {
+          "id": "D",
+          "text": "75 persen"
+        }
+      ],
+      "kunci": "D",
+      "pembahasan": "45 ÷ 60 × 100 = 75."
+    },
+    {
+      "id": 2005,
+      "pelajaran_id": 200203,
+      "urutan": 2,
+      "pertanyaan": "Sebuah angka naik dari 8 persen menjadi 10 persen. Kenaikannya adalah...",
+      "opsi": [
+        {
+          "id": "A",
+          "text": "2 poin persentase"
+        },
+        {
+          "id": "B",
+          "text": "2 persen"
+        },
+        {
+          "id": "C",
+          "text": "10 poin persentase"
+        },
+        {
+          "id": "D",
+          "text": "8 poin persentase"
+        }
+      ],
+      "kunci": "A",
+      "pembahasan": "Selisih dua persentase dinyatakan dalam poin persentase: 10 - 8 = 2."
+    },
+    {
+      "id": 2006,
+      "pelajaran_id": 200203,
+      "urutan": 3,
+      "pertanyaan": "Ada 360 murid dan 24 guru. Berapa rasio murid per guru?",
+      "opsi": [
+        {
+          "id": "A",
+          "text": "12"
+        },
+        {
+          "id": "B",
+          "text": "15"
+        },
+        {
+          "id": "C",
+          "text": "24"
+        },
+        {
+          "id": "D",
+          "text": "360"
+        }
+      ],
+      "kunci": "B",
+      "pembahasan": "360 ÷ 24 = 15 murid per guru."
+    },
+    {
+      "id": 2007,
+      "pelajaran_id": 200303,
+      "urutan": 1,
+      "pertanyaan": "Langkah pertama memakai data untuk perencanaan adalah...",
+      "opsi": [
+        {
+          "id": "A",
+          "text": "Memilih grafik yang menarik"
+        },
+        {
+          "id": "B",
+          "text": "Mengunduh seluruh tabel yang ada"
+        },
+        {
+          "id": "C",
+          "text": "Merumuskan pertanyaan kebijakan"
+        },
+        {
+          "id": "D",
+          "text": "Menulis kesimpulan"
+        }
+      ],
+      "kunci": "C",
+      "pembahasan": "Pertanyaan kebijakan menentukan indikator yang relevan."
+    },
+    {
+      "id": 2008,
+      "pelajaran_id": 200303,
+      "urutan": 2,
+      "pertanyaan": "Mengapa tahun dan cara hitung perlu diperiksa sebelum membandingkan dua angka?",
+      "opsi": [
+        {
+          "id": "A",
+          "text": "Agar angka tampak lebih besar"
+        },
+        {
+          "id": "B",
+          "text": "Agar tabel lebih rapi"
+        },
+        {
+          "id": "C",
+          "text": "Agar tidak perlu menyebut sumber"
+        },
+        {
+          "id": "D",
+          "text": "Agar perbandingan sebanding"
+        }
+      ],
+      "kunci": "D",
+      "pembahasan": "Perbandingan hanya adil bila definisi, periode, dan cara hitung sama."
+    },
+    {
+      "id": 2009,
+      "pelajaran_id": 200303,
+      "urutan": 3,
+      "pertanyaan": "Peta menampilkan warna lebih gelap untuk nilai lebih tinggi. Apa yang diperiksa sebelum menyimpulkan sebuah kecamatan lebih buruk?",
+      "opsi": [
+        {
+          "id": "A",
+          "text": "Arah indikator"
+        },
+        {
+          "id": "B",
+          "text": "Warna latar peta"
+        },
+        {
+          "id": "C",
+          "text": "Jumlah label"
+        },
+        {
+          "id": "D",
+          "text": "Ukuran huruf"
+        }
+      ],
+      "kunci": "A",
+      "pembahasan": "Nilai tinggi baik untuk sebagian indikator, tetapi buruk untuk yang lain."
+    }
+  ],
+  "soal": [
+    {
+      "id": 20001,
+      "kursus_id": "membaca-data-bps",
+      "modul_id": 2001,
+      "jenis": "pre",
+      "urutan": 1,
+      "pertanyaan": "Data yang berasal dari sampel yang dipilih secara ilmiah dikumpulkan melalui...",
+      "opsi": [
+        {
+          "id": "A",
+          "text": "Sensus"
+        },
+        {
+          "id": "B",
+          "text": "Survei"
+        },
+        {
+          "id": "C",
+          "text": "Pendaftaran penduduk"
+        },
+        {
+          "id": "D",
+          "text": "Kompilasi laporan keuangan"
+        }
+      ],
+      "kunci": "B",
+      "pembahasan": "Survei memakai sampel ilmiah lalu memperluas hasilnya ke populasi.",
+      "is_active": true
+    },
+    {
+      "id": 20002,
+      "kursus_id": "membaca-data-bps",
+      "modul_id": 2001,
+      "jenis": "pre",
+      "urutan": 2,
+      "pertanyaan": "Satuan per 1.000 penduduk dipakai untuk...",
+      "opsi": [
+        {
+          "id": "A",
+          "text": "Menyatakan nilai rupiah"
+        },
+        {
+          "id": "B",
+          "text": "Menyatakan luas wilayah"
+        },
+        {
+          "id": "C",
+          "text": "Menyatakan angka relatif terhadap besar populasi"
+        },
+        {
+          "id": "D",
+          "text": "Menyatakan jarak antarkota"
+        }
+      ],
+      "kunci": "C",
+      "pembahasan": "Angka relatif memudahkan perbandingan wilayah berbeda ukuran.",
+      "is_active": true
+    },
+    {
+      "id": 20003,
+      "kursus_id": "membaca-data-bps",
+      "modul_id": 2001,
+      "jenis": "post",
+      "urutan": 1,
+      "pertanyaan": "Hasil pengolahan data menjadi ringkasan yang bermakna disebut...",
+      "opsi": [
+        {
+          "id": "A",
+          "text": "Responden"
+        },
+        {
+          "id": "B",
+          "text": "Sampel"
+        },
+        {
+          "id": "C",
+          "text": "Kuesioner"
+        },
+        {
+          "id": "D",
+          "text": "Statistik"
+        }
+      ],
+      "kunci": "D",
+      "pembahasan": "Data diolah menjadi statistik.",
+      "is_active": true
+    },
+    {
+      "id": 20004,
+      "kursus_id": "membaca-data-bps",
+      "modul_id": 2001,
+      "jenis": "post",
+      "urutan": 2,
+      "pertanyaan": "Metadata membantu pengguna karena memuat...",
+      "opsi": [
+        {
+          "id": "A",
+          "text": "Keterangan cara hitung, sumber, dan cakupan angka"
+        },
+        {
+          "id": "B",
+          "text": "Warna tampilan tabel"
+        },
+        {
+          "id": "C",
+          "text": "Alamat kantor penerbit saja"
+        },
+        {
+          "id": "D",
+          "text": "Daftar nama responden"
+        }
+      ],
+      "kunci": "A",
+      "pembahasan": "Metadata menjawab pertanyaan sumber, satuan, cakupan, dan cara hitung.",
+      "is_active": true
+    },
+    {
+      "id": 20005,
+      "kursus_id": "membaca-data-bps",
+      "modul_id": 2001,
+      "jenis": "post",
+      "urutan": 3,
+      "pertanyaan": "Perbedaan utama sensus dan survei adalah...",
+      "opsi": [
+        {
+          "id": "A",
+          "text": "Sensus memakai sampel, survei memakai seluruh populasi"
+        },
+        {
+          "id": "B",
+          "text": "Sensus mencacah seluruh populasi, survei mencacah sampel"
+        },
+        {
+          "id": "C",
+          "text": "Sensus hanya untuk ekonomi"
+        },
+        {
+          "id": "D",
+          "text": "Survei tidak memerlukan petugas"
+        }
+      ],
+      "kunci": "B",
+      "pembahasan": "Cakupan pencacahan membedakan keduanya.",
+      "is_active": true
+    },
+    {
+      "id": 20006,
+      "kursus_id": "membaca-data-bps",
+      "modul_id": 2001,
+      "jenis": "post",
+      "urutan": 4,
+      "pertanyaan": "Manakah yang BUKAN pertanyaan awal sebelum memakai sebuah angka?",
+      "opsi": [
+        {
+          "id": "A",
+          "text": "Siapa penerbitnya dan kapan terbit?"
+        },
+        {
+          "id": "B",
+          "text": "Apa satuannya?"
+        },
+        {
+          "id": "C",
+          "text": "Seberapa besar angka itu dibandingkan angka favorit saya?"
+        },
+        {
+          "id": "D",
+          "text": "Wilayah dan periode mana yang dicakup?"
+        }
+      ],
+      "kunci": "C",
+      "pembahasan": "Pemeriksaan sumber, satuan, dan cakupan bersifat objektif; preferensi pribadi bukan dasar.",
+      "is_active": true
+    },
+    {
+      "id": 20007,
+      "kursus_id": "membaca-data-bps",
+      "modul_id": 2002,
+      "jenis": "pre",
+      "urutan": 1,
+      "pertanyaan": "Persentase dihitung dengan rumus...",
+      "opsi": [
+        {
+          "id": "A",
+          "text": "Keseluruhan dibagi bagian"
+        },
+        {
+          "id": "B",
+          "text": "Bagian dikurangi keseluruhan"
+        },
+        {
+          "id": "C",
+          "text": "Bagian dikali keseluruhan"
+        },
+        {
+          "id": "D",
+          "text": "Bagian dibagi keseluruhan dikali 100"
+        }
+      ],
+      "kunci": "D",
+      "pembahasan": "Persentase = bagian ÷ keseluruhan × 100.",
+      "is_active": true
+    },
+    {
+      "id": 20008,
+      "kursus_id": "membaca-data-bps",
+      "modul_id": 2002,
+      "jenis": "pre",
+      "urutan": 2,
+      "pertanyaan": "Rasio murid per guru menyatakan...",
+      "opsi": [
+        {
+          "id": "A",
+          "text": "Perbandingan jumlah murid terhadap jumlah guru"
+        },
+        {
+          "id": "B",
+          "text": "Persentase guru terhadap murid"
+        },
+        {
+          "id": "C",
+          "text": "Selisih murid dan guru"
+        },
+        {
+          "id": "D",
+          "text": "Jumlah sekolah"
+        }
+      ],
+      "kunci": "A",
+      "pembahasan": "Rasio membandingkan dua besaran yang berbeda.",
+      "is_active": true
+    },
+    {
+      "id": 20009,
+      "kursus_id": "membaca-data-bps",
+      "modul_id": 2002,
+      "jenis": "post",
+      "urutan": 1,
+      "pertanyaan": "Dari 80 desa, 20 desa memiliki fasilitas tertentu. Persentasenya...",
+      "opsi": [
+        {
+          "id": "A",
+          "text": "20 persen"
+        },
+        {
+          "id": "B",
+          "text": "25 persen"
+        },
+        {
+          "id": "C",
+          "text": "40 persen"
+        },
+        {
+          "id": "D",
+          "text": "75 persen"
+        }
+      ],
+      "kunci": "B",
+      "pembahasan": "20 ÷ 80 × 100 = 25.",
+      "is_active": true
+    },
+    {
+      "id": 20010,
+      "kursus_id": "membaca-data-bps",
+      "modul_id": 2002,
+      "jenis": "post",
+      "urutan": 2,
+      "pertanyaan": "Sebuah angka naik dari 5 persen menjadi 8 persen. Kenaikannya...",
+      "opsi": [
+        {
+          "id": "A",
+          "text": "3 persen"
+        },
+        {
+          "id": "B",
+          "text": "8 poin persentase"
+        },
+        {
+          "id": "C",
+          "text": "3 poin persentase"
+        },
+        {
+          "id": "D",
+          "text": "60 poin persentase"
+        }
+      ],
+      "kunci": "C",
+      "pembahasan": "8 - 5 = 3 poin persentase.",
+      "is_active": true
+    },
+    {
+      "id": 20011,
+      "kursus_id": "membaca-data-bps",
+      "modul_id": 2002,
+      "jenis": "post",
+      "urutan": 3,
+      "pertanyaan": "Angka turun dari 50 menjadi 40. Persen perubahannya...",
+      "opsi": [
+        {
+          "id": "A",
+          "text": "Turun 10 persen"
+        },
+        {
+          "id": "B",
+          "text": "Turun 25 persen"
+        },
+        {
+          "id": "C",
+          "text": "Naik 20 persen"
+        },
+        {
+          "id": "D",
+          "text": "Turun 20 persen"
+        }
+      ],
+      "kunci": "D",
+      "pembahasan": "(40 - 50) ÷ 50 × 100 = -20.",
+      "is_active": true
+    },
+    {
+      "id": 20012,
+      "kursus_id": "membaca-data-bps",
+      "modul_id": 2002,
+      "jenis": "post",
+      "urutan": 4,
+      "pertanyaan": "Agar sebuah tren dapat dipercaya, sebaiknya...",
+      "opsi": [
+        {
+          "id": "A",
+          "text": "Melihat beberapa periode dengan definisi yang sama"
+        },
+        {
+          "id": "B",
+          "text": "Memakai satu titik data terbaru saja"
+        },
+        {
+          "id": "C",
+          "text": "Mencampur beberapa definisi"
+        },
+        {
+          "id": "D",
+          "text": "Mengabaikan satuan"
+        }
+      ],
+      "kunci": "A",
+      "pembahasan": "Tren membutuhkan beberapa titik yang sebanding.",
+      "is_active": true
+    },
+    {
+      "id": 20013,
+      "kursus_id": "membaca-data-bps",
+      "modul_id": 2003,
+      "jenis": "pre",
+      "urutan": 1,
+      "pertanyaan": "Tujuan merumuskan pertanyaan kebijakan lebih dulu adalah...",
+      "opsi": [
+        {
+          "id": "A",
+          "text": "Memperbanyak halaman laporan"
+        },
+        {
+          "id": "B",
+          "text": "Memilih indikator yang relevan"
+        },
+        {
+          "id": "C",
+          "text": "Mempercepat unduhan data"
+        },
+        {
+          "id": "D",
+          "text": "Menghindari pembaca"
+        }
+      ],
+      "kunci": "B",
+      "pembahasan": "Pertanyaan menentukan indikator yang dicari.",
+      "is_active": true
+    },
+    {
+      "id": 20014,
+      "kursus_id": "membaca-data-bps",
+      "modul_id": 2003,
+      "jenis": "pre",
+      "urutan": 2,
+      "pertanyaan": "Data pada Peta Tematik SIKOP ditampilkan sebagai...",
+      "opsi": [
+        {
+          "id": "A",
+          "text": "Rincian per individu"
+        },
+        {
+          "id": "B",
+          "text": "Rincian per rumah tangga"
+        },
+        {
+          "id": "C",
+          "text": "Agregat per kecamatan"
+        },
+        {
+          "id": "D",
+          "text": "Rincian per desa"
+        }
+      ],
+      "kunci": "C",
+      "pembahasan": "SIKOP hanya menampilkan agregat kecamatan.",
+      "is_active": true
+    },
+    {
+      "id": 20015,
+      "kursus_id": "membaca-data-bps",
+      "modul_id": 2003,
+      "jenis": "post",
+      "urutan": 1,
+      "pertanyaan": "Pada indikator tertentu nilai yang lebih rendah justru lebih baik. Karena itu perlu diperiksa...",
+      "opsi": [
+        {
+          "id": "A",
+          "text": "Ukuran huruf"
+        },
+        {
+          "id": "B",
+          "text": "Jumlah kecamatan"
+        },
+        {
+          "id": "C",
+          "text": "Warna logo"
+        },
+        {
+          "id": "D",
+          "text": "Arah indikator"
+        }
+      ],
+      "kunci": "D",
+      "pembahasan": "Arah indikator menentukan apakah nilai tinggi baik atau buruk.",
+      "is_active": true
+    },
+    {
+      "id": 20016,
+      "kursus_id": "membaca-data-bps",
+      "modul_id": 2003,
+      "jenis": "post",
+      "urutan": 2,
+      "pertanyaan": "Agar orang lain dapat menelusuri analisis Anda, hal yang dicatat adalah...",
+      "opsi": [
+        {
+          "id": "A",
+          "text": "Sumber, tahun, dan cara hitung"
+        },
+        {
+          "id": "B",
+          "text": "Hanya kesimpulan"
+        },
+        {
+          "id": "C",
+          "text": "Hanya grafik"
+        },
+        {
+          "id": "D",
+          "text": "Hanya nama penulis"
+        }
+      ],
+      "kunci": "A",
+      "pembahasan": "Penelusuran memerlukan sumber, tahun, dan cara hitung.",
+      "is_active": true
+    },
+    {
+      "id": 20017,
+      "kursus_id": "membaca-data-bps",
+      "modul_id": 2003,
+      "jenis": "post",
+      "urutan": 3,
+      "pertanyaan": "Membandingkan dua kecamatan paling adil bila...",
+      "opsi": [
+        {
+          "id": "A",
+          "text": "Tahunnya berbeda"
+        },
+        {
+          "id": "B",
+          "text": "Indikator, tahun, dan cara hitungnya sama"
+        },
+        {
+          "id": "C",
+          "text": "Satuannya berbeda"
+        },
+        {
+          "id": "D",
+          "text": "Salah satu memakai definisi lama"
+        }
+      ],
+      "kunci": "B",
+      "pembahasan": "Perbandingan harus sebanding.",
+      "is_active": true
+    },
+    {
+      "id": 20018,
+      "kursus_id": "membaca-data-bps",
+      "modul_id": 2003,
+      "jenis": "post",
+      "urutan": 4,
+      "pertanyaan": "Sebelum menyimpulkan satu kecamatan tertinggal dari peringkatnya, sebaiknya...",
+      "opsi": [
+        {
+          "id": "A",
+          "text": "Langsung memberi anggaran"
+        },
+        {
+          "id": "B",
+          "text": "Mengabaikan kecamatan lain"
+        },
+        {
+          "id": "C",
+          "text": "Membaca catatan cara hitung dan keterbatasan data"
+        },
+        {
+          "id": "D",
+          "text": "Menghapus indikator"
+        }
+      ],
+      "kunci": "C",
+      "pembahasan": "Peringkat perlu dibaca bersama keterbatasan datanya.",
+      "is_active": true
+    },
+    {
+      "id": 20019,
+      "kursus_id": "membaca-data-bps",
+      "modul_id": null,
+      "jenis": "akhir",
+      "urutan": 1,
+      "pertanyaan": "Pencacahan seluruh populasi disebut...",
+      "opsi": [
+        {
+          "id": "A",
+          "text": "Survei"
+        },
+        {
+          "id": "B",
+          "text": "Sampling"
+        },
+        {
+          "id": "C",
+          "text": "Registrasi"
+        },
+        {
+          "id": "D",
+          "text": "Sensus"
+        }
+      ],
+      "kunci": "D",
+      "pembahasan": "Sensus mencacah seluruh populasi.",
+      "is_active": true
+    },
+    {
+      "id": 20020,
+      "kursus_id": "membaca-data-bps",
+      "modul_id": null,
+      "jenis": "akhir",
+      "urutan": 2,
+      "pertanyaan": "Indikator adalah...",
+      "opsi": [
+        {
+          "id": "A",
+          "text": "Ukuran terpilih untuk memantau keadaan dari waktu ke waktu"
+        },
+        {
+          "id": "B",
+          "text": "Daftar responden"
+        },
+        {
+          "id": "C",
+          "text": "Nama kuesioner"
+        },
+        {
+          "id": "D",
+          "text": "Alamat penerbit"
+        }
+      ],
+      "kunci": "A",
+      "pembahasan": "Indikator dipakai untuk memantau.",
+      "is_active": true
+    },
+    {
+      "id": 20021,
+      "kursus_id": "membaca-data-bps",
+      "modul_id": null,
+      "jenis": "akhir",
+      "urutan": 3,
+      "pertanyaan": "Dari 50 desa, 30 desa memiliki fasilitas. Persentasenya...",
+      "opsi": [
+        {
+          "id": "A",
+          "text": "30 persen"
+        },
+        {
+          "id": "B",
+          "text": "60 persen"
+        },
+        {
+          "id": "C",
+          "text": "50 persen"
+        },
+        {
+          "id": "D",
+          "text": "80 persen"
+        }
+      ],
+      "kunci": "B",
+      "pembahasan": "30 ÷ 50 × 100 = 60.",
+      "is_active": true
+    },
+    {
+      "id": 20022,
+      "kursus_id": "membaca-data-bps",
+      "modul_id": null,
+      "jenis": "akhir",
+      "urutan": 4,
+      "pertanyaan": "Kenaikan dari 12 persen ke 15 persen adalah...",
+      "opsi": [
+        {
+          "id": "A",
+          "text": "3 persen"
+        },
+        {
+          "id": "B",
+          "text": "15 poin persentase"
+        },
+        {
+          "id": "C",
+          "text": "3 poin persentase"
+        },
+        {
+          "id": "D",
+          "text": "25 poin persentase"
+        }
+      ],
+      "kunci": "C",
+      "pembahasan": "15 - 12 = 3 poin persentase.",
+      "is_active": true
+    },
+    {
+      "id": 20023,
+      "kursus_id": "membaca-data-bps",
+      "modul_id": null,
+      "jenis": "akhir",
+      "urutan": 5,
+      "pertanyaan": "Rasio 480 murid terhadap 30 guru adalah...",
+      "opsi": [
+        {
+          "id": "A",
+          "text": "14 murid per guru"
+        },
+        {
+          "id": "B",
+          "text": "30 murid per guru"
+        },
+        {
+          "id": "C",
+          "text": "480 murid per guru"
+        },
+        {
+          "id": "D",
+          "text": "16 murid per guru"
+        }
+      ],
+      "kunci": "D",
+      "pembahasan": "480 ÷ 30 = 16.",
+      "is_active": true
+    },
+    {
+      "id": 20024,
+      "kursus_id": "membaca-data-bps",
+      "modul_id": null,
+      "jenis": "akhir",
+      "urutan": 6,
+      "pertanyaan": "Hal yang diperiksa agar dua angka dapat dibandingkan adalah...",
+      "opsi": [
+        {
+          "id": "A",
+          "text": "Satuan, periode, dan cara hitung yang sama"
+        },
+        {
+          "id": "B",
+          "text": "Warna grafik yang sama"
+        },
+        {
+          "id": "C",
+          "text": "Jumlah halaman yang sama"
+        },
+        {
+          "id": "D",
+          "text": "Nama penulis yang sama"
+        }
+      ],
+      "kunci": "A",
+      "pembahasan": "Perbandingan sebanding membutuhkan definisi yang sama.",
+      "is_active": true
+    },
+    {
+      "id": 20025,
+      "kursus_id": "membaca-data-bps",
+      "modul_id": null,
+      "jenis": "akhir",
+      "urutan": 7,
+      "pertanyaan": "Data di Peta Tematik SIKOP ditampilkan per...",
+      "opsi": [
+        {
+          "id": "A",
+          "text": "Individu"
+        },
+        {
+          "id": "B",
+          "text": "Kecamatan"
+        },
+        {
+          "id": "C",
+          "text": "Rumah tangga"
+        },
+        {
+          "id": "D",
+          "text": "Desa"
+        }
+      ],
+      "kunci": "B",
+      "pembahasan": "SIKOP menayangkan agregat kecamatan.",
+      "is_active": true
+    },
+    {
+      "id": 20026,
+      "kursus_id": "membaca-data-bps",
+      "modul_id": null,
+      "jenis": "akhir",
+      "urutan": 8,
+      "pertanyaan": "Sebelum menyebut nilai tinggi sebagai hal buruk atau baik, periksa...",
+      "opsi": [
+        {
+          "id": "A",
+          "text": "Warna latar"
+        },
+        {
+          "id": "B",
+          "text": "Ukuran peta"
+        },
+        {
+          "id": "C",
+          "text": "Arah indikator"
+        },
+        {
+          "id": "D",
+          "text": "Jenis huruf"
+        }
+      ],
+      "kunci": "C",
+      "pembahasan": "Arah indikator menentukan makna nilai tinggi.",
+      "is_active": true
+    }
+  ]
+}

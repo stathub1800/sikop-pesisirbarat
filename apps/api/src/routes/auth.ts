@@ -44,7 +44,7 @@ auth.get('/saya', async (c) => {
   const akun = c.get('akun');
   if (!akun) return c.json({ akun: null });
   const peserta = await c.env.DB.prepare(
-    'SELECT nama, instansi, jabatan, status FROM peserta WHERE akun_id = ?',
+    'SELECT kategori, nama, instansi, jabatan, status FROM peserta WHERE akun_id = ?',
   )
     .bind(akun.id)
     .first();

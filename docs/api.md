@@ -32,17 +32,24 @@ Permintaan tulis wajib membawa header `X-SIKOP: 1` (perlindungan CSRF).
 
 ## Ruang belajar
 
-| Metode   | Jalur                        | Akses   | Keterangan                                                                    |
-| -------- | ---------------------------- | ------- | ----------------------------------------------------------------------------- |
-| GET      | `/lms/kursus`                | Publik  | Katalog                                                                       |
-| GET      | `/lms/kursus/:id`            | Publik  | Kursus + modul + materi (tanpa soal)                                          |
-| GET/POST | `/lms/saya/profil`           | Login   | Profil peserta; POST wajib persetujuan privasi                                |
-| GET      | `/lms/saya/progres/:kursus`  | Login   | Kemajuan, kelayakan ujian akhir, sertifikat                                   |
-| POST     | `/lms/ujian`                 | Peserta | `{ kursus_id, jenis, modul_id }` mulai atau lanjutkan ujian; soal tanpa kunci |
-| PUT      | `/lms/ujian/:id/jawaban`     | Peserta | Simpan jawaban sementara                                                      |
-| POST     | `/lms/ujian/:id/serahkan`    | Peserta | Nilai di server; sertifikat bila memenuhi syarat                              |
-| GET      | `/lms/ujian/:id`             | Peserta | Hasil; pembahasan bila sudah lulus modul                                      |
-| GET      | `/lms/saya/sertifikat/:kode` | Pemilik | Data sertifikat untuk dicetak                                                 |
+| Metode   | Jalur                          | Akses   | Keterangan                                                                                               |
+| -------- | ------------------------------ | ------- | -------------------------------------------------------------------------------------------------------- |
+| GET      | `/lms/kursus?level=&sasaran=`  | Publik  | Katalog: level, sasaran, hasil belajar, durasi, jumlah pelajaran, label `bersertifikat`                  |
+| GET      | `/lms/kursus/:id`              | Publik  | Kursus + modul + silabus `bab[].pelajaran[]` (judul, jenis, durasi, wajib), tanpa isi dan tanpa soal     |
+| GET      | `/lms/pelajaran/:id`           | Peserta | Isi pelajaran, status selesai, pelajaran sebelum/berikutnya; latihan memuat soal tanpa kunci             |
+| POST     | `/lms/pelajaran/:id/latihan`   | Peserta | `{ jawaban }` dinilai di server; lulus berarti pelajaran selesai; dapat diulang                          |
+| POST     | `/lms/saya/progres/:pelajaran` | Peserta | Tandai pelajaran selesai (idempoten). Latihan: 409, selesai hanya dengan lulus                           |
+| GET      | `/lms/saya/kursus`             | Peserta | Kursus berjalan dan selesai: persen progres, pelajaran lanjutan, sertifikat                              |
+| GET/POST | `/lms/saya/profil`             | Login   | Profil peserta berkategori (`asn`, `umum`, `pelajar`, `mitra`); NIP hanya wajib untuk ASN; wajib privasi |
+| GET      | `/lms/saya/progres/:kursus`    | Login   | Kemajuan modul dan pelajaran, kelayakan ujian akhir, sertifikat                                          |
+| POST     | `/lms/ujian`                   | Peserta | `{ kursus_id, jenis, modul_id }` mulai atau lanjutkan ujian; soal tanpa kunci                            |
+| PUT      | `/lms/ujian/:id/jawaban`       | Peserta | Simpan jawaban sementara                                                                                 |
+| POST     | `/lms/ujian/:id/serahkan`      | Peserta | Nilai di server; sertifikat bila memenuhi syarat                                                         |
+| GET      | `/lms/ujian/:id`               | Peserta | Hasil; pembahasan bila sudah lulus modul                                                                 |
+| GET      | `/lms/saya/sertifikat/:kode`   | Pemilik | Data sertifikat untuk dicetak                                                                            |
+
+Ujian akhir (`POST /lms/ujian` dengan `jenis: "akhir"`) ditolak dengan kode `pelajaran_belum_selesai` selama
+masih ada pelajaran wajib yang belum selesai (ADR-0007).
 
 ## Admin (berbasis peran)
 

@@ -8,6 +8,7 @@ declare global {
       TEST_MIGRATIONS: import('cloudflare:test').D1Migration[];
       TEST_SEED: string;
       TEST_SEED_LMS: string;
+      TEST_SEED_LMS_CONTOH: string;
     }
   }
 }
@@ -27,4 +28,5 @@ const ada = await env.DB.prepare('SELECT COUNT(*) AS n FROM sekolah').first<{ n:
 if (!ada?.n) {
   await jalankanSeed(env.TEST_SEED);
   await jalankanSeed(env.TEST_SEED_LMS);
+  await jalankanSeed(env.TEST_SEED_LMS_CONTOH);
 }

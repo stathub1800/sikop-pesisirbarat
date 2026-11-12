@@ -14,8 +14,17 @@ Format mengikuti [Keep a Changelog](https://keepachangelog.com/id-ID/1.1.0/) dan
 - `docs/rencana-kerja.md` (peta jalan resmi Fase 2 dan 3), prompt baku di `docs/prompt/` untuk memulai
   tugas, melanjutkan sesi, dan memeriksa pull request, serta templat isu "Kartu tugas".
 
+- **Ruang Belajar Fase 2 (sisi peserta)**: skema kursus berbab (ADR-0007, migrasi `0003_lms_pelajaran.sql`),
+  katalog bersaringan (sasaran, level, tema, cari judul, tersimpan di URL) dengan "Lanjutkan belajar", halaman
+  kursus dengan silabus bab dan pelajaran, pemutar `#/belajar/:kursus/:pelajaran` (video YouTube nocookie,
+  bacaan Markdown disanitasi, tautan dokumen, latihan dinilai server tanpa membocorkan kunci), pendaftaran
+  bercabang per kategori (ASN, umum, pelajar, mitra; NIP hanya untuk ASN), halaman "Kursus saya", dan kursus
+  contoh sintetis "Membaca Data BPS untuk Perencanaan Daerah" (`npm run data:lms:contoh`). Ujian akhir kini
+  juga menunggu pelajaran wajib selesai. Uji migrasi `npm run uji:migrasi` dan E2E desktop serta ponsel.
+
 ### Diubah
 
+- Sertifikat peserta non-ASN terbit tanpa NIP. Pratinjau PDF belum ada (CSP `frame-src`); dokumen dibuka di tab baru.
 - CI memakai Chrome bawaan runner untuk uji browser, sehingga tidak bergantung pada mirror apt Ubuntu.
 - Pemasang mencoba ulang galat jaringan ke Cloudflare dan menampilkan langkah perbaikannya.
 

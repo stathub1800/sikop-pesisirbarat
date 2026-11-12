@@ -70,6 +70,8 @@ npm run db:migrate:local
 npm run db:seed:local
 # Opsional, bank soal asli (berisi kunci, simpan di data/lms/bank-soal.json):
 npm run data:lms && (cd apps/api && npx wrangler d1 execute sikop --local --file=../../build/seed-lms.sql)
+# Kursus contoh sintetis ("Membaca Data BPS", aman dibagikan; sumber data/lms/kursus-contoh.json):
+(cd apps/api && npx wrangler d1 execute sikop --local --file=test/fixtures/seed-lms-contoh.sql)
 
 npm run dev:api     # terminal 1, http://localhost:8787
 npm run dev:web     # terminal 2, buka http://localhost:5173

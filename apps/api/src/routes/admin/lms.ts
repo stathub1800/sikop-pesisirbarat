@@ -47,6 +47,8 @@ adminLms.put('/kursus/:id', async (c) => {
     db
       .prepare(
         `UPDATE kursus SET kode=?, judul=?, subjudul=?, deskripsi=?, kategori=?, estimasi=?, nilai_lulus_akhir=?, durasi_akhir_menit=?, jumlah_soal_akhir=?,
+           level=COALESCE(?, level), sasaran_json=COALESCE(?, sasaran_json), hasil_belajar_json=COALESCE(?, hasil_belajar_json),
+           durasi_menit=COALESCE(?, durasi_menit), gambar_url=COALESCE(?, gambar_url),
            is_published=?, version=version+1, updated_at=?, updated_by=? WHERE id=? AND version=?`,
       )
       .bind(
@@ -59,6 +61,11 @@ adminLms.put('/kursus/:id', async (c) => {
         v.nilai_lulus_akhir,
         v.durasi_akhir_menit,
         v.jumlah_soal_akhir,
+        v.level ?? null,
+        v.sasaran ? JSON.stringify(v.sasaran) : null,
+        v.hasil_belajar ? JSON.stringify(v.hasil_belajar) : null,
+        v.durasi_menit ?? null,
+        v.gambar_url ?? null,
         v.is_published ? 1 : 0,
         waktu(),
         c.get('akun')!.email,
@@ -270,7 +277,7 @@ adminLms.get('/peserta', async (c) => {
   const [items, total] = await db.batch([
     db
       .prepare(
-        `SELECT p.akun_id, p.nama, p.nip, p.instansi, p.jabatan, p.status, p.catatan, p.created_at, p.verified_at, p.verified_by, a.email,
+        `SELECT p.akun_id, p.kategori, p.nama, p.nip, p.instansi, p.jabatan, p.status, p.catatan, p.created_at, p.verified_at, p.verified_by, a.email,
                 (SELECT MAX(nilai) FROM percobaan x WHERE x.akun_id = p.akun_id AND x.jenis = 'akhir') AS nilai_akhir,
                 (SELECT nomor FROM sertifikat s WHERE s.akun_id = p.akun_id LIMIT 1) AS sertifikat
            FROM peserta p JOIN akun a ON a.id = p.akun_id WHERE ${w.join(' AND ')} ORDER BY p.created_at DESC LIMIT ? OFFSET ?`,
@@ -296,9 +303,9 @@ adminLms.put('/peserta/:akun', async (c) => {
   const akunId = c.req.param('akun');
   const db = c.env.DB;
   const lama = await db
-    .prepare('SELECT nama, nip, status, catatan FROM peserta WHERE akun_id = ?')
+    .prepare('SELECT kategori, nama, nip, status, catatan FROM peserta WHERE akun_id = ?')
     .bind(akunId)
-    .first<{ nip: string }>();
+    .first<{ nip: string | null }>();
   if (!lama) throw tidakDitemukan('Peserta');
   const email = c.get('akun')!.email;
   await db.batch([
@@ -307,7 +314,14 @@ adminLms.put('/peserta/:akun', async (c) => {
         "UPDATE peserta SET status = ?, catatan = ?, verified_at = CASE WHEN ? = 'terverifikasi' THEN strftime('%Y-%m-%dT%H:%M:%fZ','now') ELSE verified_at END, verified_by = ?, updated_at = strftime('%Y-%m-%dT%H:%M:%fZ','now') WHERE akun_id = ?",
       )
       .bind(v.status, v.catatan, v.status, email, akunId),
-    await auditStmt(c, 'verifikasi', 'peserta', akunId, { ...lama, nip: samarkanNip(lama.nip) }, v),
+    await auditStmt(
+      c,
+      'verifikasi',
+      'peserta',
+      akunId,
+      { ...lama, nip: lama.nip ? samarkanNip(lama.nip) : null },
+      v,
+    ),
   ]);
   const sertifikat = [];
   if (v.status === 'terverifikasi') {

@@ -17,7 +17,13 @@ export interface Akun {
 }
 export interface Saya {
   akun: Akun | null;
-  peserta: { nama: string; instansi: string; jabatan: string; status: string } | null;
+  peserta: {
+    nama: string;
+    kategori: 'asn' | 'umum' | 'pelajar' | 'mitra';
+    instansi: string;
+    jabatan: string | null;
+    status: string;
+  } | null;
 }
 
 let cache: Promise<Saya> | null = null;

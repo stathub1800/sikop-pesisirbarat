@@ -101,3 +101,125 @@ export const SoalInputSchema = z
     path: ['modul_id'],
   });
 export type SoalInput = z.infer<typeof SoalInputSchema>;
+
+/* ---------- Struktur kursus: kategori peserta, level, bab, pelajaran (ADR-0007) ---------- */
+
+export const KATEGORI_PESERTA = ['asn', 'umum', 'pelajar', 'mitra'] as const;
+export type KategoriPeserta = (typeof KATEGORI_PESERTA)[number];
+export const LABEL_KATEGORI_PESERTA: Readonly<Record<KategoriPeserta, string>> = {
+  asn: 'ASN / OPD Pemda',
+  umum: 'Masyarakat umum',
+  pelajar: 'Pelajar dan mahasiswa',
+  mitra: 'Petugas dan mitra BPS',
+};
+
+export const LEVEL_KURSUS = ['dasar', 'menengah', 'lanjut'] as const;
+export type LevelKursus = (typeof LEVEL_KURSUS)[number];
+export const LABEL_LEVEL_KURSUS: Readonly<Record<LevelKursus, string>> = {
+  dasar: 'Dasar',
+  menengah: 'Menengah',
+  lanjut: 'Lanjut',
+};
+
+export const JENIS_PELAJARAN = ['video', 'bacaan', 'pdf', 'latihan'] as const;
+export type JenisPelajaran = (typeof JENIS_PELAJARAN)[number];
+export const LABEL_JENIS_PELAJARAN: Readonly<Record<JenisPelajaran, string>> = {
+  video: 'Video',
+  bacaan: 'Bacaan',
+  pdf: 'Dokumen',
+  latihan: 'Latihan',
+};
+
+/** Nilai minimal latihan bila tidak diatur pada isi pelajaran. */
+export const NILAI_LULUS_LATIHAN_BAWAAN = 60;
+
+const RE_ID_YOUTUBE = /^[A-Za-z0-9_-]{6,20}$/;
+
+/**
+ * Mengambil ID video dari tautan YouTube (watch, youtu.be, embed, shorts). Mengembalikan null bila
+ * bukan tautan YouTube yang dikenali, sehingga hanya youtube-nocookie.com yang pernah dipasang di iframe.
+ */
+export function idVideoYoutube(url: string): string | null {
+  // Tanpa kelas URL: paket bersama tidak bergantung pada pustaka DOM.
+  const m =
+    /^https:\/\/(?:www\.|m\.)?(youtube\.com|youtube-nocookie\.com|youtu\.be)(\/[^?#]*)?(?:\?([^#]*))?(?:#.*)?$/i.exec(
+      url.trim(),
+    );
+  if (!m) return null;
+  const host = m[1]!.toLowerCase();
+  const bagian = (m[2] ?? '').split('/').filter(Boolean);
+  let id: string | undefined;
+  if (host === 'youtu.be') id = bagian[0];
+  else if (bagian[0] === 'watch')
+    id = (m[3] ?? '')
+      .split('&')
+      .map((kv) => kv.split('='))
+      .find(([k]) => k === 'v')?.[1];
+  else if (bagian[0] === 'embed' || bagian[0] === 'shorts') id = bagian[1];
+  return id && RE_ID_YOUTUBE.test(id) ? id : null;
+}
+
+export const urlEmbedYoutube = (id: string): string =>
+  `https://www.youtube-nocookie.com/embed/${id}`;
+
+const urlHttps = z
+  .string()
+  .trim()
+  .max(500)
+  .regex(/^https:\/\/[^\s]+$/, 'Harus diawali https://');
+
+/** Isi pelajaran menurut jenisnya. Latihan hanya memuat petunjuk; soal dan kunci di tabel soal_latihan. */
+export const IsiVideoSchema = z.object({
+  url: z
+    .string()
+    .trim()
+    .refine((v) => {
+      const id = idVideoYoutube(v);
+      return id !== null && v.startsWith('https://www.youtube-nocookie.com/embed/');
+    }, 'Gunakan tautan embed youtube-nocookie.com'),
+  durasi: z.string().trim().max(10).nullish(),
+});
+export const IsiBacaanSchema = z.object({ markdown: z.string().max(30_000) });
+export const IsiPdfSchema = z.object({
+  url: urlHttps,
+  penerbit: z.string().trim().max(120).nullish(),
+  halaman: z.number().int().min(1).max(5000).nullish(),
+});
+export const IsiLatihanSchema = z.object({
+  petunjuk: z.string().trim().max(1000).nullish(),
+  nilai_lulus: z.number().int().min(0).max(100).default(NILAI_LULUS_LATIHAN_BAWAAN),
+});
+
+export const IsiPelajaranSchemas = {
+  video: IsiVideoSchema,
+  bacaan: IsiBacaanSchema,
+  pdf: IsiPdfSchema,
+  latihan: IsiLatihanSchema,
+} as const;
+
+/** Memeriksa dan merapikan isi_json untuk jenis tertentu. Dipakai API, skrip seed, dan uji. */
+export function periksaIsiPelajaran(
+  jenis: JenisPelajaran,
+  isi: unknown,
+): { sukses: true; isi: Record<string, unknown> } | { sukses: false; pesan: string } {
+  const r = IsiPelajaranSchemas[jenis].safeParse(isi);
+  return r.success
+    ? { sukses: true, isi: r.data as Record<string, unknown> }
+    : {
+        sukses: false,
+        pesan: r.error.issues.map((i) => `${i.path.join('.')} ${i.message}`).join('; '),
+      };
+}
+
+/** Skema jawaban latihan: sama dengan jawaban ujian (id soal ke huruf opsi). */
+export const JawabanLatihanSchema = z.object({ jawaban: JawabanSchema });
+
+/** Format durasi menit untuk tampilan: 90 menjadi "1 jam 30 menit". */
+export function formatDurasiMenit(menit: number): string {
+  const m = Math.max(0, Math.round(menit));
+  if (m === 0) return '';
+  if (m < 60) return `${m} menit`;
+  const j = Math.floor(m / 60);
+  const s = m % 60;
+  return s === 0 ? `${j} jam` : `${j} jam ${s} menit`;
+}
