@@ -171,9 +171,39 @@ test('profil kecamatan menampilkan semua indikator per tema', async ({ page }) =
   );
 });
 
+test('profil kecamatan: ringkasan pimpinan dan kalimat penjelasan indikator', async ({ page }) => {
+  await page.goto('/kecamatan/?kode=1813090');
+  await expect(page.locator('#j-ringkasan')).toContainText('Ngambur');
+  await expect(page.locator('.ringkasan__kolom--baik li').first()).toBeVisible();
+  // "Ada SD/MI" dijelaskan dengan kalimat lengkap, bukan hanya nama singkat.
+  await expect(
+    page.locator('.narasi-baris', { hasText: 'memiliki sedikitnya satu SD atau MI' }),
+  ).toBeVisible();
+  // Peserta didik dan guru tidak ditayangkan.
+  await expect(page.locator('#j-rekap').locator('..')).not.toContainText('Peserta didik');
+  await expect(page.getByRole('button', { name: 'Cetak / simpan PDF' })).toBeVisible();
+});
+
+test('tabel dinamis: indikator per kecamatan dan tabulasi silang sekolah', async ({ page }) => {
+  await page.goto('/tabel/');
+  await expect(page.locator('.tabel-dinamis tbody tr')).toHaveCount(11);
+  await page.selectOption('#t-tema', 'Infrastruktur');
+  await page.locator('.daftar-centang label', { hasText: 'Jalan antardesa beraspal' }).click();
+  await expect(page).toHaveURL(/ind=[^&]*podes_jalan_aspal/);
+  await expect(page.locator('.tabel-dinamis thead')).toContainText('Jalan antardesa beraspal');
+  await page.getByRole('button', { name: 'Tabulasi silang sekolah' }).click();
+  await page.selectOption('#s-baris', 'jenjang');
+  await page.selectOption('#s-kolom', 'status');
+  await expect(page.locator('.tabel-dinamis tfoot')).toContainText('364');
+  await expect(page).toHaveURL(/mode=sekolah&baris=jenjang&kolom=status/);
+  await periksaA11yDasar(page);
+});
+
 test('data sekolah: saring, URL dapat dibagikan, profil', async ({ page }) => {
   await page.goto('/sekolah/');
   await expect(page.locator('#ringkas-hasil')).toContainText('dari 364 sekolah');
+  await expect(page.locator('#rekap-jenjang button')).toHaveCount(6);
+  await expect(page.locator('thead')).not.toContainText('Peserta didik');
   await page.selectOption('#f-kec', '1813030');
   await expect(page).toHaveURL(/kec=1813030/);
   await expect(page.locator('#ringkas-hasil')).toContainText('dari 5 sekolah');
@@ -183,7 +213,9 @@ test('data sekolah: saring, URL dapat dibagikan, profil', async ({ page }) => {
   await expect(page.locator('#ringkas-hasil')).toContainText('dari 364 sekolah');
   await page.locator('tbody a').first().click();
   await expect(page.locator('h1')).not.toHaveText('');
-  await expect(page.locator('.kpi')).toContainText('peserta didik');
+  await expect(page.locator('.profil-kepala')).toContainText('NPSN');
+  // Peserta didik dan guru belum lengkap di sumber: tidak ditayangkan.
+  await expect(page.locator('.kpi')).toHaveCount(0);
   await periksaA11yDasar(page);
 });
 

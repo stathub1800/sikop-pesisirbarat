@@ -36,12 +36,16 @@ import {
   fmtPil,
   fmtRingkas,
   ikon,
+  jumlahSeri,
+  konteksJumlah,
   LABEL_TAB,
   labelSumber,
+  narasi,
   peringkat as peringkatDari,
   persen,
   rinci,
   TEMA_PROFIL,
+  teksPeringkat,
   urutKecamatan as urutKecamatanDari,
   type BarisPeringkat,
   type Indikator,
@@ -263,9 +267,66 @@ async function pasangPenanda(): Promise<void> {
   }
   terapkanPeta();
 }
-peta.on('zoom', () =>
-  $('.peta-kanvas').classList.toggle('dengan-nama', peta.getZoom() >= 9.6 || Boolean(keadaan.kec)),
-);
+/**
+ * Nama kecamatan selalu tampil bersama angkanya, di layar lebar maupun ponsel (ponsel tidak punya
+ * kursor untuk memunculkan tooltip). Label yang bertabrakan (mis. Pesisir Tengah, Way Krui, dan
+ * Krui Selatan yang berdekatan) disembunyikan namanya dahulu, lalu diperkecil, agar angka tetap
+ * terbaca; nama lengkapnya tetap ada di daftar peringkat dan label aksesibel.
+ */
+function aturNama(): void {
+  $('.peta-kanvas').classList.add('dengan-nama');
+  atasiTumpuk();
+}
+function atasiTumpuk(): void {
+  const label = [...penanda.values()].map((p) => p.el);
+  for (const el of label) {
+    el.classList.remove('pil--tanpa-nama', 'pil--rapat');
+    el.style.marginTop = '';
+  }
+  const diterima: { el: HTMLElement; r: DOMRect }[] = [];
+  const kena = (a: DOMRect, b: DOMRect): boolean =>
+    a.left < b.right + 2 && a.right + 2 > b.left && a.top < b.bottom + 2 && a.bottom + 2 > b.top;
+  const tabrak = (r: DOMRect): boolean => diterima.some((x) => kena(r, x.r));
+  // Bentuk label dicoba berurutan: lengkap, tanpa nama, lalu rapat; masing-masing di posisi asal,
+  // sedikit di atas, atau sedikit di bawah titik tengah kecamatan. Bentuk pertama yang tidak
+  // bertabrakan dipakai; bila semua bertabrakan, label rapat di posisi asal.
+  const bentuk: string[][] = [[], ['pil--tanpa-nama'], ['pil--tanpa-nama', 'pil--rapat']];
+  const coba = (el: HTMLElement): DOMRect => {
+    for (const kelas of bentuk) {
+      el.classList.remove('pil--tanpa-nama', 'pil--rapat');
+      el.classList.add(...kelas);
+      const tinggi = el.offsetHeight + 2;
+      for (const geser of [0, -tinggi, tinggi]) {
+        el.style.marginTop = geser ? `${geser}px` : '';
+        const r = el.getBoundingClientRect();
+        if (!tabrak(r)) return r;
+      }
+    }
+    // Tidak ada tempat (layar sempit): label tetangga yang tertimpa ikut dirapatkan tanpa nama,
+    // agar tidak ada nama yang terpotong oleh angka lain.
+    el.style.marginTop = '';
+    const r = el.getBoundingClientRect();
+    for (const x of diterima)
+      if (kena(r, x.r) && !x.el.classList.contains('aktif')) {
+        x.el.classList.add('pil--tanpa-nama', 'pil--rapat');
+        x.r = x.el.getBoundingClientRect();
+      }
+    return r;
+  };
+  // Kecamatan terpilih didahulukan agar labelnya selalu lengkap.
+  const urut = [...label].sort(
+    (a, b) => Number(b.classList.contains('aktif')) - Number(a.classList.contains('aktif')),
+  );
+  for (const el of urut) {
+    if (el.offsetParent === null) continue;
+    diterima.push({ el, r: coba(el) });
+  }
+}
+// Warna peta dibaca dari token CSS saat lapisan dipasang; muat ulang agar ikut tema baru.
+document.addEventListener('sikop:tema', () => location.reload());
+peta.on('zoomend', aturNama);
+peta.on('moveend', atasiTumpuk);
+window.addEventListener('resize', () => requestAnimationFrame(aturNama));
 
 /* Tooltip wilayah */
 let sorotan = '';
@@ -277,14 +338,14 @@ function tampilTip(kode: string, x?: number, y?: number): void {
     sorotan = kode;
     if (peta.getSource('kec')) peta.setFeatureState({ source: 'kec', id: kode }, { sorot: true });
   }
-  const r = peringkat(i, kode);
+  const r = teksPeringkat(i, keadaan.kecamatan, kode);
   const tip = $('#tip-peta');
   isi(
     tip,
     h('strong', null, `Kecamatan ${namaKec(kode)}`),
     h('span', { class: 'tip__nilai' }, fmt(i, i.nilai[kode])),
     i.rincian?.[kode] ? h('span', null, rinci(i, i.rincian[kode])) : null,
-    r ? h('span', null, `Peringkat ${r} dari ${keadaan.kecamatan.length}`) : null,
+    r ? h('span', null, r) : null,
   );
   tip.hidden = false;
   const kanvas = $('.peta-kanvas').getBoundingClientRect();
@@ -370,7 +431,7 @@ function terapkanPeta(): void {
     p.el.classList.toggle('redup', Boolean(keadaan.kec) && kode !== keadaan.kec);
     p.el.setAttribute('aria-label', `Kecamatan ${namaKec(kode)}: ${fmt(i, i.nilai[kode])}`);
   }
-  $('.peta-kanvas').classList.toggle('dengan-nama', peta.getZoom() >= 9.6 || Boolean(keadaan.kec));
+  requestAnimationFrame(aturNama);
   gambarLegenda(i);
   gambarPeringkat(i);
 }
@@ -416,12 +477,24 @@ function gambarPeringkat(i: Indikator): void {
   const baris = urutKecamatan(i);
   const tampil = keadaan.semuaPeringkat ? baris : baris.slice(0, 5);
   const maks = Math.max(1e-9, ...baris.map((b) => Math.abs(b.v ?? 0)));
+  // Istilah netral: "nilai tertinggi/terendah", bukan "terbaik", karena tidak setiap indikator
+  // menggambarkan prestasi (misalnya kejadian bencana).
   $('#teks-judul-peringkat').textContent =
     i.arah === 'turun_baik'
-      ? 'Kecamatan terbaik (terendah)'
+      ? 'Kecamatan dengan nilai terendah'
+      : 'Kecamatan dengan nilai tertinggi';
+  const seri = (kode: string): number => jumlahSeri(i, keadaan.kecamatan, kode);
+  const adaSeri = baris.some((b) => b.v !== null && seri(b.kode) > 1);
+  $('#catatan-peringkat').textContent = [
+    i.arah === 'turun_baik'
+      ? 'Makin rendah makin baik.'
       : i.arah === 'naik_baik'
-        ? 'Kecamatan terbaik'
-        : 'Kecamatan tertinggi';
+        ? 'Makin tinggi makin baik.'
+        : 'Indikator ini tidak bermakna baik atau buruk.',
+    adaSeri ? 'Tanda "=" berarti beberapa kecamatan bernilai sama dan berbagi peringkat.' : '',
+  ]
+    .filter(Boolean)
+    .join(' ');
   isi(
     $('#daftar-peringkat'),
     tampil.map((b) =>
@@ -436,7 +509,15 @@ function gambarPeringkat(i: Indikator): void {
             'aria-pressed': String(b.kode === keadaan.kec),
             onclick: () => pilihKecamatan(b.kode),
           },
-          h('span', { class: 'peringkat__no' }, b.v === null ? '–' : `#${peringkat(i, b.kode)}`),
+          h(
+            'span',
+            {
+              class: 'peringkat__no',
+              title:
+                b.v !== null && seri(b.kode) > 1 ? `${seri(b.kode)} kecamatan bernilai sama` : null,
+            },
+            b.v === null ? '–' : `#${peringkat(i, b.kode)}${seri(b.kode) > 1 ? '=' : ''}`,
+          ),
           h('span', { class: 'peringkat__nama' }, b.nama),
           h('span', { class: 'peringkat__nilai angka' }, fmtRingkas(i, b.v)),
           h(
@@ -585,8 +666,11 @@ function gambarKartu(): void {
         .filter((x): x is number => x !== null && x !== undefined);
       const lebar =
         v === null ? 0 : persen(i) ? Math.min(100, v) : (100 * v) / Math.max(1e-9, ...nilaiKec, v);
-      const b = k ? banding(i, v) : null;
-      const no = k ? peringkat(i, k) : null;
+      const b = k ? banding(i, v, keadaan.kecamatan.length) : null;
+      const no = k ? teksPeringkat(i, keadaan.kecamatan, k) : null;
+      const jml = konteksJumlah(i, v, keadaan.kecamatan.length);
+      const wilayah = k ? `Kecamatan ${namaKec(k)}` : 'Kabupaten Pesisir Barat';
+      const kalimat = narasi(i, wilayah, k);
       const defId = `def-${i.id}`;
       return h(
         'article',
@@ -609,9 +693,19 @@ function gambarKartu(): void {
               { class: 'kartu__nilai angka' },
               v === null || v === undefined
                 ? 'Tidak ada data'
-                : [formatAngka(v, i.desimal), persen(i) ? '%' : h('small', null, i.satuan)],
+                : [
+                    formatAngka(v, i.desimal),
+                    persen(i)
+                      ? '%'
+                      : h(
+                          'small',
+                          { class: i.satuan.length > 8 ? 'satuan-panjang' : null },
+                          i.satuan,
+                        ),
+                  ],
             ),
             h('span', { class: 'kartu__rinci' }, r ? rinci(i, r) : labelSumber(i)),
+            kalimat ? h('span', { class: 'kartu__narasi' }, kalimat) : null,
             h(
               'span',
               { class: 'kartu__bar', 'aria-hidden': 'true' },
@@ -622,14 +716,23 @@ function gambarKartu(): void {
                   'span',
                   { class: 'kartu__banding' },
                   b ? h('span', { class: `lencana-arah lencana-arah--${b.kelas}` }, b.teks) : null,
-                  h('span', { class: 'kartu__kab' }, `Kab. ${fmtRingkas(i, i.kabupaten)}`),
-                  no
-                    ? h(
-                        'span',
-                        { class: 'kartu__no' },
-                        `Peringkat ${no}/${keadaan.kecamatan.length}`,
-                      )
-                    : null,
+                  jml
+                    ? [
+                        h(
+                          'span',
+                          { class: 'kartu__kab' },
+                          `Rata-rata per kecamatan ${formatAngka(jml.rataRata, 0)}`,
+                        ),
+                        jml.porsi !== null
+                          ? h(
+                              'span',
+                              { class: 'kartu__kab' },
+                              `${formatAngka(jml.porsi, 1)}% dari total kabupaten (${fmtRingkas(i, i.kabupaten)})`,
+                            )
+                          : null,
+                      ]
+                    : h('span', { class: 'kartu__kab' }, `Kab. ${fmtRingkas(i, i.kabupaten)}`),
+                  no ? h('span', { class: 'kartu__no' }, no) : null,
                 )
               : null,
           ),
@@ -672,7 +775,8 @@ function gambarKartu(): void {
         h(
           'div',
           { class: 'kartu__definisi', id: defId, hidden: true },
-          h('p', null, i.metode),
+          kalimat ? h('p', { class: 'kartu__definisi-narasi' }, kalimat) : null,
+          h('p', null, h('strong', null, 'Cara hitung: '), i.metode),
           h(
             'p',
             { class: 'sumber' },

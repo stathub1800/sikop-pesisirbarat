@@ -1,0 +1,38 @@
+<!doctype html>
+<html lang="id">
+  <head>
+    <!--sikop:head-->
+    <title>Tabel Dinamis | SIKOP Pesisir Barat</title>
+    <meta
+      name="description"
+      content="Susun tabel sendiri dari data SIKOP: bandingkan beberapa indikator antarkecamatan, atau buat tabulasi silang sekolah menurut kecamatan, jenjang, status, dan akreditasi, lalu unduh CSV."
+    />
+    <script type="module" src="/src/pages/tabel.ts"></script>
+  </head>
+  <body>
+    <!--sikop:header aktif="peta"-->
+    <main id="isi" class="wadah halaman">
+      <nav class="remah" aria-label="Remah roti">
+        <a href="/peta/">Peta Tematik</a> / <span aria-current="page">Tabel dinamis</span>
+      </nav>
+      <div class="halaman__judul">
+        <h1>Tabel Dinamis</h1>
+        <p>
+          Susun tabel sesuai kebutuhan: pilih indikator yang ingin dibandingkan antarkecamatan, atau
+          silangkan dua variabel sekolah. Pilihan tersimpan di alamat halaman sehingga tabel dapat
+          dibagikan, dan hasilnya dapat diunduh sebagai CSV.
+        </p>
+      </div>
+      <div class="pilih-mode" role="group" aria-label="Jenis tabel">
+        <button type="button" class="tombol" data-mode="indikator" aria-pressed="true">
+          Indikator per kecamatan
+        </button>
+        <button type="button" class="tombol" data-mode="sekolah" aria-pressed="false">
+          Tabulasi silang sekolah
+        </button>
+      </div>
+      <div id="isi-tabel"></div>
+    </main>
+    <!--sikop:footer-->
+  </body>
+</html>

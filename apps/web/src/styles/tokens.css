@@ -124,6 +124,64 @@
   }
 }
 
+/* Tema dipilih pengunjung lewat tombol Tema di kepala halaman (disimpan di localStorage). */
+:root[data-tema='gelap'] {
+  color-scheme: dark;
+  --latar: #0e1820;
+  --permukaan: #142230;
+  --permukaan-2: #1b2c3b;
+  --garis: #263b4d;
+  --garis-kuat: #36516a;
+  --teks: #e8eef3;
+  --teks-2: #a3b3c2;
+  --primer: #7cc0e6;
+  --primer-teks: #0b1d29;
+  --primer-lembut: #17354b;
+  --fokus: #9fd3f2;
+  --hijau: #8fcf6a;
+  --hijau-lembut: #1d3318;
+  --oranye: #f1a17b;
+  --oranye-lembut: #3a2418;
+  --merah: #ff8c8c;
+  --merah-lembut: #3d1a1c;
+  --kuning-lembut: #3a3013;
+  --peta-1: #1d3a4f;
+  --peta-2: #255a7a;
+  --peta-3: #2f7fac;
+  --peta-4: #58aedb;
+  --peta-5: #a4d6f2;
+  --peta-kosong: #22313d;
+  --peta-latar: #0f1b24;
+  --bayang-1: 0 1px 2px rgb(0 0 0 / 0.4);
+  --bayang-2: 0 8px 24px rgb(0 0 0 / 0.5);
+}
+
+/* Cetak dan simpan PDF selalu memakai warna terang, apa pun tema layar. */
+@media print {
+  :root,
+  :root[data-tema='gelap'],
+  :root:not([data-tema='terang']) {
+    color-scheme: light;
+    --latar: #ffffff;
+    --permukaan: #ffffff;
+    --permukaan-2: #edf2f6;
+    --garis: #c2cdd7;
+    --garis-kuat: #8e9cab;
+    --teks: #231f20;
+    --teks-2: #3b4856;
+    --primer: #145c87;
+    --primer-teks: #ffffff;
+    --primer-lembut: #e3f1f8;
+    --hijau: #3f7d1f;
+    --hijau-lembut: #e9f4e1;
+    --oranye: #a8461c;
+    --oranye-lembut: #fbebe2;
+    --kuning-lembut: #fff4d6;
+    --bayang-1: none;
+    --bayang-2: none;
+  }
+}
+
 @media (prefers-reduced-motion: reduce) {
   :root {
     --durasi: 0ms;

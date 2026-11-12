@@ -131,7 +131,7 @@
 }
 .hasil-cari__judul {
   padding: 8px 10px 2px;
-  font-size: 11px;
+  font-size: var(--t-xs);
   font-weight: 700;
   letter-spacing: 0.05em;
   text-transform: uppercase;
@@ -231,6 +231,14 @@
 }
 .pil.redup {
   opacity: 0.55;
+}
+.dengan-nama .pil--tanpa-nama .pil__nama {
+  display: none;
+}
+.pil--rapat {
+  gap: 3px;
+  padding: 2px 6px;
+  font-size: 10px;
 }
 .tip-peta {
   position: absolute;
@@ -357,6 +365,15 @@
   background: var(--laut-500);
   border-radius: inherit;
 }
+.peringkat__catatan {
+  margin: 6px 0 0;
+  font-size: var(--t-xs);
+  line-height: 1.45;
+  color: var(--teks-2);
+}
+.peringkat__catatan:empty {
+  display: none;
+}
 .peringkat__semua {
   margin-top: 6px;
   width: 100%;
@@ -393,7 +410,7 @@
   display: flex;
   justify-content: space-between;
   margin-top: 6px;
-  font-size: 11px;
+  font-size: var(--t-xs);
   color: var(--teks-2);
   font-variant-numeric: tabular-nums;
 }
@@ -402,7 +419,7 @@
   align-items: center;
   gap: 6px;
   margin: 6px 0 0;
-  font-size: 11px;
+  font-size: var(--t-xs);
   color: var(--teks-2);
 }
 .legenda__kosong i {
@@ -442,6 +459,13 @@
 .kontrol-peta svg {
   width: 18px;
   height: 18px;
+}
+.kontrol-peta > .kontrol-peta__berlabel {
+  display: inline-flex;
+  gap: 6px;
+  width: auto;
+  padding: 0 12px;
+  font: 600 var(--t-xs) / 1 var(--huruf);
 }
 .popover-lapisan {
   position: absolute;
@@ -743,6 +767,15 @@
   font-size: var(--t-xs);
   color: var(--teks-2);
 }
+.kartu__narasi {
+  margin-top: 4px;
+  font-size: var(--t-sm);
+  line-height: 1.5;
+  color: var(--teks);
+}
+.kartu__definisi-narasi {
+  font-weight: 600;
+}
 .kartu__bar {
   display: block;
   height: 6px;
@@ -763,7 +796,7 @@
   align-items: center;
   gap: 4px 10px;
   margin-top: 8px;
-  font-size: 11px;
+  font-size: var(--t-xs);
   color: var(--teks-2);
 }
 .lencana-arah {
@@ -848,9 +881,10 @@
   text-align: right;
   white-space: nowrap;
 }
-.kartu:not(.kartu--aktif) .kartu__nilai small {
+.kartu:not(.kartu--aktif) .kartu__nilai small.satuan-panjang {
   display: none;
 }
+.kartu:not(.kartu--aktif) .kartu__narasi,
 .kartu:not(.kartu--aktif) .kartu__rinci,
 .kartu:not(.kartu--aktif) .kartu__kab,
 .kartu:not(.kartu--aktif) .kartu__no {

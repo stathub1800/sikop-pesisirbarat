@@ -33,13 +33,6 @@ interface Sekolah {
   daya_listrik: number | null;
   akses_internet: string | null;
   luas_tanah: number | null;
-  pd: number;
-  pd_l: number;
-  pd_p: number;
-  rombel: number;
-  guru: number;
-  guru_l: number;
-  guru_p: number;
   rk_baik: number;
   rk_rusak_ringan: number;
   rk_rusak_sedang: number;
@@ -99,40 +92,9 @@ function tampil(s: Sekolah, sumber: string, tanggal: string): HTMLElement {
       h('span', { class: 'lencana' }, `NPSN ${s.npsn}`),
     ),
     h(
-      'div',
-      { class: 'kpi' },
-      h(
-        'div',
-        null,
-        h('span', { class: 'kpi__nilai' }, formatAngka(s.pd)),
-        h(
-          'span',
-          { class: 'kpi__label' },
-          `peserta didik (${formatAngka(s.pd_l)} laki-laki, ${formatAngka(s.pd_p)} perempuan)`,
-        ),
-      ),
-      h(
-        'div',
-        null,
-        h('span', { class: 'kpi__nilai' }, formatAngka(s.guru)),
-        h(
-          'span',
-          { class: 'kpi__label' },
-          `guru (${formatAngka(s.guru_l)} laki-laki, ${formatAngka(s.guru_p)} perempuan)`,
-        ),
-      ),
-      h(
-        'div',
-        null,
-        h('span', { class: 'kpi__nilai' }, formatAngka(s.rombel)),
-        h('span', { class: 'kpi__label' }, 'rombongan belajar'),
-      ),
-      h(
-        'div',
-        null,
-        h('span', { class: 'kpi__nilai' }, s.guru > 0 ? formatAngka(s.pd / s.guru, 1) : '–'),
-        h('span', { class: 'kpi__label' }, 'peserta didik per guru'),
-      ),
+      'p',
+      { class: 'pesan' },
+      'Jumlah peserta didik, guru, dan rombongan belajar sementara tidak ditayangkan karena data sumbernya belum lengkap untuk seluruh sekolah.',
     ),
     h(
       'div',

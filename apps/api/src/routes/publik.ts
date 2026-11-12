@@ -9,6 +9,7 @@ import {
   KECAMATAN,
   KOORDINAT_TAMPIL,
   RE_KODE_VERIFIKASI,
+  TAYANG_PD_GURU,
   toCsv,
 } from '@sikop/shared';
 import type { AppEnv } from '../env.ts';
@@ -46,7 +47,9 @@ publik.get('/ringkasan', cachePublik(300), async (c) => {
   const db = c.env.DB;
   const [s, jenjang, kursus, sert] = await db.batch([
     db.prepare(
-      'SELECT COUNT(*) AS sekolah, COALESCE(SUM(pd),0) AS pd, COALESCE(SUM(guru),0) AS guru, MAX(updated_at) AS diperbarui FROM sekolah WHERE is_published = 1',
+      TAYANG_PD_GURU
+        ? 'SELECT COUNT(*) AS sekolah, COALESCE(SUM(pd),0) AS pd, COALESCE(SUM(guru),0) AS guru, MAX(updated_at) AS diperbarui FROM sekolah WHERE is_published = 1'
+        : 'SELECT COUNT(*) AS sekolah, MAX(updated_at) AS diperbarui FROM sekolah WHERE is_published = 1',
     ),
     db.prepare(
       'SELECT jenjang, COUNT(*) AS n FROM sekolah WHERE is_published = 1 GROUP BY jenjang',
@@ -125,7 +128,7 @@ publik.get('/kecamatan/:kode', cachePublik(300), async (c) => {
       .bind(kode),
     db
       .prepare(
-        `SELECT jenjang, status, COUNT(*) AS sekolah, SUM(pd) AS pd, SUM(guru) AS guru
+        `SELECT jenjang, status, COUNT(*) AS sekolah${TAYANG_PD_GURU ? ', SUM(pd) AS pd, SUM(guru) AS guru' : ''}
          FROM sekolah WHERE kode_kec = ? AND is_published = 1 GROUP BY jenjang, status`,
       )
       .bind(kode),
@@ -148,11 +151,11 @@ publik.get('/kecamatan/:kode', cachePublik(300), async (c) => {
 
 /* ------------------------------ Sekolah ------------------------------ */
 
-const KOLOM_DAFTAR = 'npsn, nama, bentuk, jenjang, status, akreditasi, kode_kec, pd, guru, rombel';
+/** Kolom peserta didik, guru, dan rombel hanya dikirim bila TAYANG_PD_GURU (lihat @sikop/shared). */
+const KOLOM_DAFTAR = `npsn, nama, bentuk, jenjang, status, akreditasi, kode_kec${TAYANG_PD_GURU ? ', pd, guru, rombel' : ''}`;
 const URUT: Readonly<Record<string, string>> = {
   nama: 'nama COLLATE NOCASE',
-  pd: 'pd',
-  guru: 'guru',
+  ...(TAYANG_PD_GURU ? { pd: 'pd', guru: 'guru' } : {}),
   kecamatan: 'kode_kec',
   jenjang: 'jenjang',
 };
@@ -223,11 +226,35 @@ publik.get('/sekolah', cachePublik(120), async (c) => {
   return c.json({
     items: items?.results ?? [],
     total: t.n,
-    jumlah_pd: t.pd,
-    jumlah_guru: t.guru,
+    ...(TAYANG_PD_GURU ? { jumlah_pd: t.pd, jumlah_guru: t.guru } : {}),
     halaman,
     ukuran,
   });
+});
+
+/**
+ * Tabulasi silang sekolah: banyaknya sekolah menurut dua variabel (baris x kolom), dengan saringan
+ * yang sama seperti daftar sekolah. Nama kolom SQL diambil dari daftar putih, bukan dari input.
+ */
+const VARIABEL_REKAP: Readonly<Record<string, string>> = {
+  kecamatan: 'kode_kec',
+  jenjang: 'jenjang',
+  status: 'status',
+  akreditasi: "CASE WHEN akreditasi IN ('A','B','C') THEN akreditasi ELSE 'Belum' END",
+};
+publik.get('/sekolah/rekap', cachePublik(120), async (c) => {
+  const q = c.req.query();
+  const baris = VARIABEL_REKAP[q.baris ?? 'kecamatan'];
+  const kolom = q.kolom ? VARIABEL_REKAP[q.kolom] : null;
+  if (!baris || (q.kolom && !kolom) || (q.kolom && q.kolom === (q.baris ?? 'kecamatan')))
+    throw new HttpError(400, 'variabel', 'Variabel baris atau kolom tidak dikenal.');
+  const { where, params } = filterSekolah(q);
+  const { results } = await c.env.DB.prepare(
+    `SELECT ${baris} AS baris, ${kolom ?? "''"} AS kolom, COUNT(*) AS n FROM sekolah WHERE ${where} GROUP BY 1, 2 ORDER BY 1, 2`,
+  )
+    .bind(...params)
+    .all<{ baris: string; kolom: string; n: number }>();
+  return c.json({ baris: q.baris ?? 'kecamatan', kolom: q.kolom ?? null, sel: results });
 });
 
 publik.get('/sekolah/titik', cachePublik(300), async (c) => {
@@ -275,13 +302,9 @@ publik.get('/sekolah/ekspor.csv', async (c) => {
     'kurikulum',
     'akses_internet',
     'sumber_listrik',
-    'pd',
-    'pd_l',
-    'pd_p',
-    'rombel',
-    'guru',
-    'guru_l',
-    'guru_p',
+    ...(TAYANG_PD_GURU
+      ? (['pd', 'pd_l', 'pd_p', 'rombel', 'guru', 'guru_l', 'guru_p'] as const)
+      : ([] as const)),
     'rk_baik',
     'rk_rusak_ringan',
     'rk_rusak_sedang',
@@ -310,6 +333,8 @@ publik.get('/sekolah/:npsn', cachePublik(120), async (c) => {
     .bind(npsn)
     .first<Record<string, unknown>>();
   if (!s) throw tidakDitemukan('Sekolah');
+  if (!TAYANG_PD_GURU)
+    for (const k of ['pd', 'pd_l', 'pd_p', 'rombel', 'guru', 'guru_l', 'guru_p']) delete s[k];
   if (!(KOORDINAT_TAMPIL as readonly unknown[]).includes(s.koordinat_status)) {
     s.lat = null;
     s.lon = null;

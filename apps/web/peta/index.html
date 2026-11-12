@@ -73,6 +73,7 @@
               <span id="teks-judul-peringkat">Peringkat kecamatan</span>
             </h2>
             <ol id="daftar-peringkat" class="peringkat__daftar"></ol>
+            <p id="catatan-peringkat" class="peringkat__catatan"></p>
             <button type="button" class="peringkat__semua" id="tombol-semua" aria-expanded="false">
               Lihat semua (11)
             </button>
@@ -85,9 +86,10 @@
             <button
               type="button"
               id="k-lapisan"
+              class="kontrol-peta__berlabel"
               aria-expanded="false"
               aria-controls="popover-lapisan"
-              title="Lapisan peta"
+              title="Tampilkan lokasi sekolah di peta"
             >
               <svg viewBox="0 0 24 24" aria-hidden="true">
                 <path
@@ -98,7 +100,7 @@
                   stroke-linejoin="round"
                 />
               </svg>
-              <span class="sr">Lapisan peta</span>
+              <span>Lapisan</span>
             </button>
             <button type="button" id="k-penuh" title="Layar penuh">
               <svg viewBox="0 0 24 24" aria-hidden="true">
@@ -170,6 +172,10 @@
               <label class="centang"
                 ><input type="checkbox" id="tampil-sekolah" /> Lokasi sekolah</label
               >
+              <p class="sumber">
+                Titik fasilitas lain (puskesmas, pasar, bank) belum tersedia karena data Podes hanya
+                boleh tampil sebagai agregat kecamatan.
+              </p>
               <div class="isian">
                 <label for="filter-jenjang">Jenjang</label>
                 <select id="filter-jenjang">
@@ -192,6 +198,7 @@
         <div class="gulir-indikator" tabindex="-1">
           <div class="daftar-indikator" id="daftar-indikator" aria-live="polite"></div>
           <footer class="panel-kaki">
+            <a href="/tabel/">Tabel dinamis: susun tabel sendiri</a>
             <a href="/api/v1/indikator/ekspor.csv" download>Unduh semua indikator (CSV)</a>
             <a href="/sekolah/">Daftar sekolah</a>
             <p class="sumber">

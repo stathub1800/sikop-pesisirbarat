@@ -6,21 +6,22 @@ Permintaan tulis wajib membawa header `X-SIKOP: 1` (perlindungan CSRF).
 
 ## Publik
 
-| Metode | Jalur                                                                        | Keterangan                                                                    |
-| ------ | ---------------------------------------------------------------------------- | ----------------------------------------------------------------------------- |
-| GET    | `/health`                                                                    | Status layanan dan basis data                                                 |
-| GET    | `/situs`                                                                     | Pengaturan publik, daftar kecamatan, kunci publik Google/Turnstile            |
-| GET    | `/ringkasan`                                                                 | Angka beranda dari D1                                                         |
-| GET    | `/indikator`                                                                 | Indikator tayang: nilai per kecamatan + kabupaten, sumber, tahun, cara hitung |
-| GET    | `/indikator/ekspor.csv`                                                      | Semua indikator × wilayah (CSV, UTF-8 BOM)                                    |
-| GET    | `/kecamatan/:kode`                                                           | Profil kecamatan: luas peta, indikator, rekap sekolah                         |
-| GET    | `/sekolah?q=&kec=&jenjang=&status=&akreditasi=&urut=&arah=&halaman=&ukuran=` | Daftar sekolah + hitungan total (berpasangan)                                 |
-| GET    | `/sekolah/titik`                                                             | GeoJSON titik sekolah yang koordinatnya layak tampil                          |
-| GET    | `/sekolah/ekspor.csv`                                                        | Ekspor dengan saringan yang sama                                              |
-| GET    | `/sekolah/:npsn`                                                             | Profil sekolah (kolom publik saja)                                            |
-| GET    | `/sertifikat/:kode`                                                          | Cek keaslian sertifikat (dibatasi 10/menit/IP)                                |
-| POST   | `/layanan/permohonan`                                                        | Ajukan permohonan; mengembalikan tiket (dibatasi laju, Turnstile)             |
-| POST   | `/layanan/permohonan/status`                                                 | Status permohonan dengan tiket + email                                        |
+| Metode | Jalur                                                                        | Keterangan                                                                           |
+| ------ | ---------------------------------------------------------------------------- | ------------------------------------------------------------------------------------ |
+| GET    | `/health`                                                                    | Status layanan dan basis data                                                        |
+| GET    | `/situs`                                                                     | Pengaturan publik, daftar kecamatan, kunci publik Google/Turnstile                   |
+| GET    | `/ringkasan`                                                                 | Angka beranda dari D1                                                                |
+| GET    | `/indikator`                                                                 | Indikator tayang: nilai per kecamatan + kabupaten, sumber, tahun, cara hitung        |
+| GET    | `/indikator/ekspor.csv`                                                      | Semua indikator × wilayah (CSV, UTF-8 BOM)                                           |
+| GET    | `/kecamatan/:kode`                                                           | Profil kecamatan: luas peta, indikator, rekap sekolah                                |
+| GET    | `/sekolah?q=&kec=&jenjang=&status=&akreditasi=&urut=&arah=&halaman=&ukuran=` | Daftar sekolah + hitungan total (berpasangan)                                        |
+| GET    | `/sekolah/titik`                                                             | GeoJSON titik sekolah yang koordinatnya layak tampil                                 |
+| GET    | `/sekolah/rekap?baris=&kolom=&kec=&jenjang=&status=&akreditasi=`             | Tabulasi silang banyaknya sekolah (variabel: kecamatan, jenjang, status, akreditasi) |
+| GET    | `/sekolah/ekspor.csv`                                                        | Ekspor dengan saringan yang sama                                                     |
+| GET    | `/sekolah/:npsn`                                                             | Profil sekolah (kolom publik saja)                                                   |
+| GET    | `/sertifikat/:kode`                                                          | Cek keaslian sertifikat (dibatasi 10/menit/IP)                                       |
+| POST   | `/layanan/permohonan`                                                        | Ajukan permohonan; mengembalikan tiket (dibatasi laju, Turnstile)                    |
+| POST   | `/layanan/permohonan/status`                                                 | Status permohonan dengan tiket + email                                               |
 
 ## Autentikasi
 
