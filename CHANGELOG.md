@@ -49,6 +49,9 @@ Format mengikuti [Keep a Changelog](https://keepachangelog.com/id-ID/1.1.0/) dan
 - Satuan tampil di kartu ringkas (mis. "5,0 km"); tombol lapisan peta kini berlabel "Lapisan".
 - Data Sekolah dan profil sekolah memakai remah "Peta Tematik / Data Sekolah"; tombol "Masuk" menjadi
   "Masuk peserta"; teks keterangan kecil di peta diperbesar ke 12 px.
+- Server pengembangan dan pratinjau Vite kini menerapkan `public/_redirects`, sehingga uji E2E pengalihan
+  `/podes/` lolos di CI. Sebelumnya uji ini selalu gagal, CI `main` merah, dan alur Deploy (yang menunggu CI
+  hijau) tidak pernah berjalan.
 - Sertifikat peserta non-ASN terbit tanpa NIP. Pratinjau PDF belum ada (CSP `frame-src`); dokumen dibuka di tab baru.
 - CI memakai Chrome bawaan runner untuk uji browser, sehingga tidak bergantung pada mirror apt Ubuntu.
 - Pemasang mencoba ulang galat jaringan ke Cloudflare dan menampilkan langkah perbaikannya.

@@ -65,10 +65,41 @@ function partials(): Plugin {
   };
 }
 
+/**
+ * Menerapkan aturan pengalihan sederhana dari public/_redirects (format Cloudflare Pages:
+ * "sumber tujuan kode") di server pengembangan dan pratinjau Vite, agar perilaku lokal dan uji E2E di
+ * CI sama dengan produksi. Di produksi berkas yang sama dibaca langsung oleh Cloudflare Pages.
+ */
+function pengalihan(): Plugin {
+  const aturan = readFileSync(resolve(ROOT, 'public/_redirects'), 'utf8')
+    .split('\n')
+    .map((l) => l.trim())
+    .filter((l) => l && !l.startsWith('#'))
+    .map((l) => l.split(/\s+/))
+    .filter((b): b is [string, string, ...string[]] => b.length >= 2)
+    .map(([dari, ke, kode]) => ({ dari, ke, kode: Number(kode ?? 302) }));
+  const pasang = (server: {
+    middlewares: { use: (f: (req: Req, res: Res, next: () => void) => void) => void };
+  }): void => {
+    // Badan fungsi sengaja berupa blok: nilai kembali fungsi akan dianggap Vite sebagai hook lanjutan.
+    server.middlewares.use((req, res, next) => {
+      const [jalur, kueri] = (req.url ?? '').split('?');
+      const a = aturan.find((x) => x.dari === jalur);
+      if (!a) return next();
+      res.statusCode = a.kode;
+      res.setHeader('Location', a.ke + (kueri ? `?${kueri}` : ''));
+      res.end();
+    });
+  };
+  return { name: 'sikop-pengalihan', configureServer: pasang, configurePreviewServer: pasang };
+}
+type Req = { url?: string };
+type Res = { statusCode: number; setHeader: (k: string, v: string) => void; end: () => void };
+
 export default defineConfig({
   root: ROOT,
   publicDir: 'public',
-  plugins: [partials()],
+  plugins: [partials(), pengalihan()],
   build: {
     outDir: 'dist',
     emptyOutDir: true,
