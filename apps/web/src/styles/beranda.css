@@ -348,6 +348,46 @@
   flex: 1 1 260px;
 }
 
+/* Legenda warna peta sorotan (warna kelas sama dengan peta-pesisir.css) */
+.legenda-mini {
+  display: flex;
+  align-items: center;
+  gap: var(--s-2);
+  margin-top: var(--s-3);
+  font-size: var(--t-xs);
+  color: var(--teks-2);
+  font-variant-numeric: tabular-nums;
+}
+.legenda-mini[hidden] {
+  display: none;
+}
+.legenda-mini__bar {
+  display: flex;
+  flex: 1 1 auto;
+  max-inline-size: 220px;
+  block-size: 10px;
+  border-radius: 999px;
+  overflow: hidden;
+}
+.legenda-mini__bar span {
+  flex: 1;
+}
+.legenda-mini__bar .k1 {
+  background: var(--peta-1);
+}
+.legenda-mini__bar .k2 {
+  background: var(--peta-2);
+}
+.legenda-mini__bar .k3 {
+  background: var(--peta-3);
+}
+.legenda-mini__bar .k4 {
+  background: var(--peta-4);
+}
+.legenda-mini__bar .k5 {
+  background: var(--peta-5);
+}
+
 /* Peringkat kecamatan di samping peta */
 .daftar-kec {
   list-style: none;

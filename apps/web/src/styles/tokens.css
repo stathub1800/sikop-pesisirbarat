@@ -60,7 +60,7 @@
 
   /* Tipografi: skala modular 12/14/16/20/24/32/40/56 */
   --huruf: 'Plus Jakarta Sans Variable', 'Plus Jakarta Sans', system-ui, sans-serif;
-  --t-xs: 0.75rem;
+  --t-xs: 0.8125rem; /* 13 px: batas bawah teks yang masih nyaman dibaca */
   --t-sm: 0.875rem;
   --t-md: 1rem;
   --t-lg: 1.25rem;

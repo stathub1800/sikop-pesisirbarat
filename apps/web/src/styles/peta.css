@@ -238,7 +238,7 @@
 .pil--rapat {
   gap: 3px;
   padding: 2px 6px;
-  font-size: 10px;
+  font-size: 0.6875rem;
 }
 .tip-peta {
   position: absolute;
@@ -630,7 +630,7 @@
   font-size: var(--t-md);
 }
 .fakta__butir span {
-  font-size: 10.5px;
+  font-size: var(--t-xs);
   line-height: 1.25;
   color: var(--teks-2);
 }
@@ -1041,7 +1041,8 @@
   .kontrol-peta {
     position: absolute;
     left: var(--jarak-tepi);
-    top: calc(max(58vh, 340px) - 52px);
+    /* Di atas baris atribusi peta agar tombol tidak menimpa teks hak cipta. */
+    top: calc(max(58vh, 340px) - 100px);
     z-index: 4;
   }
   .kontrol-peta > #k-penuh,
