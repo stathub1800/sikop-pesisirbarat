@@ -174,7 +174,7 @@ test('profil kecamatan: ringkasan pimpinan dan kalimat penjelasan indikator', as
   await page.goto('/kecamatan/?kode=1813090');
   await expect(page.locator('#j-ringkasan')).toContainText('Ngambur');
   await expect(page.locator('.ringkasan__kolom--baik li').first()).toBeVisible();
-  // "Ketersediaan SD/MI" dijelaskan dengan kalimat lengkap, bukan hanya nama singkat.
+  // "Desa/kelurahan yang memiliki SD/MI" dijelaskan dengan kalimat lengkap, bukan hanya nama singkat.
   await expect(
     page.locator('.narasi-baris', { hasText: 'memiliki sedikitnya satu SD atau MI' }),
   ).toBeVisible();

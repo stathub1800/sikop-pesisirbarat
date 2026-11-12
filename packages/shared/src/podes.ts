@@ -120,7 +120,7 @@ export const INDIKATOR_PODES: readonly IndikatorPodes[] = [
   }),
   persen({
     id: 'podes_pertanian',
-    nama: 'Penghasilan utama penduduk dari pertanian',
+    nama: 'Desa/kelurahan dengan penghasilan utama dari pertanian',
     tema: 'Wilayah',
     rujukan: 'R1008a',
     definisi:
@@ -132,7 +132,7 @@ export const INDIKATOR_PODES: readonly IndikatorPodes[] = [
   // Konektivitas
   persen({
     id: 'podes_internet_4g',
-    nama: 'Cakupan sinyal internet 4G',
+    nama: 'Desa/kelurahan dengan sinyal internet 4G',
     tema: 'Infrastruktur',
     rujukan: 'R904d',
     definisi:
@@ -142,7 +142,7 @@ export const INDIKATOR_PODES: readonly IndikatorPodes[] = [
   }),
   persen({
     id: 'podes_sinyal_kuat',
-    nama: 'Sinyal telepon seluler kuat',
+    nama: 'Desa/kelurahan dengan sinyal telepon seluler kuat',
     tema: 'Infrastruktur',
     rujukan: 'R904c',
     definisi:
@@ -152,7 +152,7 @@ export const INDIKATOR_PODES: readonly IndikatorPodes[] = [
   }),
   persen({
     id: 'podes_jalan_aspal',
-    nama: 'Jalan antardesa beraspal',
+    nama: 'Desa/kelurahan dengan jalan antardesa beraspal',
     tema: 'Infrastruktur',
     rujukan: 'R901b1',
     definisi:
@@ -162,7 +162,7 @@ export const INDIKATOR_PODES: readonly IndikatorPodes[] = [
   }),
   persen({
     id: 'podes_angkutan_umum',
-    nama: 'Akses angkutan umum',
+    nama: 'Desa/kelurahan yang dilalui angkutan umum',
     tema: 'Infrastruktur',
     rujukan: 'R901c1',
     definisi:
@@ -189,7 +189,7 @@ export const INDIKATOR_PODES: readonly IndikatorPodes[] = [
   // Pendidikan
   persen({
     id: 'podes_ada_sd',
-    nama: 'Ketersediaan SD/MI',
+    nama: 'Desa/kelurahan yang memiliki SD/MI',
     tema: 'Pendidikan',
     rujukan: 'R701c-d',
     definisi: 'Persentase desa/kelurahan yang memiliki SD atau MI, negeri maupun swasta.',
@@ -198,7 +198,7 @@ export const INDIKATOR_PODES: readonly IndikatorPodes[] = [
   }),
   persen({
     id: 'podes_ada_smp',
-    nama: 'Ketersediaan SMP/MTs',
+    nama: 'Desa/kelurahan yang memiliki SMP/MTs',
     tema: 'Pendidikan',
     rujukan: 'R701e-f',
     definisi: 'Persentase desa/kelurahan yang memiliki SMP atau MTs, negeri maupun swasta.',
@@ -207,7 +207,7 @@ export const INDIKATOR_PODES: readonly IndikatorPodes[] = [
   }),
   persen({
     id: 'podes_ada_sma',
-    nama: 'Ketersediaan SMA/MA/SMK',
+    nama: 'Desa/kelurahan yang memiliki SMA/MA/SMK',
     tema: 'Pendidikan',
     rujukan: 'R701g-i',
     definisi: 'Persentase desa/kelurahan yang memiliki SMA, MA, atau SMK, negeri maupun swasta.',
@@ -231,7 +231,7 @@ export const INDIKATOR_PODES: readonly IndikatorPodes[] = [
   },
   persen({
     id: 'podes_tbm',
-    nama: 'Ketersediaan taman bacaan atau perpustakaan desa',
+    nama: 'Desa/kelurahan yang memiliki taman bacaan atau perpustakaan',
     tema: 'Pendidikan',
     rujukan: 'R702',
     definisi:
@@ -243,7 +243,7 @@ export const INDIKATOR_PODES: readonly IndikatorPodes[] = [
   // Kesehatan
   persen({
     id: 'podes_faskes_dasar',
-    nama: 'Ketersediaan fasilitas kesehatan dasar',
+    nama: 'Desa/kelurahan yang memiliki fasilitas kesehatan dasar',
     tema: 'Kesehatan',
     rujukan: 'R704d-f, j-k',
     definisi:
@@ -253,7 +253,7 @@ export const INDIKATOR_PODES: readonly IndikatorPodes[] = [
   }),
   persen({
     id: 'podes_bidan',
-    nama: 'Ketersediaan praktik mandiri bidan',
+    nama: 'Desa/kelurahan yang memiliki praktik mandiri bidan',
     tema: 'Kesehatan',
     rujukan: 'R704i',
     definisi: 'Persentase desa/kelurahan yang memiliki praktik mandiri bidan.',
@@ -262,7 +262,7 @@ export const INDIKATOR_PODES: readonly IndikatorPodes[] = [
   }),
   persen({
     id: 'podes_dokter',
-    nama: 'Ketersediaan praktik mandiri dokter',
+    nama: 'Desa/kelurahan yang memiliki praktik mandiri dokter',
     tema: 'Kesehatan',
     rujukan: 'R704h',
     definisi: 'Persentase desa/kelurahan yang memiliki praktik mandiri dokter.',
@@ -271,7 +271,7 @@ export const INDIKATOR_PODES: readonly IndikatorPodes[] = [
   }),
   persen({
     id: 'podes_posyandu',
-    nama: 'Posyandu aktif setiap bulan',
+    nama: 'Desa/kelurahan dengan posyandu aktif setiap bulan',
     tema: 'Kesehatan',
     rujukan: 'R705a',
     definisi: 'Persentase desa/kelurahan yang memiliki posyandu dengan kegiatan setiap bulan.',
@@ -306,7 +306,7 @@ export const INDIKATOR_PODES: readonly IndikatorPodes[] = [
   }),
   persen({
     id: 'podes_septik',
-    nama: 'Mayoritas keluarga menggunakan tangki septik',
+    nama: 'Desa/kelurahan yang mayoritas keluarganya memakai tangki septik',
     tema: 'Infrastruktur',
     rujukan: 'R505',
     definisi:
@@ -316,7 +316,7 @@ export const INDIKATOR_PODES: readonly IndikatorPodes[] = [
   }),
   persen({
     id: 'podes_air_sungai',
-    nama: 'Mayoritas keluarga minum dari sungai atau danau',
+    nama: 'Desa/kelurahan yang mayoritas keluarganya minum air sungai atau danau',
     tema: 'Infrastruktur',
     rujukan: 'R504',
     definisi:
@@ -326,7 +326,7 @@ export const INDIKATOR_PODES: readonly IndikatorPodes[] = [
   }),
   persen({
     id: 'podes_kayu_bakar',
-    nama: 'Mayoritas keluarga memasak dengan kayu bakar',
+    nama: 'Desa/kelurahan yang mayoritas keluarganya memasak dengan kayu bakar',
     tema: 'Infrastruktur',
     rujukan: 'R503',
     definisi:
@@ -336,7 +336,7 @@ export const INDIKATOR_PODES: readonly IndikatorPodes[] = [
   }),
   persen({
     id: 'podes_energi_terbarukan',
-    nama: 'Pemanfaatan energi terbarukan',
+    nama: 'Desa/kelurahan yang memanfaatkan energi terbarukan',
     tema: 'Infrastruktur',
     rujukan: 'R509e',
     definisi:
@@ -348,7 +348,7 @@ export const INDIKATOR_PODES: readonly IndikatorPodes[] = [
   // Bencana dan mitigasi
   persen({
     id: 'podes_bencana',
-    nama: 'Kejadian bencana alam',
+    nama: 'Desa/kelurahan yang mengalami bencana alam',
     tema: 'Kebencanaan',
     rujukan: 'R601',
     definisi:
@@ -358,7 +358,7 @@ export const INDIKATOR_PODES: readonly IndikatorPodes[] = [
   }),
   persen({
     id: 'podes_peringatan_dini',
-    nama: 'Ketersediaan sistem peringatan dini bencana',
+    nama: 'Desa/kelurahan yang memiliki sistem peringatan dini bencana',
     tema: 'Kebencanaan',
     rujukan: 'R602a',
     definisi: 'Persentase desa/kelurahan yang memiliki sistem peringatan dini bencana alam.',
@@ -367,7 +367,7 @@ export const INDIKATOR_PODES: readonly IndikatorPodes[] = [
   }),
   persen({
     id: 'podes_peringatan_tsunami',
-    nama: 'Sistem peringatan dini tsunami di desa pesisir',
+    nama: 'Desa pesisir yang memiliki sistem peringatan dini tsunami',
     tema: 'Kebencanaan',
     rujukan: 'R602b',
     definisi:
@@ -379,7 +379,7 @@ export const INDIKATOR_PODES: readonly IndikatorPodes[] = [
   }),
   persen({
     id: 'podes_jalur_evakuasi',
-    nama: 'Ketersediaan rambu dan jalur evakuasi',
+    nama: 'Desa/kelurahan yang memiliki rambu dan jalur evakuasi',
     tema: 'Kebencanaan',
     rujukan: 'R602d',
     definisi: 'Persentase desa/kelurahan yang memiliki rambu dan jalur evakuasi bencana.',
@@ -388,7 +388,7 @@ export const INDIKATOR_PODES: readonly IndikatorPodes[] = [
   }),
   persen({
     id: 'podes_dampak_iklim',
-    nama: 'Terdampak perubahan iklim',
+    nama: 'Desa/kelurahan yang terdampak perubahan iklim',
     tema: 'Kebencanaan',
     rujukan: 'R604',
     definisi:
@@ -400,7 +400,7 @@ export const INDIKATOR_PODES: readonly IndikatorPodes[] = [
   // Ekonomi
   persen({
     id: 'podes_bank',
-    nama: 'Ketersediaan kantor bank',
+    nama: 'Desa/kelurahan yang memiliki kantor bank',
     tema: 'Ekonomi',
     rujukan: 'R1002a',
     definisi: 'Persentase desa/kelurahan yang memiliki kantor bank umum atau BPR yang beroperasi.',
@@ -409,7 +409,7 @@ export const INDIKATOR_PODES: readonly IndikatorPodes[] = [
   }),
   persen({
     id: 'podes_agen_bank',
-    nama: 'Ketersediaan agen bank',
+    nama: 'Desa/kelurahan yang memiliki agen bank',
     tema: 'Ekonomi',
     rujukan: 'R1003',
     definisi:
@@ -435,7 +435,7 @@ export const INDIKATOR_PODES: readonly IndikatorPodes[] = [
   },
   persen({
     id: 'podes_kur',
-    nama: 'Penerima Kredit Usaha Rakyat (KUR)',
+    nama: 'Desa/kelurahan dengan penerima Kredit Usaha Rakyat (KUR)',
     tema: 'Ekonomi',
     rujukan: 'R1006a',
     definisi:
@@ -445,7 +445,7 @@ export const INDIKATOR_PODES: readonly IndikatorPodes[] = [
   }),
   persen({
     id: 'podes_pasar',
-    nama: 'Ketersediaan pasar',
+    nama: 'Desa/kelurahan yang memiliki pasar',
     tema: 'Ekonomi',
     rujukan: 'R1007b-d',
     definisi:
@@ -455,7 +455,7 @@ export const INDIKATOR_PODES: readonly IndikatorPodes[] = [
   }),
   persen({
     id: 'podes_minimarket',
-    nama: 'Ketersediaan minimarket',
+    nama: 'Desa/kelurahan yang memiliki minimarket',
     tema: 'Ekonomi',
     rujukan: 'R1007e',
     definisi: 'Persentase desa/kelurahan yang memiliki minimarket, swalayan, atau supermarket.',
@@ -464,7 +464,7 @@ export const INDIKATOR_PODES: readonly IndikatorPodes[] = [
   }),
   persen({
     id: 'podes_akomodasi',
-    nama: 'Ketersediaan hotel atau penginapan',
+    nama: 'Desa/kelurahan yang memiliki hotel atau penginapan',
     tema: 'Ekonomi',
     rujukan: 'R1007h-i',
     definisi: 'Persentase desa/kelurahan yang memiliki hotel atau penginapan.',
@@ -473,7 +473,7 @@ export const INDIKATOR_PODES: readonly IndikatorPodes[] = [
   }),
   persen({
     id: 'podes_produk_unggulan',
-    nama: 'Memiliki produk unggulan',
+    nama: 'Desa/kelurahan yang memiliki produk unggulan',
     tema: 'Ekonomi',
     rujukan: 'R1010a',
     definisi: 'Persentase desa/kelurahan yang memiliki produk barang unggulan.',
@@ -484,7 +484,7 @@ export const INDIKATOR_PODES: readonly IndikatorPodes[] = [
   // Tata kelola desa (blok XII hanya untuk desa, bukan kelurahan)
   persen({
     id: 'podes_sid',
-    nama: 'Sistem informasi desa yang mutakhir',
+    nama: 'Desa dengan sistem informasi desa yang mutakhir',
     tema: 'Tata kelola dan sosial',
     rujukan: 'R1201a',
     definisi:
@@ -496,7 +496,7 @@ export const INDIKATOR_PODES: readonly IndikatorPodes[] = [
   }),
   persen({
     id: 'podes_siskeudes',
-    nama: 'Sistem keuangan desa yang mutakhir',
+    nama: 'Desa dengan sistem keuangan desa yang mutakhir',
     tema: 'Tata kelola dan sosial',
     rujukan: 'R1201c',
     definisi:
@@ -508,7 +508,7 @@ export const INDIKATOR_PODES: readonly IndikatorPodes[] = [
   }),
   persen({
     id: 'podes_bumdes',
-    nama: 'Memiliki unit usaha BUMDes',
+    nama: 'Desa yang memiliki unit usaha BUMDes',
     tema: 'Tata kelola dan sosial',
     rujukan: 'R1202a',
     definisi:
@@ -520,7 +520,7 @@ export const INDIKATOR_PODES: readonly IndikatorPodes[] = [
   }),
   persen({
     id: 'podes_perdes_pug',
-    nama: 'Peraturan desa tentang gender atau perlindungan anak',
+    nama: 'Desa dengan peraturan desa tentang gender atau perlindungan anak',
     tema: 'Tata kelola dan sosial',
     rujukan: 'R1203b',
     definisi:
@@ -532,7 +532,7 @@ export const INDIKATOR_PODES: readonly IndikatorPodes[] = [
   }),
   persen({
     id: 'podes_apbdes_ppa',
-    nama: 'Alokasi APBDes untuk perempuan dan anak',
+    nama: 'Desa yang mengalokasikan APBDes untuk perempuan dan anak',
     tema: 'Tata kelola dan sosial',
     rujukan: 'R1204a',
     definisi:
@@ -544,7 +544,7 @@ export const INDIKATOR_PODES: readonly IndikatorPodes[] = [
   }),
   persen({
     id: 'podes_bpd_perempuan',
-    nama: 'BPD dengan anggota perempuan',
+    nama: 'Desa/kelurahan yang BPD-nya beranggota perempuan',
     tema: 'Tata kelola dan sosial',
     rujukan: 'R1403b',
     definisi:
@@ -557,7 +557,7 @@ export const INDIKATOR_PODES: readonly IndikatorPodes[] = [
   // Sosial dan keamanan (kejadian kekerasan, perkelahian, dan judi online sengaja tidak ditayangkan)
   persen({
     id: 'podes_lapangan_olahraga',
-    nama: 'Ketersediaan lapangan olahraga',
+    nama: 'Desa/kelurahan yang memiliki lapangan olahraga',
     tema: 'Tata kelola dan sosial',
     rujukan: 'R802',
     definisi: 'Persentase desa/kelurahan yang memiliki lapangan olahraga.',
@@ -566,7 +566,7 @@ export const INDIKATOR_PODES: readonly IndikatorPodes[] = [
   }),
   persen({
     id: 'podes_ruang_publik',
-    nama: 'Ketersediaan ruang publik terbuka',
+    nama: 'Desa/kelurahan yang memiliki ruang publik terbuka',
     tema: 'Tata kelola dan sosial',
     rujukan: 'R803',
     definisi: 'Persentase desa/kelurahan yang memiliki ruang publik terbuka.',
@@ -575,7 +575,7 @@ export const INDIKATOR_PODES: readonly IndikatorPodes[] = [
   }),
   persen({
     id: 'podes_seni_budaya',
-    nama: 'Kegiatan seni budaya dan olahraga',
+    nama: 'Desa/kelurahan dengan kegiatan seni budaya dan olahraga',
     tema: 'Tata kelola dan sosial',
     rujukan: 'R804',
     definisi:
@@ -585,7 +585,7 @@ export const INDIKATOR_PODES: readonly IndikatorPodes[] = [
   }),
   persen({
     id: 'podes_siskamling',
-    nama: 'Keamanan lingkungan atas inisiatif warga',
+    nama: 'Desa/kelurahan dengan keamanan lingkungan atas inisiatif warga',
     tema: 'Tata kelola dan sosial',
     rujukan: 'R1103e',
     definisi:
@@ -595,7 +595,7 @@ export const INDIKATOR_PODES: readonly IndikatorPodes[] = [
   }),
   persen({
     id: 'podes_layanan_pengaduan',
-    nama: 'Ketersediaan layanan pengaduan korban kekerasan',
+    nama: 'Desa/kelurahan yang memiliki layanan pengaduan korban kekerasan',
     tema: 'Tata kelola dan sosial',
     rujukan: 'R1107',
     definisi:
