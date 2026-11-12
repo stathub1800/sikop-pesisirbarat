@@ -22,6 +22,7 @@ import {
   layarSoalEdit,
 } from './layar-lms.ts';
 import { layarPermohonan, layarPermohonanDetail } from './layar-permohonan.ts';
+import { layarPenyusun, layarPratinjau } from './layar-penyusun.ts';
 import { layarImpor, layarSekolah, layarSekolahEdit } from './layar-sekolah.ts';
 import { layarAudit, layarPengaturan, layarPengguna } from './layar-sistem.ts';
 
@@ -56,6 +57,12 @@ const MENU: Menu[] = [
     peran: ['pengelola_lms'],
     kelompok: 'Ruang belajar',
   },
+  {
+    hash: 'penyusun',
+    label: 'Penyusun kursus',
+    peran: ['pengelola_lms'],
+    kelompok: 'Ruang belajar',
+  },
   { hash: 'soal', label: 'Bank soal', peran: ['pengelola_lms'], kelompok: 'Ruang belajar' },
   { hash: 'peserta', label: 'Peserta', peran: ['pengelola_lms'], kelompok: 'Ruang belajar' },
   { hash: 'sertifikat', label: 'Sertifikat', peran: ['pengelola_lms'], kelompok: 'Ruang belajar' },
@@ -76,6 +83,8 @@ const LAYAR: Record<string, Layar> = {
   indikator: (k) => (k.arg[0] ? layarIndikatorEdit(k) : layarIndikator(k)),
   permohonan: (k) => (k.arg[0] ? layarPermohonanDetail(k) : layarPermohonan(k)),
   kursus: layarKursus,
+  penyusun: layarPenyusun,
+  pratinjau: layarPratinjau,
   modul: layarModulEdit,
   soal: (k) => (k.arg[0] ? layarSoalEdit(k) : layarSoal(k)),
   peserta: layarPeserta,
@@ -157,7 +166,7 @@ async function mulai(): Promise<void> {
       .split('/')
       .map(decodeURIComponent);
     const [nama = 'dasbor', ...arg] = jalur;
-    const induk = nama === 'modul' ? 'kursus' : nama;
+    const induk = nama === 'modul' ? 'kursus' : nama === 'pratinjau' ? 'penyusun' : nama;
     for (const a of document.querySelectorAll<HTMLAnchorElement>('#admin-nav a')) {
       if (a.dataset.hash === induk) a.setAttribute('aria-current', 'page');
       else a.removeAttribute('aria-current');

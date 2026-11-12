@@ -340,8 +340,9 @@ function silabus(
   bab: BabRingkas[],
   selesai: Set<number>,
   aktif?: number,
-  tautPelajaran = true,
+  opsi: { tautan?: (id: number) => string; evaluasi?: boolean } = {},
 ): HTMLElement {
+  const tautan = opsi.tautan ?? ((id: number): string => ke(kursusId, id));
   return h(
     'div',
     { class: 'silabus' },
@@ -391,16 +392,14 @@ function silabus(
             return h(
               'li',
               { class: p.id === aktif ? 'aktif' : null },
-              tautPelajaran
-                ? h(
-                    'a',
-                    { href: ke(kursusId, p.id), 'aria-current': p.id === aktif ? 'page' : null },
-                    isiBaris,
-                  )
-                : h('div', { class: 'silabus__baris' }, isiBaris),
+              h(
+                'a',
+                { href: tautan(p.id), 'aria-current': p.id === aktif ? 'page' : null },
+                isiBaris,
+              ),
             );
           }),
-          b.modul_id
+          b.modul_id && opsi.evaluasi !== false
             ? h(
                 'li',
                 { class: 'silabus__evaluasi' },
@@ -621,10 +620,32 @@ export async function halamanPemutar(
   const p = data.pelajaran;
   if (p.kursus_id !== kursusId) return void (location.hash = ke(p.kursus_id, p.id));
   ctx.judul(p.judul);
+  renderPemutar(ctx.app, kur.kursus, data, kur.bab, false);
+}
+
+/** Pratinjau admin: bentuk dan kode penyaji sama dengan pemutar peserta, tanpa mencatat progres. */
+export async function tampilPratinjau(app: HTMLElement, pelajaranId: number): Promise<void> {
+  isi(app, kerangka(8));
+  const data = await get<DataPelajaran & { bab: BabRingkas[]; kursus: Kursus }>(
+    `/admin/lms/pelajaran/${pelajaranId}/pratinjau`,
+  );
+  renderPemutar(app, data.kursus, data, data.bab, true);
+}
+
+function renderPemutar(
+  app: HTMLElement,
+  info: Pick<Kursus, 'judul' | 'kode'>,
+  data: DataPelajaran,
+  bab: BabRingkas[],
+  pratinjau: boolean,
+): void {
+  const p = data.pelajaran;
+  const kursusId = p.kursus_id;
+  const tautan = (id: number): string => (pratinjau ? `#/pratinjau/${id}` : ke(kursusId, id));
+  const asalKursus = pratinjau ? `#/penyusun/${kursusId}` : `#/kursus/${kursusId}`;
 
   const selesai = new Set(data.progres.selesai);
   let sudahSelesai = p.selesai;
-  const bab = kur.bab;
   const sisi = h('nav', {
     class: 'pemutar__sisi',
     id: 'pemutar-sisi',
@@ -673,18 +694,14 @@ export async function halamanPemutar(
     isi(
       sisi,
       tutup,
-      h(
-        'p',
-        { class: 'pemutar__kursus' },
-        h('a', { href: `#/kursus/${kursusId}` }, kur.kursus.judul),
-      ),
+      h('p', { class: 'pemutar__kursus' }, h('a', { href: asalKursus }, info.judul)),
       bilahProgres(persen, 'Kemajuan kursus'),
       h(
         'p',
         { class: 'isian__bantu' },
         `${selesai.size} dari ${data.progres.total} pelajaran selesai`,
       ),
-      silabus(kursusId, bab, selesai, p.id),
+      silabus(kursusId, bab, selesai, p.id, { tautan, evaluasi: !pratinjau }),
     );
   };
 
@@ -711,12 +728,17 @@ export async function halamanPemutar(
           }
         }),
     );
+    if (pratinjau) tandai.disabled = true;
     const tengah =
       p.jenis === 'latihan'
         ? h(
             'span',
             { class: sudahSelesai ? 'lencana lencana--hijau' : 'isian__bantu' },
-            sudahSelesai ? 'Latihan lulus' : 'Selesai setelah lulus latihan',
+            sudahSelesai
+              ? 'Latihan lulus'
+              : pratinjau
+                ? 'Pratinjau: progres tidak dicatat'
+                : 'Selesai setelah lulus latihan',
           )
         : sudahSelesai
           ? h('span', { class: 'lencana lencana--hijau' }, 'Selesai')
@@ -724,50 +746,54 @@ export async function halamanPemutar(
     isi(
       aksi,
       data.sebelumnya !== null
-        ? h(
-            'a',
-            { class: 'tombol', href: ke(kursusId, data.sebelumnya) },
-            ikon(IKON.kiri),
-            'Sebelumnya',
-          )
+        ? h('a', { class: 'tombol', href: tautan(data.sebelumnya) }, ikon(IKON.kiri), 'Sebelumnya')
         : h('span'),
       tengah,
       data.berikutnya !== null
         ? h(
             'a',
-            { class: 'tombol tombol--primer', href: ke(kursusId, data.berikutnya) },
+            { class: 'tombol tombol--primer', href: tautan(data.berikutnya) },
             'Berikutnya',
             ikon(IKON.kanan),
           )
         : h(
             'a',
-            { class: 'tombol tombol--primer', href: `#/kursus/${kursusId}` },
-            'Ke halaman kursus',
+            { class: 'tombol tombol--primer', href: asalKursus },
+            pratinjau ? 'Kembali ke penyusun' : 'Ke halaman kursus',
           ),
     );
   };
 
   isi(
     badan,
-    kontenPelajaran(p, data, (lulus) => {
-      if (!lulus) return;
-      selesai.add(p.id);
-      sudahSelesai = true;
-      gambarSisi();
-      gambarAksi();
-    }),
+    kontenPelajaran(
+      p,
+      data,
+      pratinjau
+        ? `/admin/lms/pelajaran/${p.id}/pratinjau/latihan`
+        : `/lms/pelajaran/${p.id}/latihan`,
+      (lulus) => {
+        if (!lulus || pratinjau) return;
+        selesai.add(p.id);
+        sudahSelesai = true;
+        gambarSisi();
+        gambarAksi();
+      },
+    ),
   );
   gambarSisi();
   gambarAksi();
 
   isi(
-    ctx.app,
+    app,
     h(
       'nav',
       { class: 'remah', 'aria-label': 'Remah roti' },
-      h('a', { href: '#/' }, 'Ruang Belajar'),
+      pratinjau
+        ? h('a', { href: '#/penyusun' }, 'Penyusun kursus')
+        : h('a', { href: '#/' }, 'Ruang Belajar'),
       ' / ',
-      h('a', { href: `#/kursus/${kursusId}` }, kur.kursus.kode),
+      h('a', { href: asalKursus }, info.kode),
       ` / ${p.bab_judul}`,
     ),
     h(
@@ -807,6 +833,7 @@ export async function halamanPemutar(
 function kontenPelajaran(
   p: DataPelajaran['pelajaran'],
   d: DataPelajaran,
+  endpointLatihan: string,
   saatLatihan: (lulus: boolean) => void,
 ): Node {
   switch (p.jenis) {
@@ -864,13 +891,14 @@ function kontenPelajaran(
       );
     }
     case 'latihan':
-      return formLatihan(p, d, saatLatihan);
+      return formLatihan(p, d, endpointLatihan, saatLatihan);
   }
 }
 
 function formLatihan(
   p: DataPelajaran['pelajaran'],
   _d: DataPelajaran,
+  endpoint: string,
   saatLatihan: (lulus: boolean) => void,
 ): HTMLElement {
   const soal = p.soal ?? [];
@@ -929,11 +957,7 @@ function formLatihan(
     }
     void sibuk(form.querySelector('button[type=submit]') as HTMLButtonElement, async () => {
       try {
-        const r = await kirim<HasilLatihan & { selesai: boolean }>(
-          'POST',
-          `/lms/pelajaran/${p.id}/latihan`,
-          { jawaban },
-        );
+        const r = await kirim<HasilLatihan & { selesai: boolean }>('POST', endpoint, { jawaban });
         for (const x of r.hasil) {
           const u = form.querySelector(`[data-umpan="${x.id}"]`);
           if (u)

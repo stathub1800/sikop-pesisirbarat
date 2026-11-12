@@ -99,7 +99,7 @@ lms.get('/kursus', cachePublik(300), async (c) => {
     ),
     db.prepare(
       `SELECT b.kursus_id, COUNT(p.id) AS n, COALESCE(SUM(p.durasi_menit), 0) AS menit
-         FROM bab b LEFT JOIN modul m ON m.id = b.modul_id JOIN pelajaran p ON p.bab_id = b.id
+         FROM bab b LEFT JOIN modul m ON m.id = b.modul_id JOIN pelajaran p ON p.bab_id = b.id AND p.is_published = 1
         WHERE ${BAB_TAMPIL} GROUP BY b.kursus_id`,
     ),
     db.prepare(

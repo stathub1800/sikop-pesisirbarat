@@ -15,9 +15,11 @@ import { wajibPeran } from '../../auth/sesi.ts';
 import { auditStmt } from '../../lib/audit.ts';
 import { angkaQuery, bacaBody, HttpError, konflikVersi, tidakDitemukan } from '../../lib/http.ts';
 import { terbitkanSertifikat } from '../../services/lms.ts';
+import { adminPenyusun } from './penyusun.ts';
 
 export const adminLms = new Hono<AppEnv>();
 adminLms.use('*', wajibPeran('pengelola_lms'));
+adminLms.route('/', adminPenyusun);
 
 const waktu = (): string => new Date().toISOString();
 

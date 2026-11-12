@@ -223,3 +223,70 @@ export function formatDurasiMenit(menit: number): string {
   const s = m % 60;
   return s === 0 ? `${j} jam` : `${j} jam ${s} menit`;
 }
+
+/* ---------- Penyusun kursus di admin (ADR-0008) ---------- */
+
+export const BabInputSchema = z.object({
+  judul: z.string().trim().min(3, 'Judul bab minimal 3 karakter').max(160),
+  /** Modul yang menyimpan pre-test dan post-test bab ini; null bila bab tanpa evaluasi. */
+  modul_id: z.number().int().positive().nullable().default(null),
+  is_published: z.boolean().default(false),
+  version: z.number().int().positive().optional(),
+});
+export type BabInput = z.infer<typeof BabInputSchema>;
+
+/** Tautan YouTube biasa (watch, youtu.be, shorts) dinormalkan ke bentuk embed youtube-nocookie. */
+export function normalkanIsiVideo(isi: unknown): unknown {
+  if (!isi || typeof isi !== 'object' || Array.isArray(isi)) return isi;
+  const o = isi as Record<string, unknown>;
+  const id = typeof o.url === 'string' ? idVideoYoutube(o.url) : null;
+  return id ? { ...o, url: urlEmbedYoutube(id) } : isi;
+}
+
+export const PelajaranInputSchema = z
+  .object({
+    judul: z.string().trim().min(3, 'Judul pelajaran minimal 3 karakter').max(160),
+    jenis: z.enum(JENIS_PELAJARAN),
+    isi: z.record(z.string(), z.unknown()),
+    durasi_menit: z.number().int().min(0).max(600).default(0),
+    wajib: z.boolean().default(true),
+    is_published: z.boolean().default(false),
+    version: z.number().int().positive().optional(),
+  })
+  .transform((v, ctx) => {
+    const r = periksaIsiPelajaran(v.jenis, v.jenis === 'video' ? normalkanIsiVideo(v.isi) : v.isi);
+    if (!r.sukses) {
+      ctx.addIssue({ code: 'custom', message: r.pesan, path: ['isi'] });
+      return z.NEVER;
+    }
+    return { ...v, isi: r.isi };
+  });
+export type PelajaranInput = z.output<typeof PelajaranInputSchema>;
+
+/** Urutan baru: daftar id dalam urutan yang diinginkan, tanpa duplikat. */
+export const UrutanInputSchema = z.object({
+  ids: z
+    .array(z.number().int().positive())
+    .min(1)
+    .max(200)
+    .refine((a) => new Set(a).size === a.length, 'ID tidak boleh ganda'),
+});
+
+export const SoalLatihanInputSchema = z
+  .object({
+    pertanyaan: z.string().trim().min(5).max(2000),
+    opsi: z.array(OpsiSchema).min(2).max(5),
+    kunci: z.string().regex(/^[A-E]$/),
+    pembahasan: z.string().trim().max(3000).nullish(),
+    urutan: z.number().int().min(0).max(10000).default(0),
+    is_active: z.boolean().default(true),
+  })
+  .refine((s) => s.opsi.some((o) => o.id === s.kunci), {
+    message: 'Kunci jawaban harus salah satu opsi',
+    path: ['kunci'],
+  })
+  .refine((s) => new Set(s.opsi.map((o) => o.id)).size === s.opsi.length, {
+    message: 'ID opsi tidak boleh ganda',
+    path: ['opsi'],
+  });
+export type SoalLatihanInput = z.infer<typeof SoalLatihanInputSchema>;
