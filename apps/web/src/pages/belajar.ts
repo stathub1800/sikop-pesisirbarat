@@ -22,7 +22,7 @@ import {
   type KategoriPeserta,
 } from '@sikop/shared';
 import '../styles/belajar.css';
-import { keluar, saya, tombolMasuk } from '../lib/akun.ts';
+import { keluar, perbaruiTautanAkun, saya, tombolMasuk } from '../lib/akun.ts';
 import { ApiError, get, kirim } from '../lib/api.ts';
 import {
   halamanKatalog as katalogBaru,
@@ -134,7 +134,8 @@ async function rute(): Promise<void> {
     );
   }
 }
-window.addEventListener('hashchange', () => void rute());
+// Tautan akun di kepala halaman ikut diperbarui setelah masuk atau mendaftar tanpa muat ulang.
+window.addEventListener('hashchange', () => void rute().finally(() => void perbaruiTautanAkun()));
 
 /** Tujuan ke halaman pendaftaran peserta sambil mengingat halaman yang hendak dituju. */
 const keAkun = (): string => {

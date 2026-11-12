@@ -6,6 +6,20 @@ Format mengikuti [Keep a Changelog](https://keepachangelog.com/id-ID/1.1.0/) dan
 
 ### Diubah
 
+- **Ruang Belajar lebih mudah dan interaktif bagi peserta**:
+  - Katalog menampilkan panduan "Cara belajar di sini" (pilih kursus, belajar, uji dan sertifikat) dengan
+    tombol masuk atau lengkapi profil. Selama katalog masih kosong, saringan disembunyikan.
+  - Kursus yang menyasar kategori peserta (mis. pelajar) didahulukan dan diberi lencana "Sesuai untuk Anda".
+  - Pemutar: tombol "Berikutnya" pada video, bacaan, dan dokumen sekaligus menandai pelajaran selesai
+    (cukup satu klik). Muncul pemberitahuan saat satu bab tuntas dan panel "Selamat, semua pelajaran
+    selesai" yang mengarahkan ke evaluasi bab dan ujian akhir.
+  - Latihan bertahap: satu soal per layar dengan tombol nomor soal, penanda soal terjawab, skor dalam
+    lingkaran, tinjauan pembahasan semua soal, dan tombol "Ulangi latihan". Penilaian tetap di server.
+- Tautan akun di kepala halaman langsung berubah menjadi "Akun saya" setelah masuk atau mendaftar, tanpa
+  memuat ulang halaman.
+- Lencana kuning kini terbaca di mode gelap.
+- ADR penyusun kursus diberi nomor 0009 karena nomor 0008 sudah dipakai ADR tabel dinamis.
+
 - Nama indikator Podes dan Dapodik memakai bahasa Indonesia baku dan menyebut satuan yang dihitung,
   misalnya "Ada SMA/MA/SMK" menjadi "Desa/kelurahan yang memiliki SMA/MA/SMK", agar jelas bahwa angkanya
   persentase desa/kelurahan, bukan jumlah fasilitas. Nama Dapodik memakai huruf kapital kalimat. Nama di
@@ -22,6 +36,12 @@ Format mengikuti [Keep a Changelog](https://keepachangelog.com/id-ID/1.1.0/) dan
 - Tombol "Masuk peserta" di kepala halaman menjadi "Masuk Ruang Belajar" agar jelas untuk siapa.
 - Peta Tematik: label kecamatan punya tooltip nama dan nilai, dan legenda memberi petunjuk bila sebagian
   nama kecamatan disembunyikan karena letaknya berdekatan.
+
+### Diperbaiki
+
+- Server dev Vite kini menerapkan `public/_redirects`, sehingga uji E2E alamat lama `/podes/` lolos di CI
+  seperti di produksi.
+- Berkas sistem `desktop.ini` dan `Thumbs.db` tidak lagi dilacak git.
 
 ### Keamanan
 
@@ -52,6 +72,15 @@ Format mengikuti [Keep a Changelog](https://keepachangelog.com/id-ID/1.1.0/) dan
   bercabang per kategori (ASN, umum, pelajar, mitra; NIP hanya untuk ASN), halaman "Kursus saya", dan kursus
   contoh sintetis "Membaca Data BPS untuk Perencanaan Daerah" (`npm run data:lms:contoh`). Ujian akhir kini
   juga menunggu pelajaran wajib selesai. Uji migrasi `npm run uji:migrasi` dan E2E desktop serta ponsel.
+
+- **Penyusun kursus Fase 3 (admin)**: menu "Penyusun kursus" untuk membuat, mengubah, mengurutkan (tombol
+  naik/turun), menerbitkan, dan menghapus bab serta pelajaran; penyunting per jenis (video YouTube yang
+  dinormalkan, bacaan Markdown dengan pratinjau langsung, tautan dokumen, pengelola soal latihan);
+  pratinjau sebagai peserta dengan tampilan yang sama; status draf/terbit per bab dan pelajaran; panel
+  kesiapan terbit; riwayat perubahan per kursus. ADR-0009, migrasi aditif `0004_penyusun_kursus.sql`
+  (`is_published`, `version`, `updated_at`, `updated_by`), penguncian optimistik agar suntingan tidak saling
+  menimpa, dan E2E `penyusun-kursus.spec.ts`. Berkas PDF belum dapat diunggah (hanya tautan), dan urutan
+  memakai tombol, bukan seret-lepas (lihat ADR-0009).
 
 ### Diubah
 

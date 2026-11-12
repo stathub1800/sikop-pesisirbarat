@@ -125,7 +125,8 @@ if (base) {
     });
     for (const baris of diff.split('\n').filter(Boolean)) {
       const [status, berkas] = baris.split(/\s+/);
-      if (status !== 'A')
+      // Hanya berkas migrasi .sql yang dijaga; berkas sistem seperti desktop.ini boleh dihapus.
+      if (status !== 'A' && berkas?.endsWith('.sql'))
         galat.push(
           `[A8] ${berkas} (${status}): migrasi lama tidak boleh diubah. Buat migrasi baru.`,
         );

@@ -28,13 +28,20 @@ async function masukDev(page: Page, email: string): Promise<void> {
   expect(r.ok(), await r.text()).toBeTruthy();
 }
 
-/** Mengisi latihan: benar bila `benar`, selain itu memilih opsi yang salah. */
+/**
+ * Mengisi latihan bertahap (satu soal per layar): buka tiap soal lewat tombol nomornya, lalu pilih
+ * jawaban benar bila `benar`, selain itu opsi yang salah.
+ */
 async function isiLatihan(page: Page, benar: boolean): Promise<void> {
+  const ulangi = page.getByRole('button', { name: 'Ulangi latihan' });
+  if (await ulangi.isVisible()) await ulangi.click();
   const kotak = page.locator('.latihan__soal');
   const n = await kotak.count();
   expect(n).toBeGreaterThan(0);
   for (let i = 0; i < n; i++) {
+    await page.locator('.latihan__nomor').nth(i).click();
     const soal = kotak.nth(i);
+    await expect(soal).toBeVisible();
     const tanya = ((await soal.locator('legend').textContent()) ?? '')
       .replace(/^\d+\.\s*/, '')
       .trim();
@@ -55,6 +62,8 @@ async function isiLatihan(page: Page, benar: boolean): Promise<void> {
 test('katalog: saringan tersimpan di URL dan kursus contoh muncul', async ({ page }) => {
   await page.goto('/belajar/#/');
   await expect(page.locator('h1')).toHaveText('Ruang Belajar');
+  await expect(page.locator('.langkah-belajar')).toContainText('Cara belajar di sini');
+  await expect(page.getByRole('link', { name: 'Masuk untuk mulai' })).toBeVisible();
   const kartu = page.locator('.kartu-kursus', { hasText: 'Membaca Data BPS' });
   await expect(kartu).toBeVisible();
   await expect(kartu).toContainText('Dasar');
@@ -188,15 +197,21 @@ test('alur belajar peserta pelajar: daftar, pelajaran, latihan, progres, kursus 
     await expect(page.locator('.pemutar__sisi')).toBeVisible();
     await expect(page.locator('.pemutar__sisi li.aktif')).toHaveCount(1);
   }
-  await page.getByRole('button', { name: 'Tandai selesai' }).click();
+  // Berikutnya pada bacaan sekaligus mencatat selesai (satu klik).
   await page.getByRole('link', { name: 'Berikutnya' }).click();
+  await expect(page.locator('.pemutar__sisi .silabus__tanda--selesai')).toHaveCount(2);
 
   // Latihan: jawaban salah tidak menyelesaikan pelajaran dan tidak membocorkan kunci.
   await expect(page.locator('.latihan')).toBeVisible();
   await expect(page.getByRole('button', { name: 'Tandai selesai' })).toHaveCount(0);
+  await expect(page.locator('.latihan__soal:visible')).toHaveCount(1);
+  await expect(page.locator('.latihan__status')).toContainText('Soal 1 dari');
   await isiLatihan(page, false);
+  await expect(page.locator('.latihan__status')).toContainText('terjawab');
   await page.getByRole('button', { name: 'Periksa jawaban' }).click();
   await expect(page.locator('.latihan')).toContainText('Belum tepat');
+  await expect(page.locator('.latihan__skor')).toBeVisible();
+  await expect(page.getByRole('button', { name: 'Ulangi latihan' })).toBeVisible();
   await expect(page.locator('.pemutar__aksi')).not.toContainText('Latihan lulus');
   // Jawaban benar: lulus dan pelajaran selesai.
   await isiLatihan(page, true);
@@ -221,6 +236,7 @@ test('alur belajar peserta pelajar: daftar, pelajaran, latihan, progres, kursus 
       await expect(page.locator('.pemutar__aksi')).toContainText('Selesai');
     }
   }
+  await expect(page.locator('.panel--capaian')).toContainText('semua pelajaran selesai');
   await page.getByRole('link', { name: 'Ke halaman kursus' }).click();
   await expect(page.locator('.progres')).toContainText('100%');
   // Ujian akhir tetap terkunci sebelum post-test bab lulus.

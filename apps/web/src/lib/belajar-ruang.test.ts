@@ -1,5 +1,10 @@
 import { describe, expect, it } from 'vitest';
-import { cocokSaringan, type Kursus } from './belajar-ruang.ts';
+import {
+  cocokSaringan,
+  sesuaiKategori,
+  urutkanUntukPeserta,
+  type Kursus,
+} from './belajar-ruang.ts';
 
 const k = {
   judul: 'Membaca Data BPS',
@@ -21,4 +26,26 @@ describe('cocokSaringan', () => {
   });
   it('sasaran kosong berarti untuk semua kategori', () =>
     expect(cocokSaringan({ ...k, sasaran: [] }, { ...kosong, sasaran: 'mitra' })).toBe(true));
+});
+
+describe('rekomendasi menurut kategori peserta', () => {
+  const umum = { ...k, judul: 'Untuk semua', sasaran: [] } as Kursus;
+  const asn = { ...k, judul: 'Khusus ASN', sasaran: ['asn'] } as Kursus;
+  it('hanya kursus yang menyasar kategori itu yang ditandai sesuai', () => {
+    expect(sesuaiKategori(k, 'pelajar')).toBe(true);
+    expect(sesuaiKategori(umum, 'pelajar')).toBe(false);
+    expect(sesuaiKategori(k, undefined)).toBe(false);
+  });
+  it('kursus yang sesuai didahulukan, urutan lain tetap', () => {
+    expect(urutkanUntukPeserta([umum, asn, k], 'pelajar').map((x) => x.judul)).toEqual([
+      'Membaca Data BPS',
+      'Untuk semua',
+      'Khusus ASN',
+    ]);
+    expect(urutkanUntukPeserta([umum, asn, k], undefined).map((x) => x.judul)).toEqual([
+      'Untuk semua',
+      'Khusus ASN',
+      'Membaca Data BPS',
+    ]);
+  });
 });
