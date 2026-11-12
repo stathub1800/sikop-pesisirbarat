@@ -187,9 +187,11 @@ test('tabel dinamis: indikator per kecamatan dan tabulasi silang sekolah', async
   await page.goto('/tabel/');
   await expect(page.locator('.tabel-dinamis tbody tr')).toHaveCount(11);
   await page.selectOption('#t-tema', 'Infrastruktur');
-  await page.locator('.daftar-centang label', { hasText: 'Jalan antardesa beraspal' }).click();
+  await page.locator('.daftar-centang label', { hasText: 'jalan antardesa beraspal' }).click();
   await expect(page).toHaveURL(/ind=[^&]*podes_jalan_aspal/);
-  await expect(page.locator('.tabel-dinamis thead')).toContainText('Jalan antardesa beraspal');
+  await expect(page.locator('.tabel-dinamis thead')).toContainText(
+    'Desa/kelurahan dengan jalan antardesa beraspal',
+  );
   await page.getByRole('button', { name: 'Tabulasi silang sekolah' }).click();
   await page.selectOption('#s-baris', 'jenjang');
   await page.selectOption('#s-kolom', 'status');
