@@ -64,15 +64,20 @@ const MENU: Menu[] = [
     kelompok: 'Ruang belajar',
   },
   { hash: 'soal', label: 'Bank soal', peran: ['pengelola_lms'], kelompok: 'Ruang belajar' },
-  { hash: 'peserta', label: 'Peserta', peran: ['pengelola_lms'], kelompok: 'Ruang belajar' },
   { hash: 'sertifikat', label: 'Sertifikat', peran: ['pengelola_lms'], kelompok: 'Ruang belajar' },
+  {
+    hash: 'peserta',
+    label: 'Peserta Ruang Belajar',
+    peran: ['pengelola_lms'],
+    kelompok: 'Manajemen pengguna',
+  },
+  { hash: 'pengguna', label: 'Admin dan peran', peran: [], kelompok: 'Manajemen pengguna' },
   {
     hash: 'pengaturan',
     label: 'Pengaturan situs',
     peran: ['editor_data', 'pengelola_lms'],
     kelompok: 'Sistem',
   },
-  { hash: 'pengguna', label: 'Pengguna admin', peran: [], kelompok: 'Sistem' },
   { hash: 'audit', label: 'Jejak audit', peran: [], kelompok: 'Sistem' },
 ];
 

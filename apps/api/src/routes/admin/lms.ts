@@ -7,6 +7,7 @@ import {
   ModulInputSchema,
   samarkanNip,
   SoalInputSchema,
+  KATEGORI_PESERTA,
   STATUS_PESERTA,
   VerifikasiPesertaSchema,
 } from '@sikop/shared';
@@ -264,6 +265,10 @@ adminLms.get('/peserta', async (c) => {
     w.push('p.status = ?');
     p.push(q.status);
   }
+  if (q.kategori && (KATEGORI_PESERTA as readonly string[]).includes(q.kategori)) {
+    w.push('p.kategori = ?');
+    p.push(q.kategori);
+  }
   if (q.q) {
     w.push('(p.nama LIKE ? OR p.instansi LIKE ? OR p.nip = ? OR a.email = ?)');
     p.push(
@@ -276,7 +281,7 @@ adminLms.get('/peserta', async (c) => {
   const ukuran = angkaQuery(q.ukuran, 25, 100);
   const halaman = angkaQuery(q.halaman, 1, 10_000);
   const db = c.env.DB;
-  const [items, total] = await db.batch([
+  const [items, total, ringkas] = await db.batch([
     db
       .prepare(
         `SELECT p.akun_id, p.kategori, p.nama, p.nip, p.instansi, p.jabatan, p.status, p.catatan, p.created_at, p.verified_at, p.verified_by, a.email,
@@ -290,12 +295,25 @@ adminLms.get('/peserta', async (c) => {
         `SELECT COUNT(*) AS n FROM peserta p JOIN akun a ON a.id = p.akun_id WHERE ${w.join(' AND ')}`,
       )
       .bind(...p),
+    // Ringkasan seluruh peserta (tanpa saringan) untuk kartu jumlah di atas daftar.
+    db.prepare('SELECT status, kategori, COUNT(*) AS n FROM peserta GROUP BY status, kategori'),
   ]);
+  const baris = (ringkas?.results ?? []) as { status: string; kategori: string; n: number }[];
+  const per = (kunci: 'status' | 'kategori'): Record<string, number> =>
+    baris.reduce<Record<string, number>>(
+      (a, b) => ((a[b[kunci]] = (a[b[kunci]] ?? 0) + b.n), a),
+      {},
+    );
   return c.json({
     items: items?.results ?? [],
     total: (total?.results?.[0] as { n: number }).n,
     halaman,
     ukuran,
+    ringkasan: {
+      total: baris.reduce((a, b) => a + b.n, 0),
+      status: per('status'),
+      kategori: per('kategori'),
+    },
   });
 });
 

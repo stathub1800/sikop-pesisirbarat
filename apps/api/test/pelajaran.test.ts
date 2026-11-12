@@ -483,6 +483,36 @@ describe('Pendaftaran peserta berkategori: NIP hanya wajib untuk ASN', () => {
     );
     expect(daftarAdmin.body.items[0]).toMatchObject({ kategori: 'umum', nip: null });
   });
+
+  it('daftar peserta admin: saringan kategori dan ringkasan jumlah', async () => {
+    await daftar('ringkas1@uji.id', { ...dasar, kategori: 'pelajar', sekolah: 'SMAN 1' });
+    const adm = await jadikanAdmin('lms5@uji.go.id', 'pengelola_lms');
+    const r = await adm.json<{
+      items: { kategori: string }[];
+      total: number;
+      ringkasan: {
+        total: number;
+        status: Record<string, number>;
+        kategori: Record<string, number>;
+      };
+    }>('/admin/lms/peserta?kategori=pelajar');
+    expect(r.status).toBe(200);
+    expect(r.body.items.length).toBeGreaterThan(0);
+    expect(r.body.items.every((x) => x.kategori === 'pelajar')).toBe(true);
+    expect(r.body.ringkasan.kategori.pelajar).toBe(r.body.total);
+    expect(r.body.ringkasan.total).toBeGreaterThanOrEqual(r.body.total);
+    const jumlahStatus = Object.values(r.body.ringkasan.status).reduce((a, b) => a + b, 0);
+    expect(jumlahStatus).toBe(r.body.ringkasan.total);
+    // Kategori tidak dikenal diabaikan, bukan galat.
+    expect((await adm.json('/admin/lms/peserta?kategori=lain')).status).toBe(200);
+    // Peserta biasa tidak boleh melihat daftar.
+    const biasa = await daftar('ringkas2@uji.id', {
+      ...dasar,
+      kategori: 'umum',
+      pekerjaan: 'Guru',
+    });
+    expect((await biasa.k.json('/admin/lms/peserta')).status).toBe(403);
+  });
 });
 
 describe('Admin: metadata kursus', () => {

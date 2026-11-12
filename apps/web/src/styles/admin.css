@@ -146,3 +146,70 @@
   border-radius: var(--r-sm);
   margin: 0;
 }
+
+/* Ringkasan jumlah peserta: kartu sekaligus saringan cepat. */
+.ringkas-peserta {
+  display: grid;
+  gap: var(--s-3);
+  margin: var(--s-4) 0 var(--s-2);
+}
+.kisi-jumlah {
+  display: grid;
+  gap: var(--s-3);
+  grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
+}
+.kartu-jumlah {
+  display: grid;
+  gap: 2px;
+  min-height: 44px;
+  padding: var(--s-3) var(--s-4);
+  border: 1px solid var(--garis);
+  border-radius: var(--r-md);
+  background: var(--permukaan);
+  color: var(--teks);
+  text-decoration: none;
+}
+.kartu-jumlah strong {
+  font-size: var(--t-xl);
+  line-height: 1.1;
+}
+.kartu-jumlah span {
+  font-size: var(--t-sm);
+  color: var(--teks-2);
+}
+.kartu-jumlah:hover {
+  border-color: var(--primer);
+}
+.kartu-jumlah.aktif {
+  border-color: var(--primer);
+  background: var(--primer-lembut);
+}
+.kartu-jumlah.aktif span {
+  color: var(--primer);
+}
+.kisi-jumlah--kecil .kartu-jumlah strong {
+  font-size: var(--t-lg);
+}
+
+/* Penjelasan peran admin. */
+.daftar-peran {
+  display: grid;
+  gap: var(--s-3);
+  grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+  margin: var(--s-4) 0;
+  padding: 0;
+  list-style: none;
+}
+.daftar-peran li {
+  display: grid;
+  gap: var(--s-1);
+  align-content: start;
+  padding: var(--s-4);
+  border: 1px solid var(--garis);
+  border-radius: var(--r-md);
+  background: var(--permukaan);
+}
+.daftar-peran li span {
+  font-size: var(--t-sm);
+  color: var(--teks-2);
+}

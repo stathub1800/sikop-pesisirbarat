@@ -160,6 +160,15 @@ interface Pengguna {
   last_login: string | null;
 }
 
+/** Penjelasan singkat hak tiap peran; harus sesuai daftar MENU di main.ts. */
+const TUGAS_PERAN: Record<(typeof PERAN)[number], string> = {
+  superadmin: 'Akses penuh: semua menu, menambah dan mengubah admin, serta melihat jejak audit.',
+  editor_data: 'Data sekolah, impor CSV sekolah, indikator Peta Tematik, dan pengaturan situs.',
+  pengelola_lms:
+    'Kursus dan penyusun kursus, bank soal, verifikasi peserta Ruang Belajar, sertifikat, dan pengaturan situs.',
+  petugas_pst: 'Menanggapi permohonan data dari pengunjung (Layanan Data).',
+};
+
 export async function layarPengguna(k: Konteks): Promise<void> {
   const { pengguna } = await get<{ pengguna: Pengguna[] }>('/admin/pengguna');
   const form = h(
@@ -177,11 +186,12 @@ export async function layarPengguna(k: Konteks): Promise<void> {
         'editor_data',
       ),
     ),
-    centang('is_active', 'Aktif', true),
+    centang('is_active', 'Aktif (nonaktifkan untuk mencabut akses tanpa menghapus riwayat)', true),
     h(
       'div',
-      { class: 'jarak-atas' },
+      { class: 'baris-tombol jarak-atas' },
       h('button', { class: 'tombol tombol--primer', type: 'submit' }, 'Simpan pengguna'),
+      h('button', { class: 'tombol', type: 'reset' }, 'Kosongkan'),
     ),
   ) as HTMLFormElement;
   form.addEventListener('submit', async (e) => {
@@ -203,14 +213,32 @@ export async function layarPengguna(k: Konteks): Promise<void> {
     (form.elements.namedItem('is_active') as HTMLInputElement).checked = Boolean(u.is_active);
     form.scrollIntoView({ behavior: 'smooth' });
   };
+  const jumlahPeran = (pr: string): number =>
+    pengguna.filter((u) => u.peran === pr && u.is_active).length;
   isi(
     k.isi,
-    h('h1', null, 'Pengguna admin'),
+    h('h1', null, 'Admin dan peran'),
     h(
       'p',
       { class: 'isian__bantu' },
-      'Pisahkan tugas: editor data, pengelola ruang belajar, dan petugas PST sebaiknya orang yang berbeda. Perubahan peran berlaku seketika dan mengakhiri sesi pengguna tersebut. Tinjau daftar ini setiap triwulan.',
+      'Tambahkan pegawai yang mengelola situs dengan email akun Google-nya, lalu pilih perannya. Orang tersebut masuk lewat halaman /admin/ dengan akun Google yang sama. Pisahkan tugas: editor data, pengelola ruang belajar, dan petugas PST sebaiknya orang yang berbeda. Perubahan peran berlaku seketika dan mengakhiri sesi pengguna tersebut. Peserta kursus tidak dikelola di sini, tetapi di ',
+      h('a', { href: '#/peserta' }, 'Peserta Ruang Belajar'),
+      '.',
     ),
+    h(
+      'ul',
+      { class: 'daftar-peran', 'aria-label': 'Peran dan hak akses' },
+      PERAN.map((pr) =>
+        h(
+          'li',
+          null,
+          h('strong', null, `${LABEL_PERAN[pr]} (${jumlahPeran(pr)} aktif)`),
+          h('span', null, TUGAS_PERAN[pr]),
+        ),
+      ),
+    ),
+    h('section', { class: 'panel' }, h('h2', null, 'Tambah atau ubah admin'), form),
+    h('h2', { class: 'jarak-atas' }, `Daftar admin (${pengguna.length})`),
     tabel<Pengguna>(
       [
         {
@@ -242,7 +270,6 @@ export async function layarPengguna(k: Konteks): Promise<void> {
       pengguna,
       'Daftar pengguna admin',
     ),
-    h('section', { class: 'panel jarak-atas' }, h('h2', null, 'Tambah atau ubah pengguna'), form),
   );
 }
 

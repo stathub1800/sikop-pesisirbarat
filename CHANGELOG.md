@@ -4,6 +4,21 @@ Format mengikuti [Keep a Changelog](https://keepachangelog.com/id-ID/1.1.0/) dan
 
 ## [Belum dirilis]
 
+### Diperbaiki
+
+- Tata letak formulir: kotak isian yang berdampingan tidak lagi meregang tinggi dan selalu sejajar, termasuk
+  bila labelnya terlipat dua baris atau kolom tetangganya berketerangan. Berlaku di pendaftaran peserta
+  dan seluruh formulir panel admin (Pengaturan situs, kursus, indikator, sekolah, soal, pengguna).
+
+### Ditambahkan
+
+- **Manajemen pengguna di panel admin** (kelompok menu baru "Manajemen pengguna"):
+  - "Peserta Ruang Belajar": kartu jumlah peserta per status dan per kategori yang sekaligus menjadi
+    saringan cepat, saringan kategori, kolom tanggal terdaftar, dan label status yang mudah dibaca.
+    API `GET /admin/lms/peserta` menerima `kategori` dan mengembalikan `ringkasan`.
+  - "Admin dan peran" (sebelumnya "Pengguna admin"): penjelasan hak tiap peran beserta jumlah admin
+    aktif, formulir tambah admin di atas daftar, dan tombol "Kosongkan".
+
 ### Diubah
 
 - **Ruang Belajar lebih mudah dan interaktif bagi peserta**:

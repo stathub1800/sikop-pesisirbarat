@@ -143,6 +143,49 @@ test('panel admin: menu sesuai peran dan dasbor tampil', async ({ page }) => {
   await page.screenshot({ path: 'test-results/admin-audit.png', fullPage: true });
 });
 
+test('manajemen pengguna: peserta dan admin berperan mudah ditemukan, form rapi', async ({
+  page,
+}) => {
+  await masukDev(page, ADMIN);
+  await page.goto('/admin/');
+  const nav = page.locator('#admin-nav');
+  await expect(nav).toContainText('Manajemen pengguna');
+  await nav.getByRole('link', { name: 'Peserta Ruang Belajar' }).click();
+  await expect(page.locator('h1')).toHaveText('Peserta Ruang Belajar');
+  await expect(page.locator('.kartu-jumlah').first()).toContainText('Semua peserta');
+  // Kartu kategori menyaring daftar lewat URL.
+  await page.locator('.kartu-jumlah', { hasText: 'Pelajar dan mahasiswa' }).click();
+  await expect(page).toHaveURL(/kategori=pelajar/);
+  await expect(page.locator('.kartu-jumlah.aktif')).toContainText('Pelajar dan mahasiswa');
+
+  await nav.getByRole('link', { name: 'Admin dan peran' }).click();
+  await expect(page.locator('h1')).toHaveText('Admin dan peran');
+  await expect(page.locator('.daftar-peran li')).toHaveCount(4);
+  await expect(page.getByRole('heading', { name: 'Tambah atau ubah admin' })).toBeVisible();
+
+  // Kotak isian dalam satu baris sejajar dan tidak meregang (Pengaturan situs punya label dua baris).
+  await page.goto('/admin/#/pengaturan');
+  await expect(page.locator('.grid-isian').first()).toBeVisible();
+  const salah = await page.evaluate(() => {
+    const out: string[] = [];
+    for (const g of document.querySelectorAll('.grid-isian')) {
+      const baris = new Map<number, number[]>();
+      for (const c of g.querySelectorAll<HTMLElement>(
+        ':scope > .isian > input, :scope > .isian > select',
+      )) {
+        const r = c.getBoundingClientRect();
+        if (r.height > 60) out.push(`tinggi ${c.getAttribute('name')}`);
+        const k = Math.round(r.top / 60);
+        baris.set(k, [...(baris.get(k) ?? []), r.top]);
+      }
+      for (const t of baris.values())
+        if (Math.max(...t) - Math.min(...t) > 2) out.push(`tidak sejajar ${t.join(',')}`);
+    }
+    return out;
+  });
+  expect(salah).toEqual([]);
+});
+
 test('akun tanpa peran tidak dapat memakai panel admin', async ({ page }) => {
   await masukDev(page, `bukanadmin-${unik}@uji.id`);
   await page.goto('/admin/');
