@@ -75,10 +75,10 @@ const WARNA_JENJANG: Record<string, string> = {
 };
 /** Label pendek fakta wilayah di kartu profil. */
 const LABEL_FAKTA: Record<string, string> = {
-  podes_pesisir: 'desa pesisir',
-  podes_hutan: 'tepi hutan',
-  podes_perkotaan: 'perkotaan',
-  podes_pertanian: 'bertani',
+  podes_pesisir: 'desa/kel. pesisir',
+  podes_hutan: 'di dalam/tepi hutan',
+  podes_perkotaan: 'berstatus perkotaan',
+  podes_pertanian: 'mayoritas bertani',
 };
 
 const css = (v: string): string =>
@@ -137,7 +137,12 @@ const peta: PetaGL = new maplibregl.Map({
   minZoom: 6,
   attributionControl: { compact: true, customAttribution: 'Batas kecamatan: BIG (indikatif)' },
   cooperativeGestures: sempit(),
-  locale: { 'CooperativeGesturesHandler.MobileHelpText': 'Gunakan dua jari untuk menggeser peta' },
+  locale: {
+    'CooperativeGesturesHandler.WindowsHelpText':
+      'Tekan Ctrl sambil menggulir untuk memperbesar peta',
+    'CooperativeGesturesHandler.MacHelpText': 'Tekan ⌘ sambil menggulir untuk memperbesar peta',
+    'CooperativeGesturesHandler.MobileHelpText': 'Gunakan dua jari untuk menggeser peta',
+  },
 });
 
 let pakaiCadangan = false;
@@ -494,7 +499,7 @@ function gambarPeringkat(i: Indikator): void {
       ? 'Makin rendah makin baik.'
       : i.arah === 'naik_baik'
         ? 'Makin tinggi makin baik.'
-        : 'Indikator ini tidak bermakna baik atau buruk.',
+        : 'Indikator ini netral: nilai tinggi atau rendah tidak berarti lebih baik atau lebih buruk. Urutan hanya menunjukkan besar kecilnya nilai.',
     adaSeri ? 'Tanda "=" berarti beberapa kecamatan bernilai sama dan berbagi peringkat.' : '',
   ]
     .filter(Boolean)

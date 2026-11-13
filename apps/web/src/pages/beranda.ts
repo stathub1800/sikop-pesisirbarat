@@ -253,7 +253,10 @@ function gambarPerhatian(indikator: Indikator[]): void {
   ).filter((k) => k.jumlah > 0);
   daftar.removeAttribute('aria-busy');
   if (!hasil.length) {
-    isi(daftar, h('li', null, kosong('Belum cukup data', 'Indikator berarah belum tersedia.')));
+    isi(
+      daftar,
+      h('li', null, kosong('Belum cukup data', 'Belum ada indikator yang arah baiknya jelas.')),
+    );
     return;
   }
   isi(
@@ -275,7 +278,7 @@ function gambarPerhatian(indikator: Indikator[]): void {
             'p',
             { class: 'perhatian__ringkas' },
             h('strong', null, formatAngka(k.jumlah)),
-            ` dari ${formatAngka(k.dari)} indikator berarah berada di tiga terbawah`,
+            ` dari ${formatAngka(k.dari)} indikator berada di tiga terburuk`,
           ),
           h(
             'span',
@@ -387,8 +390,8 @@ async function mulaiKursus(): Promise<void> {
           'li',
           null,
           kosong(
-            'Sedang dalam tahap pengembangan',
-            'Ruang Belajar sedang dikembangkan. Kursus akan diterbitkan bertahap setelah materi dan ujian selesai diuji.',
+            'Belum ada kursus yang terbit',
+            'Kursus diterbitkan bertahap setelah materi dan ujiannya selesai diuji.',
           ),
         ),
       );

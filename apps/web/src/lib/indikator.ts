@@ -74,12 +74,15 @@ export const fmt = (i: Indikator, v: number | null | undefined): string =>
   v === null || v === undefined
     ? 'Tidak ada data'
     : `${formatAngka(v, i.desimal)}${persen(i) ? '%' : ` ${i.satuan}`}`;
-/** Nilai ringkas untuk label peta dan peringkat: "86%" atau "5,0". */
+/**
+ * Nilai ringkas untuk kartu, peringkat, dan tabel: "86,0%" atau "5,0". Persentase selalu satu desimal
+ * agar angka dalam satu daftar sebanding (bukan "25%" di samping "61,5%").
+ */
 export const fmtRingkas = (i: Indikator, v: number | null | undefined): string =>
   v === null || v === undefined
     ? '–'
     : persen(i)
-      ? `${formatAngka(v, v >= 99.95 || Number.isInteger(v) ? 0 : 1)}%`
+      ? `${formatAngka(v, 1)}%`
       : formatAngka(v, i.desimal);
 /** Label di atas peta: bilangan bulat agar label kecamatan yang berdekatan tidak saling tumpuk. */
 export const fmtPil = (i: Indikator, v: number | null | undefined): string =>
@@ -164,7 +167,10 @@ export function teksPeringkat(i: Indikator, kecamatan: Kecamatan[], kode: string
   const p = peringkat(i, kecamatan, kode);
   if (p === null) return null;
   const seri = jumlahSeri(i, kecamatan, kode);
-  return `Peringkat ${p} dari ${kecamatan.length}${seri > 1 ? ` (sama dengan ${seri - 1} kecamatan lain)` : ''}`;
+  const sama = seri > 1 ? `, sama dengan ${seri - 1} kecamatan lain` : '';
+  return i.arah === 'netral'
+    ? `Urutan ${p} dari ${kecamatan.length} menurut nilai tertinggi${sama}`
+    : `Peringkat ${p} dari ${kecamatan.length} (1 = terbaik${sama})`;
 }
 
 /**

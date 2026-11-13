@@ -81,7 +81,7 @@ function bagianRingkasan(indikator: Indikator[], semua: Kecamatan[], k: Kecamata
     h(
       'p',
       { class: 'teks-redup' },
-      'Disusun otomatis dari indikator berarah (yang jelas mana yang lebih baik). Keunggulan: termasuk tiga teratas dan lebih baik dari kabupaten. Tantangan: termasuk tiga terbawah dan lebih buruk dari kabupaten. Ini penanda awal untuk ditelusuri, bukan penilaian kinerja.',
+      'Disusun otomatis dari indikator yang arah baiknya jelas (makin tinggi atau makin rendah makin baik). Keunggulan: kecamatan termasuk tiga terbaik dan lebih baik dari angka kabupaten. Tantangan: termasuk tiga terburuk dan lebih buruk dari angka kabupaten. Peringkat 1 berarti terbaik di antara 11 kecamatan. Ini penanda awal untuk ditelusuri, bukan penilaian kinerja.',
     ),
     h(
       'div',

@@ -4,6 +4,21 @@ Format mengikuti [Keep a Changelog](https://keepachangelog.com/id-ID/1.1.0/) dan
 
 ## [Belum dirilis]
 
+### Diubah (keterbacaan untuk analis data)
+
+- Nama indikator jarak dan waktu tempuh menyebut cakupan dan ukurannya, mis. "Jarak ke bank terdekat"
+  menjadi "Jarak desa tanpa kantor bank ke bank terdekat (median)", agar 54 km tidak dibaca sebagai jarak
+  satu titik. Nama di D1 produksi berubah setelah alur Data dijalankan dengan impor.
+- Persentase di kartu, peringkat, dan tabel selalu satu desimal ("25,0%", bukan "25%" di samping "61,5%").
+- Teks peringkat menyebut arahnya ("Peringkat 2 dari 11 (1 = terbaik)"); indikator netral memakai
+  "Urutan ... menurut nilai tertinggi". Kalimat netral di Peta Tematik diperjelas.
+- Istilah "indikator berarah" diganti bahasa awam; cara hitung "Kecamatan yang perlu perhatian" dan
+  ringkasan pimpinan diperjelas.
+- Peta: petunjuk "Ctrl + gulir" berbahasa Indonesia; fakta wilayah di profil berlabel lengkap
+  ("desa/kel. pesisir", "mayoritas bertani").
+- Prinsip "angka kabupaten dihitung dari total" kini menyebut median; teks Ruang Belajar yang berulang
+  dirapikan.
+
 ### Diperbaiki
 
 - Tata letak formulir: kotak isian yang berdampingan tidak lagi meregang tinggi dan selalu sejajar, termasuk
