@@ -172,7 +172,7 @@ export const INDIKATOR_PODES: readonly IndikatorPodes[] = [
   }),
   {
     id: 'podes_waktu_kabupaten',
-    nama: 'Waktu tempuh ke kantor bupati',
+    nama: 'Waktu tempuh desa ke kantor bupati (median)',
     tema: 'Infrastruktur',
     rujukan: 'R902b',
     definisi:
@@ -216,7 +216,7 @@ export const INDIKATOR_PODES: readonly IndikatorPodes[] = [
   }),
   {
     id: 'podes_jarak_sma',
-    nama: 'Jarak ke SMA/MA/SMK terdekat',
+    nama: 'Jarak desa tanpa SMA/MA/SMK ke sekolah terdekat (median)',
     tema: 'Pendidikan',
     rujukan: 'R701g-i kolom 4',
     definisi:
@@ -280,7 +280,7 @@ export const INDIKATOR_PODES: readonly IndikatorPodes[] = [
   }),
   {
     id: 'podes_jarak_puskesmas',
-    nama: 'Jarak ke puskesmas terdekat',
+    nama: 'Jarak desa tanpa puskesmas ke puskesmas terdekat (median)',
     tema: 'Kesehatan',
     rujukan: 'R704d-e kolom 3',
     definisi:
@@ -419,7 +419,7 @@ export const INDIKATOR_PODES: readonly IndikatorPodes[] = [
   }),
   {
     id: 'podes_jarak_bank',
-    nama: 'Jarak ke bank terdekat',
+    nama: 'Jarak desa tanpa kantor bank ke bank terdekat (median)',
     tema: 'Ekonomi',
     rujukan: 'R1002b',
     definisi:

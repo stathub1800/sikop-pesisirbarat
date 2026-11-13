@@ -1,6 +1,7 @@
 import { describe, expect, it } from 'vitest';
 import {
   banding,
+  fmtRingkas,
   jumlahSeri,
   perluPerhatian,
   ringkasanKecamatan,
@@ -46,8 +47,25 @@ describe('Pembanding dan peringkat', () => {
   it('nilai sama berbagi peringkat dan disebutkan', () => {
     const i = buat('bencana', [0, 0, 0, 10, 20, 30, 40], 10, { arah: 'turun_baik' });
     expect(jumlahSeri(i, kec, 'A')).toBe(3);
-    expect(teksPeringkat(i, kec, 'A')).toBe('Peringkat 1 dari 7 (sama dengan 2 kecamatan lain)');
-    expect(teksPeringkat(i, kec, 'G')).toBe('Peringkat 7 dari 7');
+    expect(teksPeringkat(i, kec, 'A')).toBe(
+      'Peringkat 1 dari 7 (1 = terbaik, sama dengan 2 kecamatan lain)',
+    );
+    expect(teksPeringkat(i, kec, 'G')).toBe('Peringkat 7 dari 7 (1 = terbaik)');
+  });
+
+  it('indikator netral memakai urutan nilai, bukan peringkat baik-buruk', () => {
+    const i = buat('pesisir', [90, 80, 70, 60, 50, 40, 30], 60, { arah: 'netral' });
+    expect(teksPeringkat(i, kec, 'B')).toBe('Urutan 2 dari 7 menurut nilai tertinggi');
+  });
+
+  it('persentase ringkas selalu satu desimal agar sebanding', () => {
+    const i = buat('p', [25, 61.5, 100, 0, 50, 40, 30], 60);
+    expect([25, 61.5, 100, 0].map((v) => fmtRingkas(i, v))).toEqual([
+      '25,0%',
+      '61,5%',
+      '100,0%',
+      '0,0%',
+    ]);
   });
 });
 

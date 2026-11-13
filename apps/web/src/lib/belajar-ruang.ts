@@ -282,8 +282,8 @@ export async function halamanKatalog(ctx: Konteks, s: Saya): Promise<void> {
         ? hasil.map((k) => kartuKursus(k, sesuaiKategori(k, kategori)))
         : kursus.length === 0
           ? kosong(
-              'Sedang dalam tahap pengembangan',
-              'Kursus akan diterbitkan bertahap setelah materi, latihan, dan ujiannya selesai diuji. Silakan kembali lagi nanti.',
+              'Belum ada kursus yang terbit',
+              'Kursus diterbitkan bertahap setelah materi, latihan, dan ujiannya selesai diuji. Silakan kembali lagi nanti.',
             )
           : kosong(
               'Tidak ada kursus yang cocok',

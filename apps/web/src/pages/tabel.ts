@@ -386,7 +386,7 @@ function tabelIndikator(): HTMLElement {
         ? 'Peringkat 1 = terbaik menurut arah indikator; untuk indikator netral, 1 = nilai tertinggi. Nilai sama berbagi peringkat. '
         : '',
       keadaan.tukar ? '' : 'Klik judul kolom untuk mengurutkan kecamatan. ',
-      'Angka kabupaten dihitung dari total, bukan rata-rata kecamatan. Data Podes tampil sebagai agregat kecamatan.',
+      'Angka kabupaten dihitung langsung dari seluruh desa/kelurahan atau sekolah, bukan rata-rata angka kecamatan. Persentase memakai satu desimal; indikator jarak dan waktu tempuh memakai median. Data Podes tampil sebagai agregat kecamatan.',
     ),
     h(
       'details',
